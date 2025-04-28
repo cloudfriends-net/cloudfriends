@@ -1,4 +1,4 @@
-import { KeyIcon, QrCodeIcon, ShieldCheckIcon, SparklesIcon, ArrowPathIcon, PhotoIcon } from '@heroicons/react/24/outline'
+import { KeyIcon, QrCodeIcon, ShieldCheckIcon, SparklesIcon, ArrowPathIcon, PhotoIcon, DocumentIcon } from '@heroicons/react/24/outline'
 
 export default function Home() {
   return (
@@ -85,6 +85,22 @@ export default function Home() {
             className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
           >
             Convert images
+          </a>
+        </div>
+
+        <div className="bg-slate-800 p-6 rounded-lg shadow-md border border-slate-700 hover:border-slate-600 transition-colors">
+          <div className="flex items-center gap-3 mb-4">
+            <DocumentIcon className="h-8 w-8 text-blue-400" />
+            <h2 className="text-2xl font-semibold text-white">PDF Tools</h2>
+          </div>
+          <p className="text-gray-300 mb-4">
+            Merge, split, and compress PDF files securely in your browser.
+          </p>
+          <a 
+            href="/tools/pdf-tools"
+            className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+          >
+            Process PDFs
           </a>
         </div>
       </div>

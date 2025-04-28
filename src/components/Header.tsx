@@ -79,6 +79,16 @@ function NavLinks({ pathname }: { pathname: string }) {
         Image Converter
       </Link>
       <Link 
+        href="/tools/pdf-tools" 
+        className={`px-3 py-2 rounded-md transition-all ${
+          pathname === '/tools/pdf-tools' 
+            ? 'bg-blue-600/20 text-blue-400 border border-blue-500/20' 
+            : 'text-gray-300 hover:bg-slate-800'
+        }`}
+      >
+        PDF Tools
+      </Link>
+      <Link 
         href="/about" 
         className={`px-3 py-2 rounded-md transition-all ${
           pathname === '/about' 
