@@ -43,7 +43,7 @@ export default function Home() {
         <div className="bg-slate-800 p-6 rounded-lg shadow-md border border-slate-700 hover:border-slate-600 transition-colors">
           <div className="flex items-center gap-3 mb-4">
             <KeyIcon className="h-8 w-8 text-blue-400" />
-            <h2 className="text-2xl font-semibold">Password Generator</h2>
+            <h2 className="text-2xl font-semibold text-white">Password Generator</h2>
           </div>
           <p className="text-gray-300 mb-4">
             Create secure, random passwords with customizable options for length and character types.
@@ -59,7 +59,7 @@ export default function Home() {
         <div className="bg-slate-800 p-6 rounded-lg shadow-md border border-slate-700 hover:border-slate-600 transition-colors">
           <div className="flex items-center gap-3 mb-4">
             <QrCodeIcon className="h-8 w-8 text-blue-400" />
-            <h2 className="text-2xl font-semibold">QR Code Generator</h2>
+            <h2 className="text-2xl font-semibold text-white">QR Code Generator</h2>
           </div>
           <p className="text-gray-300 mb-4">
             Create QR codes for URLs, text, or contact information instantly.
@@ -75,7 +75,7 @@ export default function Home() {
         <div className="bg-slate-800 p-6 rounded-lg shadow-md border border-slate-700 hover:border-slate-600 transition-colors">
           <div className="flex items-center gap-3 mb-4">
             <PhotoIcon className="h-8 w-8 text-blue-400" />
-            <h2 className="text-2xl font-semibold">Image converter</h2>
+            <h2 className="text-2xl font-semibold text-white">Image converter</h2>
           </div>
           <p className="text-gray-300 mb-4">
             Convert images between different formats easily.
@@ -91,7 +91,7 @@ export default function Home() {
 
       {/* Additional Information */}
       <div className="max-w-4xl mx-auto mt-12 p-6 bg-slate-800 rounded-lg border border-slate-700">
-        <h2 className="text-2xl font-semibold mb-4">About Our Tools</h2>
+        <h2 className="text-2xl font-semibold text-white mb-4">About Our Tools</h2>
         <div className="space-y-4 text-gray-300">
           <p>
             CloudFriends.net provides essential web tools that prioritize your privacy and security. 
