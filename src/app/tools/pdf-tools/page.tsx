@@ -1,9 +1,9 @@
 'use client'
 
+import { useState, useCallback, useEffect } from 'react'
 import { ArrowUpTrayIcon } from '@heroicons/react/24/outline'
-import { useCallback, useEffect, useState } from 'react'
+import { PDFDocument } from 'pdf-lib'
 import { useDropzone } from 'react-dropzone'
-import { PDFDocument, PDFName } from 'pdf-lib'
 
 type Operation = 'merge' | 'split' | 'compress'
 
@@ -191,198 +191,185 @@ export default function PDFTools() {
     document.body.removeChild(link)
   }
 
-  const cleanup = () => {
+  const cleanup = useCallback(() => {
     if (processedFiles) {
       processedFiles.files.forEach(file => URL.revokeObjectURL(file.url))
       setProcessedFiles(null)
     }
-  }
+  }, [processedFiles])
 
   useEffect(() => {
     return () => cleanup()
-  }, [])
+  }, [cleanup])
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-center mb-8">PDF Tools</h1>
+    <main className="min-h-screen bg-gray-950">
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-bold text-center mb-8 text-white">PDF Tools</h1>
 
-      {error && (
-        <div className="max-w-4xl mx-auto mb-8 p-4 bg-red-500/10 border border-red-400/20 rounded-lg text-center">
-          <p className="text-red-400 text-lg">{error}</p>
-        </div>
-      )}
-
-      <div className="max-w-4xl mx-auto mb-8 p-4 bg-blue-500/10 border border-blue-400/20 rounded-lg text-center">
-        <p className="text-blue-400 text-lg">
-          🔒 Your PDFs are processed entirely in your browser. No files are uploaded to any server.
-        </p>
-      </div>
-
-      <div className="max-w-2xl mx-auto">
-        {/* Operation Selection */}
-        <div className="flex space-x-4 mb-8">
-          <button
-            onClick={() => setSelectedOperation('merge')}
-            className={`flex-1 py-3 px-4 rounded-lg text-center transition-colors ${
-              selectedOperation === 'merge'
-                ? 'bg-blue-600 text-white'
-                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-            }`}
-          >
-            Merge PDFs
-          </button>
-          <button
-            onClick={() => setSelectedOperation('split')}
-            className={`flex-1 py-3 px-4 rounded-lg text-center transition-colors ${
-              selectedOperation === 'split'
-                ? 'bg-blue-600 text-white'
-                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-            }`}
-          >
-            Split PDF
-          </button>
-          <button
-            onClick={() => setSelectedOperation('compress')}
-            className={`flex-1 py-3 px-4 rounded-lg text-center transition-colors ${
-              selectedOperation === 'compress'
-                ? 'bg-blue-600 text-white'
-                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-            }`}
-          >
-            Compress PDF
-          </button>
+        <div className="max-w-4xl mx-auto mb-8 p-4 bg-blue-500/10 border border-blue-400/20 rounded-lg text-center">
+          <p className="text-blue-400 text-lg">
+            🔒 Your PDFs are processed entirely in your browser. No files are uploaded to any server.
+          </p>
         </div>
 
-        {/* Operation UI */}
-        <div className="space-y-8">
-          {selectedOperation === 'merge' && (
-            <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
-              <h2 className="text-2xl font-semibold text-white mb-4">Merge PDFs</h2>
-              <div {...getMergeRootProps()} className="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center">
-                <input {...getMergeInputProps()} />
-                <ArrowUpTrayIcon className="h-12 w-12 mx-auto text-slate-400 mb-4" />
-                <p className="text-slate-300 mb-4">
-                  {mergeFiles.length > 0 
-                    ? `Selected ${mergeFiles.length} files`
-                    : 'Drop PDF files here or click to select'}
-                </p>
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    mergePDFs()
-                  }}
-                  disabled={isProcessing || mergeFiles.length < 2}
-                  className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors disabled:bg-slate-600"
-                >
-                  {isProcessing ? 'Processing...' : 'Merge Files'}
-                </button>
+        <div className="max-w-2xl mx-auto">
+          {/* Operation Selection */}
+          <div className="flex space-x-4 mb-8">
+            <button
+              onClick={() => setSelectedOperation('merge')}
+              className={`flex-1 py-3 px-4 rounded-lg text-center transition-colors ${
+                selectedOperation === 'merge'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+              }`}
+            >
+              Merge PDFs
+            </button>
+            <button
+              onClick={() => setSelectedOperation('split')}
+              className={`flex-1 py-3 px-4 rounded-lg text-center transition-colors ${
+                selectedOperation === 'split'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+              }`}
+            >
+              Split PDF
+            </button>
+            <button
+              onClick={() => setSelectedOperation('compress')}
+              className={`flex-1 py-3 px-4 rounded-lg text-center transition-colors ${
+                selectedOperation === 'compress'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+              }`}
+            >
+              Compress PDF
+            </button>
+          </div>
+
+          {/* Operation UI */}
+          <div className="space-y-8">
+            {selectedOperation === 'merge' && (
+              <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                <h2 className="text-2xl font-semibold text-white mb-4">Merge PDFs</h2>
+                <div {...getMergeRootProps()} className="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center">
+                  <input {...getMergeInputProps()} />
+                  <ArrowUpTrayIcon className="h-12 w-12 mx-auto text-slate-400 mb-4" />
+                  <p className="text-slate-300 mb-4">
+                    {mergeFiles.length > 0 
+                      ? `Selected ${mergeFiles.length} files`
+                      : 'Drop PDF files here or click to select'}
+                  </p>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      mergePDFs()
+                    }}
+                    disabled={isProcessing || mergeFiles.length < 2}
+                    className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors disabled:bg-slate-600"
+                  >
+                    {isProcessing ? 'Processing...' : 'Merge Files'}
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {selectedOperation === 'split' && (
-            <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
-              <h2 className="text-2xl font-semibold text-white mb-4">Split PDF</h2>
-              <div {...getSplitRootProps()} className="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center">
-                <input {...getSplitInputProps()} />
-                <ArrowUpTrayIcon className="h-12 w-12 mx-auto text-slate-400 mb-4" />
-                <p className="text-slate-300 mb-4">
-                  {splitFile ? splitFile.name : 'Drop a PDF file here or click to select'}
-                </p>
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    splitPDF()
-                  }}
-                  disabled={isProcessing || !splitFile}
-                  className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors disabled:bg-slate-600"
-                >
-                  {isProcessing ? 'Processing...' : 'Split PDF'}
-                </button>
+            {/* Results Display */}
+            {processedFiles && processedFiles.type === 'merge' && (
+              <div className="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                <h3 className="text-white font-semibold mb-3">Processed Files</h3>
+                {processedFiles.files.map((file, index) => (
+                  <button
+                    key={index}
+                    onClick={() => downloadFile(file.url, file.name)}
+                    className="w-full text-left p-3 bg-slate-700 hover:bg-slate-600 rounded flex items-center justify-between text-white mb-2"
+                  >
+                    <span>{file.name}</span>
+                    <span className="text-blue-400">Download</span>
+                  </button>
+                ))}
               </div>
-            </div>
-          )}
+            )}
 
-          {selectedOperation === 'compress' && (
-            <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
-              <h2 className="text-2xl font-semibold text-white mb-4">Compress PDF</h2>
-              <div {...getCompressRootProps()} className="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center">
-                <input {...getCompressInputProps()} />
-                <ArrowUpTrayIcon className="h-12 w-12 mx-auto text-slate-400 mb-4" />
-                <p className="text-slate-300 mb-4">
-                  {compressFile ? compressFile.name : 'Drop a PDF file here or click to select'}
-                </p>
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    compressPDF()
-                  }}
-                  disabled={isProcessing || !compressFile}
-                  className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors disabled:bg-slate-600"
-                >
-                  {isProcessing ? 'Processing...' : 'Compress PDF'}
-                </button>
+            {selectedOperation === 'split' && (
+              <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                <h2 className="text-2xl font-semibold text-white mb-4">Split PDF</h2>
+                <div {...getSplitRootProps()} className="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center">
+                  <input {...getSplitInputProps()} />
+                  <ArrowUpTrayIcon className="h-12 w-12 mx-auto text-slate-400 mb-4" />
+                  <p className="text-slate-300 mb-4">
+                    {splitFile ? splitFile.name : 'Drop a PDF file here or click to select'}
+                  </p>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      splitPDF()
+                    }}
+                    disabled={isProcessing || !splitFile}
+                    className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors disabled:bg-slate-600"
+                  >
+                    {isProcessing ? 'Processing...' : 'Split PDF'}
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {processedFiles && processedFiles.type === 'merge' && (
-  <div className="mt-6 p-4 bg-slate-700 rounded-lg">
-    <h3 className="text-white font-semibold mb-3">Processed Files</h3>
-    {processedFiles.files.map((file, index) => (
-      <button
-        key={index}
-        onClick={() => downloadFile(file.url, file.name)}
-        className="w-full text-left p-3 bg-slate-600 hover:bg-slate-500 rounded flex items-center justify-between text-white mb-2"
-      >
-        <span>{file.name}</span>
-        <span className="text-blue-300">Download</span>
-      </button>
-    ))}
-  </div>
-)}
+            {selectedOperation === 'compress' && (
+              <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                <h2 className="text-2xl font-semibold text-white mb-4">Compress PDF</h2>
+                <div {...getCompressRootProps()} className="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center">
+                  <input {...getCompressInputProps()} />
+                  <ArrowUpTrayIcon className="h-12 w-12 mx-auto text-slate-400 mb-4" />
+                  <p className="text-slate-300 mb-4">
+                    {compressFile ? compressFile.name : 'Drop a PDF file here or click to select'}
+                  </p>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      compressPDF()
+                    }}
+                    disabled={isProcessing || !compressFile}
+                    className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors disabled:bg-slate-600"
+                  >
+                    {isProcessing ? 'Processing...' : 'Compress PDF'}
+                  </button>
+                </div>
+              </div>
+            )}
 
-          {processedFiles && processedFiles.type === 'split' && (
-  <div className="mt-6 p-4 bg-slate-700 rounded-lg">
-    <h3 className="text-white font-semibold mb-3">Split Pages</h3>
-    {processedFiles.files.map((file, index) => (
-      <button
-        key={index}
-        onClick={() => downloadFile(file.url, file.name)}
-        className="w-full text-left p-3 bg-slate-600 hover:bg-slate-500 rounded flex items-center justify-between text-white mb-2"
-      >
-        <span>{file.name}</span>
-        <span className="text-blue-300">Download</span>
-      </button>
-    ))}
-  </div>
-)}
-
-          {processedFiles && processedFiles.type === 'compress' && (
-  <div className="mt-6 p-4 bg-slate-700 rounded-lg">
-    <h3 className="text-white font-semibold mb-3">Compressed File</h3>
-    {compressionStats && (
-      <div className="mb-4 text-sm text-slate-300">
-        <p>Original size: {(compressionStats.originalSize / 1024).toFixed(2)} KB</p>
-        <p>Compressed size: {(compressionStats.compressedSize / 1024).toFixed(2)} KB</p>
-        <p className="text-blue-300 font-semibold">
-          Size reduced by {compressionStats.reduction.toFixed(1)}%
-        </p>
-      </div>
-    )}
-    {processedFiles.files.map((file, index) => (
-      <button
-        key={index}
-        onClick={() => downloadFile(file.url, file.name)}
-        className="w-full text-left p-3 bg-slate-600 hover:bg-slate-500 rounded flex items-center justify-between text-white mb-2"
-      >
-        <span>{file.name}</span>
-        <span className="text-blue-300">Download</span>
-      </button>
-    ))}
-  </div>
-)}
+            {processedFiles && processedFiles.type === 'compress' && (
+              <div className="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                <h3 className="text-white font-semibold mb-3">Compressed File</h3>
+                {compressionStats && (
+                  <div className="mb-4 text-sm text-slate-300">
+                    <p>Original size: {(compressionStats.originalSize / 1024).toFixed(2)} KB</p>
+                    <p>Compressed size: {(compressionStats.compressedSize / 1024).toFixed(2)} KB</p>
+                    <p className="text-blue-400 font-semibold">
+                      Size reduced by {compressionStats.reduction.toFixed(1)}%
+                    </p>
+                  </div>
+                )}
+                {processedFiles.files.map((file, index) => (
+                  <button
+                    key={index}
+                    onClick={() => downloadFile(file.url, file.name)}
+                    className="w-full text-left p-3 bg-slate-700 hover:bg-slate-600 rounded flex items-center justify-between text-white mb-2"
+                  >
+                    <span>{file.name}</span>
+                    <span className="text-blue-400">Download</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
+
+        {error && (
+          <div className="max-w-4xl mx-auto mt-8 p-4 bg-red-500/10 border border-red-400/20 rounded-lg text-center">
+            <p className="text-red-400 text-lg">{error}</p>
+          </div>
+        )}
       </div>
     </main>
   )

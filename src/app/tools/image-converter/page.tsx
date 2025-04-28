@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useRef, ChangeEvent } from 'react'
-import { ArrowPathIcon } from '@heroicons/react/24/outline'
-import NextImage from 'next/image'
+import { ArrowUpTrayIcon, PhotoIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 
 type ImageFormat = 'image/jpeg' | 'image/png' | 'image/webp'
 
@@ -61,72 +61,82 @@ export default function ImageConverter() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-8 text-center">Image Converter</h1>
-      
-      <div className="bg-slate-800 p-6 rounded-lg shadow-md border border-slate-700">
-        <div className="mb-6">
-          <label className="block mb-2">Select image to convert:</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="w-full p-2 border border-slate-600 rounded bg-slate-700"
-          />
-        </div>
+    <div className="min-h-screen bg-gray-950 text-gray-100">
+      <main className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center gap-3 mb-8">
+            <PhotoIcon className="h-8 w-8 text-blue-400" />
+            <h1 className="text-3xl font-bold">Image Converter</h1>
+          </div>
 
-        {previewUrl && (
-          <div className="mb-6">
-            <p className="mb-2">Preview:</p>
-            <div className="relative w-full max-h-[300px] flex items-center justify-center">
-              <NextImage
-                src={previewUrl}
-                alt="Preview"
-                className="rounded object-contain"
-                width={600}
-                height={300}
-                style={{
-                  maxHeight: '300px',
-                  width: 'auto',
-                  height: 'auto'
-                }}
-                unoptimized // Since we're using a blob URL
-              />
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Options Panel */}
+            <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+              <h2 className="text-xl font-semibold mb-4">Upload Image</h2>
+              
+              <div className="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center">
+                <input
+                  type="file"
+                  onChange={handleFileChange}
+                  accept="image/*"
+                  className="hidden"
+                  id="imageInput"
+                />
+                <label htmlFor="imageInput" className="cursor-pointer">
+                  <ArrowUpTrayIcon className="h-12 w-12 mx-auto text-slate-400 mb-4" />
+                  <p className="text-slate-300 mb-4">
+                    {selectedFile ? selectedFile.name : 'Drop an image here or click to select'}
+                  </p>
+                </label>
+              </div>
+
+              <div className="mt-6">
+                <label className="block text-sm font-medium mb-2">Convert to:</label>
+                <select
+                  value={targetFormat}
+                  onChange={(e) => setTargetFormat(e.target.value as ImageFormat)}
+                  className="w-full bg-slate-900 text-gray-100 px-3 py-2 rounded"
+                >
+                  <option value="image/jpeg">JPG</option>
+                  <option value="image/png">PNG</option>
+                  <option value="image/webp">WebP</option>
+                </select>
+              </div>
+
+              <button
+                onClick={convertImage}
+                disabled={!selectedFile || isConverting}
+                className="w-full mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors disabled:bg-slate-600"
+              >
+                {isConverting ? 'Converting...' : 'Convert Image'}
+              </button>
+            </div>
+
+            {/* Preview Panel */}
+            <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+              <h2 className="text-xl font-semibold mb-4">Preview</h2>
+              
+              <div className="bg-slate-900 rounded-lg flex items-center justify-center min-h-[300px]">
+                {previewUrl ? (
+                  <div className="relative w-full h-[300px]">
+                    <Image
+                      src={previewUrl}
+                      alt="Preview"
+                      fill
+                      className="object-contain rounded"
+                      unoptimized
+                    />
+                  </div>
+                ) : (
+                  <p className="text-slate-400">No image selected</p>
+                )}
+              </div>
+
+              <canvas ref={canvasRef} className="hidden" />
             </div>
           </div>
-        )}
-
-        <div className="mb-6">
-          <label className="block mb-2">Convert to:</label>
-          <select
-            value={targetFormat}
-            onChange={(e) => setTargetFormat(e.target.value as ImageFormat)}
-            className="w-full p-2 border border-slate-600 rounded bg-slate-700"
-          >
-            <option value="image/jpeg">JPEG</option>
-            <option value="image/png">PNG</option>
-            <option value="image/webp">WebP</option>
-          </select>
         </div>
-
-        <button
-          onClick={convertImage}
-          disabled={!selectedFile || isConverting}
-          className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors disabled:bg-blue-800 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-        >
-          {isConverting ? (
-            <>
-              <ArrowPathIcon className="h-5 w-5 animate-spin" />
-              Converting...
-            </>
-          ) : (
-            'Convert Image'
-          )}
-        </button>
-      </div>
-
-      {/* Hidden canvas for image processing */}
-      <canvas ref={canvasRef} style={{ display: 'none' }} />
+      </main>
     </div>
   )
 }
