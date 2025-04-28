@@ -2,6 +2,7 @@
 
 import { useState, useRef, ChangeEvent } from 'react'
 import { ArrowPathIcon } from '@heroicons/react/24/outline'
+import NextImage from 'next/image'
 
 type ImageFormat = 'image/jpeg' | 'image/png' | 'image/webp'
 
@@ -27,7 +28,7 @@ export default function ImageConverter() {
     setIsConverting(true)
     try {
       // Create an image element to load the file
-      const img = new Image()
+      const img = new window.Image()
       img.src = URL.createObjectURL(selectedFile)
       
       await new Promise((resolve) => {
@@ -77,11 +78,21 @@ export default function ImageConverter() {
         {previewUrl && (
           <div className="mb-6">
             <p className="mb-2">Preview:</p>
-            <img
-              src={previewUrl}
-              alt="Preview"
-              className="max-w-full h-auto max-h-[300px] rounded"
-            />
+            <div className="relative w-full max-h-[300px] flex items-center justify-center">
+              <NextImage
+                src={previewUrl}
+                alt="Preview"
+                className="rounded object-contain"
+                width={600}
+                height={300}
+                style={{
+                  maxHeight: '300px',
+                  width: 'auto',
+                  height: 'auto'
+                }}
+                unoptimized // Since we're using a blob URL
+              />
+            </div>
           </div>
         )}
 

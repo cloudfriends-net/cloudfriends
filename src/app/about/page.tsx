@@ -22,7 +22,7 @@ export default function AboutPage() {
             <ShieldCheckIcon className="h-8 w-8 text-blue-400 mb-3" />
             <h3 className="text-xl font-semibold mb-2">Privacy Commitment</h3>
             <p className="text-gray-300">
-              Your data stays in your browser. We don't track, store, or analyze any of your information.
+              Your data stays in your browser. We don&apos;t track, store, or analyze any of your information.
             </p>
           </div>
 
@@ -30,7 +30,7 @@ export default function AboutPage() {
             <SparklesIcon className="h-8 w-8 text-blue-400 mb-3" />
             <h3 className="text-xl font-semibold mb-2">Free Forever</h3>
             <p className="text-gray-300">
-              We're committed to keeping our tools free and accessible to everyone, without any hidden costs.
+              We&apos;re committed to keeping our tools free and accessible to everyone, without any hidden costs.
             </p>
           </div>
 
@@ -46,8 +46,8 @@ export default function AboutPage() {
         <div className="bg-slate-800 p-8 rounded-lg shadow-md border border-slate-700">
           <h2 className="text-2xl font-semibold mb-4">Contact Us</h2>
           <p className="text-gray-300 mb-4">
-            We're always looking to improve our tools and add new features. If you have any suggestions,
-            feedback, or questions, please don't hesitate to reach out.
+            We&apos;re always looking to improve our tools and add new features. If you have any suggestions,
+            feedback, or questions, please don&apos;t hesitate to reach out.
           </p>
           <div className="text-gray-300">
             <p>Email: support@cloudfriends.net</p>
