@@ -46,7 +46,7 @@ npm run dev
 
 ## License
 
-This project is open source under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is open source under the MIT License.
 
 ## Contributing
 
@@ -54,4 +54,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Contact
 
-Have a suggestion for a new tool? Contact us at support@cloudfriends.net
+Have a suggestion for a new tool? Contact us at contact@cloudfriends.net
