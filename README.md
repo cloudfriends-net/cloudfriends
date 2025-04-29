@@ -19,7 +19,7 @@ A collection of free, privacy-focused web tools that run entirely in your browse
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/web-tools.git
+git clone https://github.com/cloudfriends-net/web-tools.git
 cd web-tools
 ```
 
