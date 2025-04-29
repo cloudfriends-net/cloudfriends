@@ -6,6 +6,8 @@ A collection of free, privacy-focused web tools that run entirely in your browse
 
 - **Password Generator**: Create secure passwords with customizable options
 - **QR Code Generator**: Generate QR codes in various formats with customization options
+- **Image converter**: Convert images between different formats easily.
+- **PDF Tools**: Merge, split, and compress PDF files securely in your browser.
 
 ## Features
 
