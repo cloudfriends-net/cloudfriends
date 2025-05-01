@@ -36,8 +36,10 @@ export default function TermsOfUse() {
                 Use License
               </h2>
               <p className="text-slate-300 leading-relaxed">
-                Our tools are provided under the MIT license. You are free to use them for personal 
-                or commercial purposes without any warranty.
+The source code for this project is provided for reference and educational purposes only.
+You may not use, copy, modify, distribute, or sublicense any part of this project for commercial purposes without explicit permission from the author.
+
+For inquiries, please contact: contact@cloudfriends.net
               </p>
             </section>
 

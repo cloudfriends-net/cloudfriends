@@ -1,4 +1,5 @@
-import { KeyIcon, QrCodeIcon, ShieldCheckIcon, SparklesIcon, ArrowPathIcon, PhotoIcon, DocumentIcon } from '@heroicons/react/24/outline'
+import { KeyIcon, QrCodeIcon, ShieldCheckIcon, SparklesIcon, ArrowPathIcon, PhotoIcon, DocumentIcon, DocumentTextIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
 
 export default function Home() {
   return (
@@ -41,69 +42,70 @@ export default function Home() {
         
         {/* Tools Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-          <div className="bg-slate-800 p-6 rounded-lg shadow-md border border-slate-700 hover:border-slate-600 transition-colors">
-            <div className="flex items-center gap-3 mb-4">
-              <KeyIcon className="h-8 w-8 text-blue-400" />
-              <h2 className="text-2xl font-semibold text-white">Password Generator</h2>
+          {/* Password Generator Card */}
+          <Link href="/tools/password-generator" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
+            <div className="p-6">
+              <div className="mb-4 bg-blue-500/10 w-12 h-12 rounded-lg flex items-center justify-center">
+                <KeyIcon className="h-6 w-6 text-blue-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">Password Generator</h3>
+              <p className="text-slate-300 text-sm">
+                Create secure, random passwords with customizable options for length and character types.
+              </p>
             </div>
-            <p className="text-gray-300 mb-4">
-              Create secure, random passwords with customizable options for length and character types.
-            </p>
-            <a 
-              href="/tools/password-generator"
-              className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
-            >
-              Generate Passwords
-            </a>
-          </div>
+          </Link>
 
-          <div className="bg-slate-800 p-6 rounded-lg shadow-md border border-slate-700 hover:border-slate-600 transition-colors">
-            <div className="flex items-center gap-3 mb-4">
-              <QrCodeIcon className="h-8 w-8 text-blue-400" />
-              <h2 className="text-2xl font-semibold text-white">QR Code Generator</h2>
+          {/* QR Code Generator Card */}
+          <Link href="/tools/qr-generator" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
+            <div className="p-6">
+              <div className="mb-4 bg-blue-500/10 w-12 h-12 rounded-lg flex items-center justify-center">
+                <QrCodeIcon className="h-6 w-6 text-blue-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">QR Code Generator</h3>
+              <p className="text-slate-300 text-sm">
+                Create QR codes for URLs, text, WiFi credentials, or contact information instantly.
+              </p>
             </div>
-            <p className="text-gray-300 mb-4">
-              Create QR codes for URLs, text, or contact information instantly.
-            </p>
-            <a 
-              href="/tools/qr-generator"
-              className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
-            >
-              Generate QR Codes
-            </a>
-          </div>
+          </Link>
 
-          <div className="bg-slate-800 p-6 rounded-lg shadow-md border border-slate-700 hover:border-slate-600 transition-colors">
-            <div className="flex items-center gap-3 mb-4">
-              <PhotoIcon className="h-8 w-8 text-blue-400" />
-              <h2 className="text-2xl font-semibold text-white">Image converter</h2>
+          {/* Image Converter Card */}
+          <Link href="/tools/image-converter" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
+            <div className="p-6">
+              <div className="mb-4 bg-blue-500/10 w-12 h-12 rounded-lg flex items-center justify-center">
+                <PhotoIcon className="h-6 w-6 text-blue-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">Image Converter</h3>
+              <p className="text-slate-300 text-sm">
+                Convert images between different formats easily with preview functionality.
+              </p>
             </div>
-            <p className="text-gray-300 mb-4">
-              Convert images between different formats easily.
-            </p>
-            <a 
-              href="/tools/image-converter"
-              className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
-            >
-              Convert images
-            </a>
-          </div>
+          </Link>
 
-          <div className="bg-slate-800 p-6 rounded-lg shadow-md border border-slate-700 hover:border-slate-600 transition-colors">
-            <div className="flex items-center gap-3 mb-4">
-              <DocumentIcon className="h-8 w-8 text-blue-400" />
-              <h2 className="text-2xl font-semibold text-white">PDF Tools</h2>
+          {/* PDF Tools Card */}
+          <Link href="/tools/pdf-tools" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
+            <div className="p-6">
+              <div className="mb-4 bg-blue-500/10 w-12 h-12 rounded-lg flex items-center justify-center">
+                <DocumentIcon className="h-6 w-6 text-blue-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">PDF Tools</h3>
+              <p className="text-slate-300 text-sm">
+                Merge, split, and compress PDF files securely in your browser without uploading files.
+              </p>
             </div>
-            <p className="text-gray-300 mb-4">
-              Merge, split, and compress PDF files securely in your browser.
-            </p>
-            <a 
-              href="/tools/pdf-tools"
-              className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
-            >
-              Process PDFs
-            </a>
-          </div>
+          </Link>
+
+          {/* Text Tools Card */}
+          <Link href="/tools/text-tools" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
+            <div className="p-6">
+              <div className="mb-4 bg-blue-500/10 w-12 h-12 rounded-lg flex items-center justify-center">
+                <DocumentTextIcon className="h-6 w-6 text-blue-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">Text Tools</h3>
+              <p className="text-slate-300 text-sm">
+                Transform, clean, and analyze text with various operations like case conversion, sorting, and removing duplicates.
+              </p>
+            </div>
+          </Link>
         </div>
 
         {/* Additional Information */}
