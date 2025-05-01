@@ -76,7 +76,7 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">Image Converter</h3>
               <p className="text-slate-300 text-sm">
-                Convert images between different formats easily with preview functionality.
+                Convert images between different formats easily.
               </p>
             </div>
           </Link>

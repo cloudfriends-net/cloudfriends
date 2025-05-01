@@ -81,19 +81,20 @@ export default function About() {
                 Open Source
               </h2>
               <p className="text-slate-300 leading-relaxed">
-                CloudFriends is open source! You can find the source code on{' '}
-                <a 
-                  href="https://github.com/cloudfriends-net/web-tools" 
-                  target="_blank" 
+                CloudFriends is proudly open source. Explore the code, suggest features, or report issues on{' '}
+                <a
+                  href="https://github.com/cloudfriends-net/web-tools"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-400 hover:text-blue-300 transition-colors inline-flex items-center gap-1"
+                  aria-label="CloudFriends GitHub Repository"
                 >
                   GitHub
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
                 </a>
-                . Feel free to contribute, report issues, or suggest improvements!
+                . Contributions are welcome—help us make CloudFriends even better for everyone!
               </p>
             </section>
 
