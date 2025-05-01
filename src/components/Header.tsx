@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 
 export function Header() {
   const pathname = usePathname()
@@ -15,9 +16,16 @@ export function Header() {
         <div className="flex justify-between items-center">
           <Link 
             href="/" 
-            className="text-xl font-bold hover:text-blue-400 transition-colors"
+            className="flex items-center gap-2 hover:text-blue-400 transition-colors"
           >
-            CloudFriends
+            <Image
+              src="/logo-white.png"
+              alt="CloudFriends Logo"
+              width={250}
+              height={36}
+              priority
+            />
+            <span className="sr-only">CloudFriends Home</span>
           </Link>
           <button 
             className="md:hidden"
@@ -29,14 +37,14 @@ export function Header() {
               <Bars3Icon className="h-6 w-6" />
             )}
           </button>
-          <div className="hidden md:flex gap-2">
+          <div className="hidden md:flex gap-2 font-[Outfit] text-base font-normal">
             <NavLinks pathname={pathname} />
           </div>
         </div>
         
         {/* Mobile menu */}
         {isMenuOpen && (
-          <div className="md:hidden mt-4 flex flex-col gap-2">
+          <div className="md:hidden mt-4 flex flex-col gap-2 font-[Outfit] text-base font-normal">
             <NavLinks pathname={pathname} />
           </div>
         )}

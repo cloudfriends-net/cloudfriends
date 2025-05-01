@@ -1,11 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@700&display=swap');
 @import "tailwindcss";
+
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
-@theme inline {
+:root {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -24,3 +26,10 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.title {
+  font-family: 'Outfit', Arial, Helvetica, sans-serif;
+  font-weight: 700;
+}
+
+

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useCallback, useState, useRef, useEffect } from 'react'
 import { ClipboardDocumentCheckIcon } from '@heroicons/react/24/outline'
 
 type Operation = 'case' | 'transform' | 'clean' | 'count'
@@ -48,28 +48,7 @@ export default function TextTools() {
   const [copied, setCopied] = useState(false)
   const outputRef = useRef<HTMLTextAreaElement>(null)
 
-  // Process text whenever relevant state changes
-  useEffect(() => {
-    if (text) {
-      processText()
-    } else {
-      setOutput('')
-    }
-  }, [text, selectedOperation, selectedCaseOption, selectedTransformOption, selectedCleanOption])
-
-  // Update stats whenever text changes
-  useEffect(() => {
-    updateStats(text)
-  }, [text])
-
-  const updateStats = (text: string) => {
-    const chars = text.length
-    const words = text.trim() ? text.trim().split(/\s+/).length : 0
-    const lines = text.trim() ? text.split('\n').length : 0
-    setStats({ chars, words, lines })
-  }
-
-  const processText = () => {
+  const processText = useCallback(() => {
     let result = text
 
     switch (selectedOperation) {
@@ -88,6 +67,27 @@ export default function TextTools() {
     }
 
     setOutput(result)
+  }, [text, selectedOperation, selectedCaseOption, selectedTransformOption, selectedCleanOption])
+
+  // Process text whenever relevant state changes
+  useEffect(() => {
+    if (text) {
+      processText()
+    } else {
+      setOutput('')
+    }
+  }, [text, selectedOperation, selectedCaseOption, selectedTransformOption, selectedCleanOption, processText])
+
+  // Update stats whenever text changes
+  useEffect(() => {
+    updateStats(text)
+  }, [text])
+
+  const updateStats = (text: string) => {
+    const chars = text.length
+    const words = text.trim() ? text.trim().split(/\s+/).length : 0
+    const lines = text.trim() ? text.split('\n').length : 0
+    setStats({ chars, words, lines })
   }
 
   const processCaseOperation = (text: string, option: CaseOption): string => {
@@ -164,7 +164,7 @@ export default function TextTools() {
         </p>
         <p className="text-slate-400 text-center mb-6 text-sm">
           Paste or type your text below, then choose an operation to transform, clean, or analyze your text. 
-          The result will appear instantly in the output box. Use the "Copy" button to quickly copy the result.
+          The result will appear instantly in the output box. Use the &quot;Copy&quot; button to quickly copy the result.
         </p>
 
         {/* Input */}
