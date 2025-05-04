@@ -3,27 +3,31 @@ import Link from 'next/link'
 
 export default function Licenses() {
   return (
-    <main className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        <Link 
-          href="/" 
-          className="inline-flex items-center text-blue-400 hover:text-blue-300 mb-8"
-        >
-          <ArrowLeftIcon className="h-4 w-4 mr-2" />
-          Back to Home
-        </Link>
+    <main
+      className="min-h-screen bg-gray-950"
+      style={{ paddingTop: '5.5rem' }} // Adjust this value to match your header height
+    >
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          <Link 
+            href="/" 
+            className="inline-flex items-center text-blue-400 hover:text-blue-300 mb-8"
+          >
+            <ArrowLeftIcon className="h-4 w-4 mr-2" />
+            Back to Home
+          </Link>
 
-        <h1 className="text-3xl font-bold mb-8">Licenses</h1>
-        
-        <div className="space-y-8">
-          <section>
-            <h2 className="text-xl font-semibold mb-4">CloudFriends.net License</h2>
-            <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
-              <p className="text-gray-300 mb-4">
-                This website is open source under the MIT License.
-              </p>
-              <pre className="bg-slate-900 p-4 rounded text-sm text-gray-300 overflow-x-auto">
-                {`MIT License
+          <h1 className="text-3xl font-bold mb-8 text-white">Licenses</h1>
+          
+          <div className="space-y-8">
+            <section>
+              <h2 className="text-xl font-semibold mb-4 text-white">CloudFriends.net License</h2>
+              <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                <p className="text-gray-300 mb-4">
+                  This website is open source under the MIT License.
+                </p>
+                <pre className="bg-slate-900 p-4 rounded text-sm text-gray-300 overflow-x-auto">
+                  {`MIT License
 
 Copyright (c) ${new Date().getFullYear()} CloudFriends.net
 
@@ -44,50 +48,51 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.`}
-              </pre>
-            </div>
-          </section>
+                </pre>
+              </div>
+            </section>
 
-          <section>
-            <h2 className="text-xl font-semibold mb-4">Third-Party Licenses</h2>
-            <div className="space-y-4">
-              {[
-                {
-                  name: 'Heroicons',
-                  url: 'https://github.com/tailwindlabs/heroicons',
-                  license: 'MIT License'
-                },
-                {
-                  name: 'qrcode.react',
-                  url: 'https://github.com/zpao/qrcode.react',
-                  license: 'ISC License'
-                },
-                {
-                  name: 'Tailwind CSS',
-                  url: 'https://tailwindcss.com',
-                  license: 'MIT License'
-                },
-                {
-                  name: 'Next.js',
-                  url: 'https://nextjs.org',
-                  license: 'MIT License'
-                }
-              ].map(({ name, url, license }) => (
-                <div key={name} className="bg-slate-800 p-6 rounded-lg border border-slate-700">
-                  <h3 className="font-semibold mb-2">{name}</h3>
-                  <p className="text-gray-300 mb-2">License: {license}</p>
-                  <a 
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-400 hover:text-blue-300"
-                  >
-                    View Source
-                  </a>
-                </div>
-              ))}
-            </div>
-          </section>
+            <section>
+              <h2 className="text-xl font-semibold mb-4 text-white">Third-Party Licenses</h2>
+              <div className="space-y-4">
+                {[
+                  {
+                    name: 'Heroicons',
+                    url: 'https://github.com/tailwindlabs/heroicons',
+                    license: 'MIT License'
+                  },
+                  {
+                    name: 'qrcode.react',
+                    url: 'https://github.com/zpao/qrcode.react',
+                    license: 'ISC License'
+                  },
+                  {
+                    name: 'Tailwind CSS',
+                    url: 'https://tailwindcss.com',
+                    license: 'MIT License'
+                  },
+                  {
+                    name: 'Next.js',
+                    url: 'https://nextjs.org',
+                    license: 'MIT License'
+                  }
+                ].map(({ name, url, license }) => (
+                  <div key={name} className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                    <h3 className="font-semibold mb-2 text-white">{name}</h3>
+                    <p className="text-gray-300 mb-2">License: {license}</p>
+                    <a 
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:text-blue-300"
+                    >
+                      View Source
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
         </div>
       </div>
     </main>

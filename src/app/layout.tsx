@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import "./globals.css"
-import { Header } from "@/components/Header"
 import { Footer } from "@/components/Footer"
+import { SidebarNav } from "@/components/SidebarNav"
 import Script from "next/script"
 
 export const metadata: Metadata = {
@@ -86,13 +86,11 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-gray-950">
-        <div className="flex flex-col min-h-screen">
-          <Header />
-          <main className="flex-grow">
-            {children}
-          </main>
-          <Footer />
+        <div className="flex">
+          <SidebarNav />
+          <main className="flex-1">{children}</main>
         </div>
+        <Footer />
       </body>
     </html>
   )

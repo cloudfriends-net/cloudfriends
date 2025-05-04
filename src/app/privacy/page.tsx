@@ -1,6 +1,9 @@
 export default function PrivacyPolicy() {
   return (
-    <main className="min-h-screen bg-gray-950">
+    <main
+      className="min-h-screen bg-gray-950"
+      style={{ paddingTop: '5.5rem' }} // Adjust this value to match your header height
+    >
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           {/* Header Section */}

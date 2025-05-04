@@ -121,7 +121,7 @@ export default function Home() {
               our tools help you get the job done without compromising your data.
             </p>
             <p className="text-sm text-slate-400">
-              Have a suggestion for a new tool? Contact us at support@cloudfriends.net
+              Have a suggestion for a new tool? Contact us at contact@cloudfriends.net
             </p>
           </div>
         </div>

@@ -48,8 +48,16 @@ export default function PasswordGenerator() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col items-center py-10">
+    <div
+      className="min-h-screen bg-gray-950 text-gray-100 flex flex-col items-center"
+      style={{ paddingTop: '5.5rem' }} // Adjust this value to match your header height
+    >
       <div className="w-full max-w-xl mx-auto">
+        {/* Title outside the generator card */}
+        <div className="mb-6 text-center">
+          <KeyIcon className="h-10 w-10 text-blue-400 inline-block" />
+          <h1 className="text-2xl font-bold mt-2">Password Generator</h1>
+        </div>
         <div className="bg-slate-800/80 border border-slate-700 rounded-xl shadow-xl p-6">
           <div className="flex justify-center mb-6 gap-2">
             <button
@@ -80,10 +88,6 @@ export default function PasswordGenerator() {
             >
               Passphrase
             </button>
-          </div>
-          <div className="mb-4 text-center">
-            <KeyIcon className="h-10 w-10 text-blue-400 inline-block" />
-            <h1 className="text-2xl font-bold mt-2">Password Generator</h1>
           </div>
           {generatorType === 'password' ? (
             <>

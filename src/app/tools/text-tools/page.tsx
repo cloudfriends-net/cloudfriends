@@ -156,7 +156,10 @@ export default function TextTools() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-950 flex flex-col items-center py-10 px-2">
+    <main
+      className="min-h-screen bg-gray-950 flex flex-col items-center px-2"
+      style={{ paddingTop: '5.5rem' }} // Adjust this value to match your header height
+    >
       <div className="w-full max-w-2xl">
         <h1 className="text-3xl font-bold text-center mb-2 text-white">Text Tools</h1>
         <p className="text-blue-400 text-center mb-2 text-sm">

@@ -203,14 +203,30 @@ export default function PDFTools() {
   }, [cleanup])
 
   return (
-    <main className="min-h-screen bg-gray-950">
+    <main
+      className="min-h-screen bg-gray-950"
+      style={{ paddingTop: '5.5rem' }} // Adjust this value to match your header height
+    >
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold text-center mb-8 text-white">PDF Tools</h1>
 
+        {/* Instructions above the tool */}
         <div className="max-w-4xl mx-auto mb-8 p-4 bg-blue-500/10 border border-blue-400/20 rounded-lg text-center">
-          <p className="text-blue-400 text-lg">
-            🔒 Your PDFs are processed entirely in your browser. No files are uploaded to any server.
-          </p>
+          <h2 className="text-xl font-semibold mb-2 text-blue-300">How to use</h2>
+          <ul className="list-disc list-inside text-slate-200 mb-2 text-left max-w-2xl mx-auto">
+            <li>
+              <span className="font-semibold">Merge:</span> Select two or more PDF files to combine them into a single document.
+            </li>
+            <li>
+              <span className="font-semibold">Split:</span> Select a PDF file to split it into separate pages.
+            </li>
+            <li>
+              <span className="font-semibold">Compress:</span> Select a PDF file to reduce its file size.
+            </li>
+            <li>
+              After processing, click the <span className="font-semibold text-blue-400">Download</span> button to save your result.
+            </li>
+          </ul>
         </div>
 
         <div className="max-w-2xl mx-auto">
@@ -363,6 +379,25 @@ export default function PDFTools() {
               </div>
             )}
           </div>
+        </div>
+
+        {/* How does it work - below the tool */}
+        <div className="max-w-4xl mx-auto mt-10 mb-8 p-4 bg-blue-500/10 border border-blue-400/20 rounded-lg">
+          <h2 className="text-xl font-semibold mb-2 text-blue-300">How does it work?</h2>
+          <ul className="list-disc list-inside text-slate-200">
+            <li>
+              <span className="font-semibold">Privacy:</span> All PDF processing happens <span className="text-blue-400">locally in your browser</span>. Your files are never uploaded to any server.
+            </li>
+            <li>
+              <span className="font-semibold">Technology:</span> The tool uses the <span className="text-blue-400">pdf-lib</span> JavaScript library to merge, split, and compress PDFs directly in your browser.
+            </li>
+            <li>
+              <span className="font-semibold">Supported files:</span> Only PDF files are supported for input and output.
+            </li>
+            <li>
+              <span className="font-semibold">Compression:</span> Compression reduces file size by optimizing PDF structure, but may not always result in significant size reduction depending on the content.
+            </li>
+          </ul>
         </div>
 
         {error && (

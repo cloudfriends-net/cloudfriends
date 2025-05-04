@@ -173,12 +173,29 @@ END:VCARD`
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100">
+    <div
+      className="min-h-screen bg-gray-950 text-gray-100"
+      style={{ paddingTop: '5.5rem' }} // Adjust this value to match your header height
+    >
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
+          {/* Title outside the generator */}
           <div className="flex items-center gap-3 mb-8">
             <QrCodeIcon className="h-8 w-8 text-blue-400" />
             <h1 className="text-3xl font-bold">QR Code Generator</h1>
+          </div>
+
+          {/* Instructions above the tool */}
+          <div className="mb-8 bg-blue-500/10 border border-blue-400/20 rounded-lg p-5">
+            <h2 className="text-xl font-semibold mb-2 text-blue-300">How to use</h2>
+            <ul className="list-disc list-inside text-slate-200 mb-0">
+              <li>Select the QR code type (URL, Text, Email, Phone, WiFi, vCard).</li>
+              <li>Fill in the required information for your QR code.</li>
+              <li>Customize size, error correction, and colors as needed.</li>
+              <li>Preview your QR code on the right.</li>
+              <li>Choose your download format and click <span className="font-semibold text-blue-400">Download</span>.</li>
+              <li>For extra-large QR codes, use the "Not big enough?" option below the preview.</li>
+            </ul>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -342,7 +359,6 @@ END:VCARD`
                 </select>
               </div>
 
-              {/* Replace the download buttons section */}
               <button
                 onClick={downloadQR}
                 disabled={showCustomSize}
@@ -390,6 +406,25 @@ END:VCARD`
                 </div>
               )}
             </div>
+          </div>
+
+          {/* How does it work - below the tool */}
+          <div className="mt-10 mb-8 bg-blue-500/10 border border-blue-400/20 rounded-lg p-5">
+            <h2 className="text-xl font-semibold mb-2 text-blue-300">How does it work?</h2>
+            <ul className="list-disc list-inside text-slate-200">
+              <li>
+                <span className="font-semibold">Privacy:</span> All QR code generation and image conversion happens <span className="text-blue-400">locally in your browser</span>. Your data is never uploaded to any server.
+              </li>
+              <li>
+                <span className="font-semibold">Conversion:</span> The QR code is rendered as a canvas or SVG element using the <span className="text-blue-400">qrcode.react</span> library. When you download, the canvas is converted to your selected image format (JPG, PNG, WebP, or SVG) using browser APIs.
+              </li>
+              <li>
+                <span className="font-semibold">Supported formats:</span> You can download your QR code as JPG, PNG, WebP, or SVG for use anywhere.
+              </li>
+              <li>
+                <span className="font-semibold">Large QR codes:</span> For high-resolution needs (e.g., print), use the "Not big enough?" option to generate a larger QR code image.
+              </li>
+            </ul>
           </div>
         </div>
       </main>
