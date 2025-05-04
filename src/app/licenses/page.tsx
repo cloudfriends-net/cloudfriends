@@ -5,7 +5,7 @@ export default function Licenses() {
   return (
     <main
       className="min-h-screen bg-gray-950"
-      style={{ paddingTop: '5.5rem' }} // Adjust this value to match your header height
+      style={{ paddingTop: '5.5rem' }}
     >
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
@@ -24,31 +24,11 @@ export default function Licenses() {
               <h2 className="text-xl font-semibold mb-4 text-white">CloudFriends.net License</h2>
               <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
                 <p className="text-gray-300 mb-4">
-                  This website is open source under the MIT License.
+                  The content, code, and tools on this website are proprietary and may not be copied, redistributed, or used for commercial purposes without explicit permission from the author.
                 </p>
-                <pre className="bg-slate-900 p-4 rounded text-sm text-gray-300 overflow-x-auto">
-                  {`MIT License
-
-Copyright (c) ${new Date().getFullYear()} CloudFriends.net
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.`}
-                </pre>
+                <p className="text-gray-400">
+                  For licensing inquiries, please contact: <a href="mailto:contact@cloudfriends.net" className="text-blue-400 hover:text-blue-300">contact@cloudfriends.net</a>
+                </p>
               </div>
             </section>
 
