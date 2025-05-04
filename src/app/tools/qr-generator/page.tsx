@@ -194,7 +194,7 @@ END:VCARD`
               <li>Customize size, error correction, and colors as needed.</li>
               <li>Preview your QR code on the right.</li>
               <li>Choose your download format and click <span className="font-semibold text-blue-400">Download</span>.</li>
-              <li>For extra-large QR codes, use the "Not big enough?" option below the preview.</li>
+              <li>For extra-large QR codes, use the &quot;Not big enough?&quot; option below the preview.</li>
             </ul>
           </div>
 
@@ -422,7 +422,7 @@ END:VCARD`
                 <span className="font-semibold">Supported formats:</span> You can download your QR code as JPG, PNG, WebP, or SVG for use anywhere.
               </li>
               <li>
-                <span className="font-semibold">Large QR codes:</span> For high-resolution needs (e.g., print), use the "Not big enough?" option to generate a larger QR code image.
+                <span className="font-semibold">Large QR codes:</span> For high-resolution needs (e.g., print), use the &quot;Not big enough?&quot; option to generate a larger QR code image.
               </li>
             </ul>
           </div>
