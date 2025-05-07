@@ -66,12 +66,11 @@ export function SidebarNav() {
           bg-slate-900 border-r border-slate-800 h-screen w-64 flex flex-col pt-0 pb-6
           md:sticky md:top-0 md:h-screen md:overflow-y-auto
           fixed md:static z-30 transition-transform duration-200
+          px-4 // Remove conditional padding
+          transform-gpu // Add for better performance
           ${open ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0
-          md:px-4 px-4
-          ${open ? 'pl-0 md:pl-0' : ''}
-          top-0
+          top-0 left-0 // Explicitly set position
         `}
-        style={{ left: 0 }}
       >
         {/* Logo at the very top (hidden on mobile, visible on desktop) */}
         <div className="hidden md:flex items-center gap-2 h-20 px-2 border-b border-slate-800 mb-6">
