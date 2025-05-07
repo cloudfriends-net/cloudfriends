@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { MagnifyingGlassIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 
@@ -17,7 +17,21 @@ const tools = [
 export function SidebarNav() {
   const pathname = usePathname()
   const [search, setSearch] = useState('')
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false) // Change initial state to false
+
+  // Add this useEffect to handle screen resize
+  useEffect(() => {
+    const handleResize = () => {
+      setOpen(window.innerWidth >= 768) // 768px is the md breakpoint in Tailwind
+    }
+    
+    // Set initial state
+    handleResize()
+    
+    // Add event listener for window resize
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const filteredTools = tools.filter(tool =>
     tool.name.toLowerCase().includes(search.toLowerCase()) ||
