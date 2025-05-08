@@ -59,11 +59,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <Script 
-          defer 
-          src="https://umami.poth.pro/script.js" 
-          data-website-id="7742ee2e-1965-4df4-9181-54c7839f7927"
-        />
+      <script defer src="https://umami.poth.pro/script.js" data-website-id="7742ee2e-1965-4df4-9181-54c7839f7927"></script>
         <Script
           id="schema-script"
           type="application/ld+json"
