@@ -24,10 +24,22 @@ export default function Licenses() {
               <h2 className="text-xl font-semibold mb-4 text-white">CloudFriends.net License</h2>
               <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
                 <p className="text-gray-300 mb-4">
-                  The content, code, and tools on this website are proprietary and may not be copied, redistributed, or used for commercial purposes without explicit permission from the author.
+                  MIT License
+
+                  Copyright (c) 2025 CloudFriends.net
+
+                  Permission is hereby granted, free of charge, to any person obtaining a copy
+                  of this software and associated documentation files (the &quot;Software&quot;), to deal
+                  in the Software without restriction, including without limitation the rights
+                  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                  copies of the Software, and to permit persons to whom the Software is
+                  furnished to do so, subject to the following conditions:
+
+                  The above copyright notice and this permission notice shall be included in all
+                  copies or substantial portions of the Software.
                 </p>
                 <p className="text-gray-400">
-                  For licensing inquiries, please contact: <a href="mailto:contact@cloudfriends.net" className="text-blue-400 hover:text-blue-300">contact@cloudfriends.net</a>
+                  For questions about the license, please contact: <a href="mailto:contact@cloudfriends.net" className="text-blue-400 hover:text-blue-300">contact@cloudfriends.net</a>
                 </p>
               </div>
             </section>

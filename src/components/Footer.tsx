@@ -22,7 +22,7 @@ export function Footer() {
               Terms of Use
             </a>
             <a
-              href="/licenses"
+              href="/license"
               className="text-sm hover:text-blue-400 transition-colors"
             >
               License
