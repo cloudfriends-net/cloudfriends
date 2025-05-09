@@ -210,7 +210,7 @@ export default function PDFTools() {
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold text-center mb-8 text-white">PDF Tools</h1>
 
-        {/* Instructions above the tool */}
+        {/* Instructions */}
         <div className="max-w-4xl mx-auto mb-8 p-4 bg-blue-500/10 border border-blue-400/20 rounded-lg text-center">
           <h2 className="text-xl font-semibold mb-2 text-blue-300">How to use</h2>
           <ul className="list-disc list-inside text-slate-200 mb-2 text-left max-w-2xl mx-auto">
@@ -381,7 +381,7 @@ export default function PDFTools() {
           </div>
         </div>
 
-        {/* How does it work - below the tool */}
+        {/* How does it work */}
         <div className="max-w-4xl mx-auto mt-10 mb-8 p-4 bg-blue-500/10 border border-blue-400/20 rounded-lg">
           <h2 className="text-xl font-semibold mb-2 text-blue-300">How does it work?</h2>
           <ul className="list-disc list-inside text-slate-200">
