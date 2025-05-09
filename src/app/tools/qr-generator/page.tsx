@@ -256,7 +256,48 @@ END:VCARD`
                       onChange={(e) => setVcardForm({ ...vcardForm, firstName: e.target.value })}
                       className="w-full bg-slate-900 text-gray-100 px-3 py-2 rounded"
                     />
-                    {/* Add other vCard fields */}
+                    <input
+                      type="text"
+                      placeholder="Last Name"
+                      value={vcardForm.lastName}
+                      onChange={(e) => setVcardForm({ ...vcardForm, lastName: e.target.value })}
+                      className="w-full bg-slate-900 text-gray-100 px-3 py-2 rounded"
+                    />
+                    <input
+                      type="tel"
+                      placeholder="Phone Number"
+                      value={vcardForm.phone}
+                      onChange={(e) => setVcardForm({ ...vcardForm, phone: e.target.value })}
+                      className="w-full bg-slate-900 text-gray-100 px-3 py-2 rounded"
+                    />
+                    <input
+                      type="email"
+                      placeholder="Email Address"
+                      value={vcardForm.email}
+                      onChange={(e) => setVcardForm({ ...vcardForm, email: e.target.value })}
+                      className="w-full bg-slate-900 text-gray-100 px-3 py-2 rounded"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Company"
+                      value={vcardForm.company}
+                      onChange={(e) => setVcardForm({ ...vcardForm, company: e.target.value })}
+                      className="w-full bg-slate-900 text-gray-100 px-3 py-2 rounded"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Job Title"
+                      value={vcardForm.title}
+                      onChange={(e) => setVcardForm({ ...vcardForm, title: e.target.value })}
+                      className="w-full bg-slate-900 text-gray-100 px-3 py-2 rounded"
+                    />
+                    <input
+                      type="url"
+                      placeholder="Website URL"
+                      value={vcardForm.url}
+                      onChange={(e) => setVcardForm({ ...vcardForm, url: e.target.value })}
+                      className="w-full bg-slate-900 text-gray-100 px-3 py-2 rounded"
+                    />
                   </div>
                 ) : (
                   <input
