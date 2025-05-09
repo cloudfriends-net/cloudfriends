@@ -53,7 +53,7 @@ export default function PasswordGenerator() {
       style={{ paddingTop: '5.5rem' }} // Adjust this value to match your header height
     >
       <div className="w-full max-w-xl mx-auto">
-        {/* Title outside the generator card */}
+        {/* Title */}
         <div className="mb-6 text-center">
           <KeyIcon className="h-10 w-10 text-blue-400 inline-block" />
           <h1 className="text-2xl font-bold mt-2">Password Generator</h1>
