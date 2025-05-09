@@ -179,13 +179,13 @@ END:VCARD`
     >
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          {/* Title outside the generator */}
+          {/* Title */}
           <div className="flex items-center gap-3 mb-8">
             <QrCodeIcon className="h-8 w-8 text-blue-400" />
             <h1 className="text-3xl font-bold">QR Code Generator</h1>
           </div>
 
-          {/* Instructions above the tool */}
+          {/* Instructions */}
           <div className="mb-8 bg-blue-500/10 border border-blue-400/20 rounded-lg p-5">
             <h2 className="text-xl font-semibold mb-2 text-blue-300">How to use</h2>
             <ul className="list-disc list-inside text-slate-200 mb-0">
@@ -408,7 +408,7 @@ END:VCARD`
             </div>
           </div>
 
-          {/* How does it work - below the tool */}
+          {/* How does it work */}
           <div className="mt-10 mb-8 bg-blue-500/10 border border-blue-400/20 rounded-lg p-5">
             <h2 className="text-xl font-semibold mb-2 text-blue-300">How does it work?</h2>
             <ul className="list-disc list-inside text-slate-200">
