@@ -1,4 +1,4 @@
-import { KeyIcon, QrCodeIcon, ShieldCheckIcon, SparklesIcon, ArrowPathIcon, PhotoIcon, DocumentIcon, DocumentTextIcon } from '@heroicons/react/24/outline'
+import { KeyIcon, QrCodeIcon, ShieldCheckIcon, SparklesIcon, ArrowPathIcon, PhotoIcon, DocumentIcon, DocumentTextIcon, CodeBracketIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
 export default function Home() {
@@ -103,6 +103,19 @@ export default function Home() {
               <h3 className="text-xl font-semibold text-white mb-2">Text Tools</h3>
               <p className="text-slate-300 text-sm">
                 Transform, clean, and analyze text with various operations like case conversion, sorting, and removing duplicates.
+              </p>
+            </div>
+          </Link>
+
+          {/* Regex Tools Card */}
+          <Link href="/tools/regex-tools" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
+            <div className="p-6">
+              <div className="mb-4 bg-blue-500/10 w-12 h-12 rounded-lg flex items-center justify-center">
+                <CodeBracketIcon className="h-6 w-6 text-blue-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">Regex Tester & Creator</h3>
+              <p className="text-slate-300 text-sm">
+                Test and create regular expressions. Find, match, and replace patterns in your text with instant feedback.
               </p>
             </div>
           </Link>

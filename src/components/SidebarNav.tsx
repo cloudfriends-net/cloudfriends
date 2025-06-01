@@ -12,6 +12,7 @@ const tools = [
   { name: 'Image Converter', path: '/tools/image-converter', keywords: ['image', 'convert', 'jpg', 'png'] },
   { name: 'PDF Tools', path: '/tools/pdf-tools', keywords: ['pdf', 'merge', 'split', 'convert'] },
   { name: 'Text Tools', path: '/tools/text-tools', keywords: ['text', 'case', 'clean', 'count'] },
+  { name: 'Regex Tools', path: '/tools/regex-tools', keywords: ['regex', 'clean', 'clean'] }
 ]
 
 export function SidebarNav() {
