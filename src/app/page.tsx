@@ -119,6 +119,19 @@ export default function Home() {
               </p>
             </div>
           </Link>
+
+          {/* Subnet Calculator Card */}
+          <Link href="/tools/subnet-calculator" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
+            <div className="p-4">
+              <div className="mb-2 bg-blue-500/10 w-10 h-10 rounded-lg flex items-center justify-center">
+                <CodeBracketIcon className="h-5 w-5 text-blue-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-1">Subnet Calculator</h3>
+              <p className="text-slate-300 text-xs">
+                Calculate IPv4 subnets, masks, ranges, and more. Great for network planning and troubleshooting.
+              </p>
+            </div>
+          </Link>
         </div>
 
         {/* Additional Information */}
