@@ -41,15 +41,15 @@ export default function Home() {
         </div>
         
         {/* Tools Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-7xl mx-auto">
           {/* Password Generator Card */}
           <Link href="/tools/password-generator" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
-            <div className="p-6">
-              <div className="mb-4 bg-blue-500/10 w-12 h-12 rounded-lg flex items-center justify-center">
-                <KeyIcon className="h-6 w-6 text-blue-400" />
+            <div className="p-4">
+              <div className="mb-2 bg-blue-500/10 w-10 h-10 rounded-lg flex items-center justify-center">
+                <KeyIcon className="h-5 w-5 text-blue-400" />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Password Generator</h3>
-              <p className="text-slate-300 text-sm">
+              <h3 className="text-lg font-semibold text-white mb-1">Password Generator</h3>
+              <p className="text-slate-300 text-xs">
                 Create secure, random passwords with customizable options for length and character types.
               </p>
             </div>
@@ -57,12 +57,12 @@ export default function Home() {
 
           {/* QR Code Generator Card */}
           <Link href="/tools/qr-generator" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
-            <div className="p-6">
-              <div className="mb-4 bg-blue-500/10 w-12 h-12 rounded-lg flex items-center justify-center">
-                <QrCodeIcon className="h-6 w-6 text-blue-400" />
+            <div className="p-4">
+              <div className="mb-2 bg-blue-500/10 w-10 h-10 rounded-lg flex items-center justify-center">
+                <QrCodeIcon className="h-5 w-5 text-blue-400" />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">QR Code Generator</h3>
-              <p className="text-slate-300 text-sm">
+              <h3 className="text-lg font-semibold text-white mb-1">QR Code Generator</h3>
+              <p className="text-slate-300 text-xs">
                 Create QR codes for URLs, text, WiFi credentials, or contact information instantly.
               </p>
             </div>
@@ -70,12 +70,12 @@ export default function Home() {
 
           {/* Image Converter Card */}
           <Link href="/tools/image-converter" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
-            <div className="p-6">
-              <div className="mb-4 bg-blue-500/10 w-12 h-12 rounded-lg flex items-center justify-center">
-                <PhotoIcon className="h-6 w-6 text-blue-400" />
+            <div className="p-4">
+              <div className="mb-2 bg-blue-500/10 w-10 h-10 rounded-lg flex items-center justify-center">
+                <PhotoIcon className="h-5 w-5 text-blue-400" />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Image Converter</h3>
-              <p className="text-slate-300 text-sm">
+              <h3 className="text-lg font-semibold text-white mb-1">Image Converter</h3>
+              <p className="text-slate-300 text-xs">
                 Convert images between different formats easily.
               </p>
             </div>
@@ -83,12 +83,12 @@ export default function Home() {
 
           {/* PDF Tools Card */}
           <Link href="/tools/pdf-tools" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
-            <div className="p-6">
-              <div className="mb-4 bg-blue-500/10 w-12 h-12 rounded-lg flex items-center justify-center">
-                <DocumentIcon className="h-6 w-6 text-blue-400" />
+            <div className="p-4">
+              <div className="mb-2 bg-blue-500/10 w-10 h-10 rounded-lg flex items-center justify-center">
+                <DocumentIcon className="h-5 w-5 text-blue-400" />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">PDF Tools</h3>
-              <p className="text-slate-300 text-sm">
+              <h3 className="text-lg font-semibold text-white mb-1">PDF Tools</h3>
+              <p className="text-slate-300 text-xs">
                 Merge, split, and compress PDF files securely in your browser without uploading files.
               </p>
             </div>
@@ -96,12 +96,12 @@ export default function Home() {
 
           {/* Text Tools Card */}
           <Link href="/tools/text-tools" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
-            <div className="p-6">
-              <div className="mb-4 bg-blue-500/10 w-12 h-12 rounded-lg flex items-center justify-center">
-                <DocumentTextIcon className="h-6 w-6 text-blue-400" />
+            <div className="p-4">
+              <div className="mb-2 bg-blue-500/10 w-10 h-10 rounded-lg flex items-center justify-center">
+                <DocumentTextIcon className="h-5 w-5 text-blue-400" />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Text Tools</h3>
-              <p className="text-slate-300 text-sm">
+              <h3 className="text-lg font-semibold text-white mb-1">Text Tools</h3>
+              <p className="text-slate-300 text-xs">
                 Transform, clean, and analyze text with various operations like case conversion, sorting, and removing duplicates.
               </p>
             </div>
@@ -109,12 +109,12 @@ export default function Home() {
 
           {/* Regex Tools Card */}
           <Link href="/tools/regex-tools" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
-            <div className="p-6">
-              <div className="mb-4 bg-blue-500/10 w-12 h-12 rounded-lg flex items-center justify-center">
-                <CodeBracketIcon className="h-6 w-6 text-blue-400" />
+            <div className="p-4">
+              <div className="mb-2 bg-blue-500/10 w-10 h-10 rounded-lg flex items-center justify-center">
+                <CodeBracketIcon className="h-5 w-5 text-blue-400" />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Regex Tester & Creator</h3>
-              <p className="text-slate-300 text-sm">
+              <h3 className="text-lg font-semibold text-white mb-1">Regex Tester & Creator</h3>
+              <p className="text-slate-300 text-xs">
                 Test and create regular expressions. Find, match, and replace patterns in your text with instant feedback.
               </p>
             </div>
