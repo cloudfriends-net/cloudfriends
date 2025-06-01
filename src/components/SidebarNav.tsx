@@ -13,7 +13,8 @@ const tools = [
   { name: 'PDF Tools', path: '/tools/pdf-tools', keywords: ['pdf', 'merge', 'split', 'convert'] },
   { name: 'Text Tools', path: '/tools/text-tools', keywords: ['text', 'case', 'clean', 'count'] },
   { name: 'Regex Tools', path: '/tools/regex-tools', keywords: ['regex', 'clean', 'pattern', 'match'] },
-  { name: 'Subnet Calculator', path: '/tools/subnet-calculator', keywords: ['subnet', 'ip', 'network', 'cidr', 'calculator'] }
+  { name: 'Subnet Calculator', path: '/tools/subnet-calculator', keywords: ['subnet', 'ip', 'network', 'cidr', 'calculator'] },
+  { name: 'Docker Compose Generator', path: '/tools/docker-compose', keywords: ['docker', 'compose', 'yaml', 'container', 'generator'] }
 ]
 
 export function SidebarNav() {
@@ -24,7 +25,7 @@ export function SidebarNav() {
   // Add this useEffect to handle screen resize
   useEffect(() => {
     const handleResize = () => {
-      setOpen(window.innerWidth >= 768) // 768px is the md breakpoint in Tailwind
+      setOpen(window.innerWidth >= 768) 
     }
     
     // Set initial state

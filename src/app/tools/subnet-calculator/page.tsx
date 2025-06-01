@@ -2,6 +2,19 @@
 
 import { useState } from 'react'
 
+type SubnetResult = {
+  network: string
+  broadcast: string
+  mask: string
+  firstHost: string
+  lastHost: string
+  hosts: number
+  cidr: number
+  error: string | null
+  binaryMask: string
+  wildcardMask: string
+}
+
 function calculateSubnet(ip: string, cidr: number) {
   // Validate input
   const ipParts = ip.split('.').map(Number)
@@ -11,7 +24,18 @@ function calculateSubnet(ip: string, cidr: number) {
     cidr < 0 ||
     cidr > 32
   ) {
-    return { error: 'Invalid IP address or CIDR.' }
+    return {
+      network: '',
+      broadcast: '',
+      mask: '',
+      firstHost: '',
+      lastHost: '',
+      hosts: 0,
+      cidr: 0,
+      error: 'Invalid IP address or CIDR.',
+      binaryMask: '',
+      wildcardMask: '',
+    }
   }
 
   // Convert IP to integer
@@ -59,7 +83,7 @@ function calculateSubnet(ip: string, cidr: number) {
 export default function SubnetCalculator() {
   const [ip, setIp] = useState('')
   const [cidr, setCidr] = useState(24)
-  const [result, setResult] = useState<any>(null)
+  const [result, setResult] = useState<SubnetResult | null>(null)
 
   const handleCalculate = () => {
     setResult(calculateSubnet(ip.trim(), Number(cidr)))
