@@ -33,6 +33,10 @@ type KaceFunctionMap = Record<string, KaceFunctionDefinition>;
 // Constants for KACE registry hives and file operators, used in parameter options.
 const KACE_REG_HIVES = ['HKEY_LOCAL_MACHINE', 'HKEY_CURRENT_USER', 'HKEY_CLASSES_ROOT', 'HKEY_USERS', 'HKEY_CURRENT_CONFIG'];
 const KACE_FILE_OPERATORS = ['=', '!=', '>', '>=', '<', '<='];
+const KACE_DATA_TYPES = ['STRING', 'NUMBER', 'DATE'];
+const KACE_REG_VALUE_TYPES = ['STRING', 'EXPAND_SZ', 'MULTI_STRING', 'BINARY', 'DWORD', 'QWORD']; // Common types for registry values
+const KACE_PLIST_DATA_TYPES = ['STRING', 'NUMBER', 'DATE', 'BOOLEAN', 'ARRAY', 'DICTIONARY'];
+const KACE_FILE_INFO_ATTRIBUTES = ['SIZE', 'MODIFIED_DATE', 'CREATED_DATE', 'ACCESSED_DATE']; // Attributes for FileInfo functions
 
 // Object containing all defined KACE functions and their properties.
 const KACE_FUNCTIONS: KaceFunctionMap = {
@@ -43,7 +47,7 @@ const KACE_FUNCTIONS: KaceFunctionMap = {
     parseRegex: /^FileExists\s*\((.+)\)$/i,
   },
   FileVersion: {
-    displayName: 'File Version',
+    displayName: 'File Version (using operator)',
     params: [
       { name: 'path', label: 'File Path', type: 'text', placeholder: 'C:\\Path\\To\\File.exe', defaultValue: '', required: true },
       { name: 'operator', label: 'Operator', type: 'select', options: KACE_FILE_OPERATORS, defaultValue: '>=' },
@@ -72,7 +76,7 @@ const KACE_FUNCTIONS: KaceFunctionMap = {
     params: [
       { name: 'hive', label: 'Hive', type: 'select', options: KACE_REG_HIVES, defaultValue: 'HKEY_LOCAL_MACHINE' },
       { name: 'path', label: 'Key Path', type: 'text', placeholder: 'SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion', defaultValue: '', required: true },
-      { name: 'valueName', label: 'Value Name', type: 'text', placeholder: 'ProductName', defaultValue: '', required: true },
+      { name: 'valueName', label: 'Value Name', type: 'text', placeholder: 'ProductName', defaultValue: '' }, // KACE allows empty value name
       { name: 'valueData', label: 'Value Data', type: 'text', placeholder: 'Windows 10 Pro', defaultValue: '', required: true },
     ],
     template: (p) => `RegistryValueEquals(${p.hive}\\${p.path}, ${p.valueName}, ${p.valueData})`,
@@ -83,12 +87,316 @@ const KACE_FUNCTIONS: KaceFunctionMap = {
     params: [
       { name: 'hive', label: 'Hive', type: 'select', options: KACE_REG_HIVES, defaultValue: 'HKEY_LOCAL_MACHINE' },
       { name: 'path', label: 'Key Path', type: 'text', placeholder: 'SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion', defaultValue: '', required: true },
-      { name: 'valueName', label: 'Value Name', type: 'text', placeholder: 'CSDVersion', defaultValue: '', required: true },
+      { name: 'valueName', label: 'Value Name', type: 'text', placeholder: 'CSDVersion', defaultValue: '' },
       { name: 'valueData', label: 'Value Data (contains)', type: 'text', placeholder: 'Service Pack', defaultValue: '', required: true },
     ],
     template: (p) => `RegistryValueContains(${p.hive}\\${p.path}, ${p.valueName}, ${p.valueData})`,
     parseRegex: /^RegistryValueContains\s*\((.+)\)$/i,
   },
+  FileExistsWithMD5: {
+    displayName: 'File Exists With MD5',
+    params: [
+      { name: 'path', label: 'File Path', type: 'text', placeholder: 'C:\\Path\\To\\File.exe', required: true },
+      { name: 'md5', label: 'MD5 Hash', type: 'text', placeholder: 'd41d8cd98f00b204e9800998ecf8427e', required: true },
+    ],
+    template: (p) => `FileExistsWithMD5(${p.path}, ${p.md5})`,
+    parseRegex: /^FileExistsWithMD5\s*\((.+)\)$/i,
+  },
+  FileVersionEquals: {
+    displayName: 'File Version Equals',
+    params: [
+      { name: 'path', label: 'File Path', type: 'text', placeholder: 'C:\\Path\\To\\File.exe', required: true },
+      { name: 'version', label: 'Version', type: 'text', placeholder: '1.0.0.0', required: true },
+    ],
+    template: (p) => `FileVersionEquals(${p.path}, ${p.version})`,
+    parseRegex: /^FileVersionEquals\s*\((.+)\)$/i,
+  },
+  FileVersionLessThan: {
+    displayName: 'File Version Less Than',
+    params: [
+      { name: 'path', label: 'File Path', type: 'text', placeholder: 'C:\\Path\\To\\File.exe', required: true },
+      { name: 'version', label: 'Version', type: 'text', placeholder: '1.0.0.0', required: true },
+    ],
+    template: (p) => `FileVersionLessThan(${p.path}, ${p.version})`,
+    parseRegex: /^FileVersionLessThan\s*\((.+)\)$/i,
+  },
+  FileVersionGreaterThan: {
+    displayName: 'File Version Greater Than',
+    params: [
+      { name: 'path', label: 'File Path', type: 'text', placeholder: 'C:\\Path\\To\\File.exe', required: true },
+      { name: 'version', label: 'Version', type: 'text', placeholder: '1.0.0.0', required: true },
+    ],
+    template: (p) => `FileVersionGreaterThan(${p.path}, ${p.version})`,
+    parseRegex: /^FileVersionGreaterThan\s*\((.+)\)$/i,
+  },
+  ProductVersionEquals: {
+    displayName: 'Product Version Equals',
+    params: [
+      { name: 'path', label: 'File Path', type: 'text', placeholder: 'C:\\Path\\To\\File.exe', required: true },
+      { name: 'version', label: 'Product Version', type: 'text', placeholder: '1.0.0.0', required: true },
+    ],
+    template: (p) => `ProductVersionEquals(${p.path}, ${p.version})`,
+    parseRegex: /^ProductVersionEquals\s*\((.+)\)$/i,
+  },
+  ProductVersionLessThan: {
+    displayName: 'Product Version Less Than',
+    params: [
+      { name: 'path', label: 'File Path', type: 'text', placeholder: 'C:\\Path\\To\\File.exe', required: true },
+      { name: 'version', label: 'Product Version', type: 'text', placeholder: '1.0.0.0', required: true },
+    ],
+    template: (p) => `ProductVersionLessThan(${p.path}, ${p.version})`,
+    parseRegex: /^ProductVersionLessThan\s*\((.+)\)$/i,
+  },
+  ProductVersionGreaterThan: {
+    displayName: 'Product Version Greater Than',
+    params: [
+      { name: 'path', label: 'File Path', type: 'text', placeholder: 'C:\\Path\\To\\File.exe', required: true },
+      { name: 'version', label: 'Product Version', type: 'text', placeholder: '1.0.0.0', required: true },
+    ],
+    template: (p) => `ProductVersionGreaterThan(${p.path}, ${p.version})`,
+    parseRegex: /^ProductVersionGreaterThan\s*\((.+)\)$/i,
+  },
+  FileInfoGreaterThan: {
+    displayName: 'File Info Greater Than',
+    params: [
+      { name: 'fullpath', label: 'File Path', type: 'text', placeholder: '/path/to/file or C:\\path\\file', required: true },
+      { name: 'attribute', label: 'Attribute', type: 'select', options: KACE_FILE_INFO_ATTRIBUTES, defaultValue: 'SIZE', required: true },
+      { name: 'type', label: 'Data Type', type: 'select', options: KACE_DATA_TYPES, defaultValue: 'NUMBER', required: true },
+      { name: 'value', label: 'Value', type: 'text', placeholder: '1024', required: true },
+    ],
+    template: (p) => `FileInfoGreaterThan(${p.fullpath}, ${p.attribute}, ${p.type}, ${p.value})`,
+    parseRegex: /^FileInfoGreaterThan\s*\((.+)\)$/i,
+  },
+  FileInfoLessThan: {
+    displayName: 'File Info Less Than',
+    params: [
+      { name: 'fullpath', label: 'File Path', type: 'text', placeholder: '/path/to/file or C:\\path\\file', required: true },
+      { name: 'attribute', label: 'Attribute', type: 'select', options: KACE_FILE_INFO_ATTRIBUTES, defaultValue: 'SIZE', required: true },
+      { name: 'type', label: 'Data Type', type: 'select', options: KACE_DATA_TYPES, defaultValue: 'NUMBER', required: true },
+      { name: 'value', label: 'Value', type: 'text', placeholder: '1024', required: true },
+    ],
+    template: (p) => `FileInfoLessThan(${p.fullpath}, ${p.attribute}, ${p.type}, ${p.value})`,
+    parseRegex: /^FileInfoLessThan\s*\((.+)\)$/i,
+  },
+  FileInfoEquals: {
+    displayName: 'File Info Equals',
+    params: [
+      { name: 'fullpath', label: 'File Path', type: 'text', placeholder: '/path/to/file or C:\\path\\file', required: true },
+      { name: 'attribute', label: 'Attribute', type: 'select', options: KACE_FILE_INFO_ATTRIBUTES, defaultValue: 'SIZE', required: true },
+      { name: 'type', label: 'Data Type', type: 'select', options: KACE_DATA_TYPES, defaultValue: 'NUMBER', required: true },
+      { name: 'value', label: 'Value', type: 'text', placeholder: '1024', required: true },
+    ],
+    template: (p) => `FileInfoEquals(${p.fullpath}, ${p.attribute}, ${p.type}, ${p.value})`,
+    parseRegex: /^FileInfoEquals\s*\((.+)\)$/i,
+  },
+  FileInfoReturn: {
+    displayName: 'File Info Return',
+    params: [
+      { name: 'path', label: 'File Path', type: 'text', placeholder: '/path/to/file or C:\\path\\file', required: true },
+      { name: 'attribute', label: 'Attribute', type: 'select', options: KACE_FILE_INFO_ATTRIBUTES, defaultValue: 'SIZE', required: true },
+      { name: 'type', label: 'Return Data Type', type: 'select', options: KACE_DATA_TYPES, defaultValue: 'STRING', required: true },
+    ],
+    template: (p) => `FileInfoReturn(${p.path}, ${p.attribute}, ${p.type})`,
+    parseRegex: /^FileInfoReturn\s*\((.+)\)$/i,
+  },
+  RegistryValueLessThan: {
+    displayName: 'Registry Value Less Than',
+    params: [
+      { name: 'hive', label: 'Hive', type: 'select', options: KACE_REG_HIVES, defaultValue: 'HKEY_LOCAL_MACHINE' },
+      { name: 'path', label: 'Key Path', type: 'text', placeholder: 'SOFTWARE\\Path', required: true },
+      { name: 'valueName', label: 'Value Name', type: 'text', placeholder: 'MyValue', defaultValue: '' },
+      { name: 'valueData', label: 'Value Data', type: 'text', placeholder: 'Data', required: true },
+    ],
+    template: (p) => `RegistryValueLessThan(${p.hive}\\${p.path}, ${p.valueName}, ${p.valueData})`,
+    parseRegex: /^RegistryValueLessThan\s*\((.+)\)$/i,
+  },
+  RegistryValueGreaterThan: {
+    displayName: 'Registry Value Greater Than',
+    params: [
+      { name: 'hive', label: 'Hive', type: 'select', options: KACE_REG_HIVES, defaultValue: 'HKEY_LOCAL_MACHINE' },
+      { name: 'path', label: 'Key Path', type: 'text', placeholder: 'SOFTWARE\\Path', required: true },
+      { name: 'valueName', label: 'Value Name', type: 'text', placeholder: 'MyValue', defaultValue: '' },
+      { name: 'valueData', label: 'Value Data', type: 'text', placeholder: 'Data', required: true },
+    ],
+    template: (p) => `RegistryValueGreaterThan(${p.hive}\\${p.path}, ${p.valueName}, ${p.valueData})`,
+    parseRegex: /^RegistryValueGreaterThan\s*\((.+)\)$/i,
+  },
+  RegistryValueReturn: {
+    displayName: 'Registry Value Return',
+    params: [
+      { name: 'hive', label: 'Hive', type: 'select', options: KACE_REG_HIVES, defaultValue: 'HKEY_LOCAL_MACHINE' },
+      { name: 'path', label: 'Key Path', type: 'text', placeholder: 'SOFTWARE\\Path', required: true },
+      { name: 'valueName', label: 'Value Name', type: 'text', placeholder: 'MyValue', defaultValue: '' },
+      { name: 'type', label: 'Return Data Type', type: 'select', options: KACE_REG_VALUE_TYPES, defaultValue: 'STRING', required: true },
+    ],
+    template: (p) => `RegistryValueReturn(${p.hive}\\${p.path}, ${p.valueName}, ${p.type})`,
+    parseRegex: /^RegistryValueReturn\s*\((.+)\)$/i,
+  },
+  EnvironmentVariableExists: {
+    displayName: 'Environment Variable Exists',
+    params: [{ name: 'var', label: 'Variable Name', type: 'text', placeholder: 'PATH', required: true }],
+    template: (p) => `EnvironmentVariableExists(${p.var})`,
+    parseRegex: /^EnvironmentVariableExists\s*\((.+)\)$/i,
+  },
+  EnvironmentVariableGreaterThan: {
+    displayName: 'Environment Variable Greater Than',
+    params: [
+      { name: 'var', label: 'Variable Name', type: 'text', placeholder: 'MY_VAR', required: true },
+      { name: 'type', label: 'Data Type', type: 'select', options: KACE_DATA_TYPES, defaultValue: 'STRING', required: true },
+      { name: 'value', label: 'Value', type: 'text', placeholder: 'SomeValue', required: true },
+    ],
+    template: (p) => `EnvironmentVariableGreaterThan(${p.var}, ${p.type}, ${p.value})`,
+    parseRegex: /^EnvironmentVariableGreaterThan\s*\((.+)\)$/i,
+  },
+  EnvironmentVariableLessThan: {
+    displayName: 'Environment Variable Less Than',
+    params: [
+      { name: 'var', label: 'Variable Name', type: 'text', placeholder: 'MY_VAR', required: true },
+      { name: 'type', label: 'Data Type', type: 'select', options: KACE_DATA_TYPES, defaultValue: 'STRING', required: true },
+      { name: 'value', label: 'Value', type: 'text', placeholder: 'SomeValue', required: true },
+    ],
+    template: (p) => `EnvironmentVariableLessThan(${p.var}, ${p.type}, ${p.value})`,
+    parseRegex: /^EnvironmentVariableLessThan\s*\((.+)\)$/i,
+  },
+  EnvironmentVariableEquals: {
+    displayName: 'Environment Variable Equals',
+    params: [
+      { name: 'var', label: 'Variable Name', type: 'text', placeholder: 'MY_VAR', required: true },
+      { name: 'type', label: 'Data Type', type: 'select', options: KACE_DATA_TYPES, defaultValue: 'STRING', required: true },
+      { name: 'value', label: 'Value', type: 'text', placeholder: 'SomeValue', required: true },
+    ],
+    template: (p) => `EnvironmentVariableEquals(${p.var}, ${p.type}, ${p.value})`,
+    parseRegex: /^EnvironmentVariableEquals\s*\((.+)\)$/i,
+  },
+  EnvironmentVariableReturn: {
+    displayName: 'Environment Variable Return',
+    params: [
+      { name: 'var', label: 'Variable Name', type: 'text', placeholder: 'MY_VAR', required: true },
+      { name: 'type', label: 'Return Data Type', type: 'select', options: KACE_DATA_TYPES, defaultValue: 'STRING', required: true },
+    ],
+    template: (p) => `EnvironmentVariableReturn(${p.var}, ${p.type})`,
+    parseRegex: /^EnvironmentVariableReturn\s*\((.+)\)$/i,
+  },
+  FilenamesMatchingRegexExist: {
+    displayName: 'Filenames Matching Regex Exist',
+    params: [
+      { name: 'fullpath', label: 'Directory Path', type: 'text', placeholder: '/var/log or C:\\logs', required: true },
+      { name: 'regex', label: 'Regex', type: 'text', placeholder: '\\.log$', required: true },
+    ],
+    template: (p) => `FilenamesMatchingRegexExist(${p.fullpath}, ${p.regex})`,
+    parseRegex: /^FilenamesMatchingRegexExist\s*\((.+)\)$/i,
+  },
+  FilenamesMatchingRegexGreaterThan: {
+    displayName: 'Filenames Matching Regex > Value',
+    params: [
+      { name: 'fullpath', label: 'Directory Path', type: 'text', placeholder: '/var/log', required: true },
+      { name: 'regex', label: 'Regex', type: 'text', placeholder: '\\.log$', required: true },
+      { name: 'value', label: 'Value (e.g., count)', type: 'text', placeholder: '5', required: true },
+    ],
+    template: (p) => `FilenamesMatchingRegexGreaterThan(${p.fullpath}, ${p.regex}, ${p.value})`,
+    parseRegex: /^FilenamesMatchingRegexGreaterThan\s*\((.+)\)$/i,
+  },
+  FilenamesMatchingRegexLessThan: {
+    displayName: 'Filenames Matching Regex < Value',
+    params: [
+      { name: 'fullpath', label: 'Directory Path', type: 'text', placeholder: '/var/log', required: true },
+      { name: 'regex', label: 'Regex', type: 'text', placeholder: '\\.log$', required: true },
+      { name: 'value', label: 'Value (e.g., count)', type: 'text', placeholder: '5', required: true },
+    ],
+    template: (p) => `FilenamesMatchingRegexLessThan(${p.fullpath}, ${p.regex}, ${p.value})`,
+    parseRegex: /^FilenamesMatchingRegexLessThan\s*\((.+)\)$/i,
+  },
+  FilenamesMatchingRegexEqual: {
+    displayName: 'Filenames Matching Regex = Value',
+    params: [
+      { name: 'fullpath', label: 'Directory Path', type: 'text', placeholder: '/var/log', required: true },
+      { name: 'regex', label: 'Regex', type: 'text', placeholder: '\\.log$', required: true },
+      { name: 'value', label: 'Value (e.g., count)', type: 'text', placeholder: '5', required: true },
+    ],
+    template: (p) => `FilenamesMatchingRegexEqual(${p.fullpath}, ${p.regex}, ${p.value})`,
+    parseRegex: /^FilenamesMatchingRegexEqual\s*\((.+)\)$/i,
+  },
+  FilenamesMatchingRegexReturn: {
+    displayName: 'Filenames Matching Regex Return',
+    params: [
+      { name: 'fullpath', label: 'Directory Path', type: 'text', placeholder: '/var/log', required: true },
+      { name: 'regex', label: 'Regex', type: 'text', placeholder: '\\.log$', required: true },
+      { name: 'type', label: 'Return Data Type', type: 'select', options: [...KACE_DATA_TYPES, 'COUNT'], defaultValue: 'STRING', required: true },
+    ],
+    template: (p) => `FilenamesMatchingRegexReturn(${p.fullpath}, ${p.regex}, ${p.type})`,
+    parseRegex: /^FilenamesMatchingRegexReturn\s*\((.+)\)$/i,
+  },
+  PlistValueExists: {
+    displayName: 'Plist Value Exists (Mac)',
+    params: [
+      { name: 'fullpath', label: 'Plist File Path', type: 'text', placeholder: '/Library/Preferences/com.apple.alf.plist', required: true },
+      { name: 'entry', label: 'Entry Key/Path', type: 'text', placeholder: 'globalstate', required: true },
+    ],
+    template: (p) => `PlistValueExists(${p.fullpath}, ${p.entry})`,
+    parseRegex: /^PlistValueExists\s*\((.+)\)$/i,
+  },
+  PlistValueGreaterThan: {
+    displayName: 'Plist Value Greater Than (Mac)',
+    params: [
+      { name: 'fullpath', label: 'Plist File Path', type: 'text', placeholder: '/path/to/file.plist', required: true },
+      { name: 'entry', label: 'Entry Key/Path', type: 'text', placeholder: 'MyKey', required: true },
+      { name: 'type', label: 'Data Type', type: 'select', options: KACE_PLIST_DATA_TYPES, defaultValue: 'STRING', required: true },
+      { name: 'value', label: 'Value', type: 'text', placeholder: 'SomeValue', required: true },
+    ],
+    template: (p) => `PlistValueGreaterThan(${p.fullpath}, ${p.entry}, ${p.type}, ${p.value})`,
+    parseRegex: /^PlistValueGreaterThan\s*\((.+)\)$/i,
+  },
+  PlistValueLessThan: {
+    displayName: 'Plist Value Less Than (Mac)',
+    params: [
+      { name: 'fullpath', label: 'Plist File Path', type: 'text', placeholder: '/path/to/file.plist', required: true },
+      { name: 'entry', label: 'Entry Key/Path', type: 'text', placeholder: 'MyKey', required: true },
+      { name: 'type', label: 'Data Type', type: 'select', options: KACE_PLIST_DATA_TYPES, defaultValue: 'STRING', required: true },
+      { name: 'value', label: 'Value', type: 'text', placeholder: 'SomeValue', required: true },
+    ],
+    template: (p) => `PlistValueLessThan(${p.fullpath}, ${p.entry}, ${p.type}, ${p.value})`,
+    parseRegex: /^PlistValueLessThan\s*\((.+)\)$/i,
+  },
+  PlistValueEquals: {
+    displayName: 'Plist Value Equals (Mac)',
+    params: [
+      { name: 'fullpath', label: 'Plist File Path', type: 'text', placeholder: '/path/to/file.plist', required: true },
+      { name: 'entry', label: 'Entry Key/Path', type: 'text', placeholder: 'MyKey', required: true },
+      { name: 'type', label: 'Data Type', type: 'select', options: KACE_PLIST_DATA_TYPES, defaultValue: 'STRING', required: true },
+      { name: 'value', label: 'Value', type: 'text', placeholder: 'SomeValue', required: true },
+    ],
+    template: (p) => `PlistValueEquals(${p.fullpath}, ${p.entry}, ${p.type}, ${p.value})`,
+    parseRegex: /^PlistValueEquals\s*\((.+)\)$/i,
+  },
+  PlistValueReturn: {
+    displayName: 'Plist Value Return (Mac)',
+    params: [
+      { name: 'fullpath', label: 'Plist File Path', type: 'text', placeholder: '/path/to/file.plist', required: true },
+      { name: 'entry', label: 'Entry Key/Path', type: 'text', placeholder: 'MyKey', required: true },
+      { name: 'type', label: 'Return Data Type', type: 'select', options: KACE_PLIST_DATA_TYPES, defaultValue: 'STRING', required: true },
+    ],
+    template: (p) => `PlistValueReturn(${p.fullpath}, ${p.entry}, ${p.type})`,
+    parseRegex: /^PlistValueReturn\s*\((.+)\)$/i,
+  },
+  ShellCommandTextReturn: {
+    displayName: 'Shell Command Text Return',
+    params: [{ name: 'command', label: 'Command', type: 'text', placeholder: 'echo Hello', required: true }],
+    template: (p) => `ShellCommandTextReturn(${p.command})`,
+    parseRegex: /^ShellCommandTextReturn\s*\((.+)\)$/i,
+  },
+  ShellCommandDateReturn: {
+    displayName: 'Shell Command Date Return',
+    params: [{ name: 'command', label: 'Command', type: 'text', placeholder: 'date', required: true }],
+    template: (p) => `ShellCommandDateReturn(${p.command})`,
+    parseRegex: /^ShellCommandDateReturn\s*\((.+)\)$/i,
+  },
+  ShellCommandNumberReturn: {
+    displayName: 'Shell Command Number Return',
+    params: [{ name: 'command', label: 'Command', type: 'text', placeholder: 'wc -l < file.txt', required: true }],
+    template: (p) => `ShellCommandNumberReturn(${p.command})`,
+    parseRegex: /^ShellCommandNumberReturn\s*\((.+)\)$/i,
+  },
+  // --- END OF NEW FUNCTIONS ---
 };
 
 // --- Types for Rule Structure (Conditions and Groups) ---
