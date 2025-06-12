@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, ChangeEvent, Fragment } from 'react'
+import { useState, ChangeEvent, Fragment, useEffect, useRef } from 'react' // Added useEffect, useRef
 import { TrashIcon, ClipboardDocumentIcon, ClipboardDocumentCheckIcon, ExclamationTriangleIcon, Bars3BottomLeftIcon, RectangleGroupIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline'
 
 // --- KACE Function Definitions ---
@@ -432,6 +432,110 @@ const getInitialParamValues = (functionKey: string): Record<string, string> => {
     acc[param.name] = param.defaultValue?.toString() || '';
     return acc;
   }, {} as Record<string, string>);
+};
+
+// --- AutocompleteSelect Component ---
+interface AutocompleteOption {
+  value: string;
+  label: string;
+}
+
+interface AutocompleteSelectProps {
+  id?: string;
+  options: AutocompleteOption[];
+  value: string;
+  onChange: (selectedValue: string) => void;
+  placeholder?: string;
+  className?: string;
+}
+
+const AutocompleteSelect: React.FC<AutocompleteSelectProps> = ({
+  id,
+  options,
+  value,
+  onChange,
+  placeholder = "Type to search...",
+  className
+}) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const selectedOption = options.find(opt => opt.value === value);
+    setSearchTerm(selectedOption ? selectedOption.label : '');
+  }, [value, options, isOpen]); // Re-evaluate search term if value changes or dropdown closes
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+        // Reset searchTerm to current selected label when closing by clicking outside
+        const selectedOption = options.find(opt => opt.value === value);
+        setSearchTerm(selectedOption ? selectedOption.label : '');
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [wrapperRef, value, options]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    if (!isOpen) {
+      setIsOpen(true);
+    }
+  };
+
+  const handleOptionClick = (optionValue: string) => {
+    onChange(optionValue);
+    const selectedOption = options.find(opt => opt.value === optionValue);
+    setSearchTerm(selectedOption ? selectedOption.label : '');
+    setIsOpen(false);
+  };
+
+  const filteredOptions = options.filter(option =>
+    option.label.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className={`relative ${className || ''}`} ref={wrapperRef}>
+      <input
+        type="text"
+        id={id}
+        value={searchTerm}
+        onChange={handleInputChange}
+        onFocus={() => {
+          setIsOpen(true);
+          // Optional: clear search term on focus to allow fresh search, or select all text
+          // setSearchTerm(''); 
+        }}
+        placeholder={placeholder}
+        className="w-full bg-slate-900 text-slate-200 rounded px-3 py-2 border border-slate-600 focus:ring-blue-500 focus:border-blue-500 text-sm"
+        autoComplete="off"
+      />
+      {isOpen && (
+        <ul className="absolute z-20 w-full bg-slate-800 border border-slate-700 rounded-md mt-1 max-h-60 overflow-y-auto shadow-lg">
+          {filteredOptions.length > 0 ? (
+            filteredOptions.map(option => (
+              <li
+                key={option.value}
+                onClick={() => handleOptionClick(option.value)}
+                className="px-3 py-2 text-sm text-slate-200 hover:bg-slate-700 cursor-pointer"
+              >
+                {option.label}
+              </li>
+            ))
+          ) : (
+            <li className="px-3 py-2 text-sm text-slate-400">
+              {searchTerm ? "No matches found" : "Type to see options"}
+            </li>
+          )}
+        </ul>
+      )}
+    </div>
+  );
 };
 
 // --- Main React Component: QuestKaceInventoryRuleBuilder ---
@@ -1093,7 +1197,7 @@ interface RuleElementRendererProps {
 
 const RuleElementRenderer: React.FC<RuleElementRendererProps> = ({
   elements,
-  operators, 
+  operators,
   onUpdateOperator,
   onRemoveElement,
   onUpdateConditionFunction,
@@ -1104,13 +1208,17 @@ const RuleElementRenderer: React.FC<RuleElementRendererProps> = ({
   isTopLevel,
   depth = 0
 }) => {
+  // Prepare options for AutocompleteSelect
+  const kaceFunctionOptions = Object.entries(KACE_FUNCTIONS).map(([key, funcDef]) => ({
+    value: key,
+    label: funcDef.displayName,
+  }));
+
   return (
-    <div className={`space-y-4 ${!isTopLevel ? 'pl-4 mt-3 border-l-2 border-slate-700' : ''}`}> {/* Indent nested groups */}
+    <div className={`space-y-4 ${!isTopLevel ? 'pl-4 mt-3 border-l-2 border-slate-700' : ''}`}>
       {elements.map((element, index) => (
-        <Fragment key={element.id}> {/* Use Fragment to avoid extra div for key */}
-          {/* Container for each rule element (condition or group) */}
+        <Fragment key={element.id}>
           <div className={`p-4 rounded-md border relative ${element.type === 'group' ? 'bg-slate-700/40 border-slate-600' : 'bg-slate-800/60 border-slate-700'}`}>
-            {/* Remove button for the element */}
             <button
               onClick={() => onRemoveElement(element.id)}
               className="absolute top-2.5 right-2.5 text-slate-500 hover:text-red-400 transition-colors p-1"
@@ -1119,27 +1227,21 @@ const RuleElementRenderer: React.FC<RuleElementRendererProps> = ({
               <TrashIcon className="h-4 w-4" />
             </button>
 
-            {/* Render content if the element is a Condition */}
             {element.type === 'condition' && (
               <div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
-                  {/* Dropdown to select KACE function type */}
                   <div>
                     <label htmlFor={`func-${element.id}`} className="block text-slate-300 text-sm font-medium mb-1">
                       Condition Type
                     </label>
-                    <select
+                    <AutocompleteSelect
                       id={`func-${element.id}`}
+                      options={kaceFunctionOptions}
                       value={element.selectedFunctionKey}
-                      onChange={(e: ChangeEvent<HTMLSelectElement>) => onUpdateConditionFunction(element.id, e.target.value)}
-                      className="w-full bg-slate-900 text-slate-200 rounded px-3 py-2 border border-slate-600 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                    >
-                      {Object.entries(KACE_FUNCTIONS).map(([key, funcDef]) => (
-                        <option key={key} value={key}>{funcDef.displayName}</option>
-                      ))}
-                    </select>
+                      onChange={(newFunctionKey) => onUpdateConditionFunction(element.id, newFunctionKey)}
+                      placeholder="Select or type condition..."
+                    />
                   </div>
-                  {/* Render input fields for each parameter of the selected function */}
                   {KACE_FUNCTIONS[element.selectedFunctionKey]?.params.map(param => (
                     <div key={param.name}>
                       <label htmlFor={`${element.id}-${param.name}`} className="block text-slate-300 text-sm font-medium mb-1">
