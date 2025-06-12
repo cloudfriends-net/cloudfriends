@@ -14,8 +14,9 @@ const tools = [
   { name: 'Text Tools', path: '/tools/text-tools', keywords: ['text', 'case', 'clean', 'count'] },
   { name: 'Regex Tools', path: '/tools/regex-tools', keywords: ['regex', 'clean', 'pattern', 'match'] },
   { name: 'Subnet Calculator', path: '/tools/subnet-calculator', keywords: ['subnet', 'ip', 'network', 'cidr', 'calculator'] },
-  { name: 'Docker Compose Generator', path: '/tools/docker-compose', keywords: ['docker', 'compose', 'yaml', 'container', 'generator'] }
-]
+  { name: 'Docker Compose Generator', path: '/tools/docker-compose', keywords: ['docker', 'compose', 'yaml', 'container', 'generator'] },
+  { name: 'Kace CIR Builder', path: '/tools/kace-cir', keywords: ['kace', 'quest', 'inventory', 'rule', 'builder', 'cir'] }
+];
 
 export function SidebarNav() {
   const pathname = usePathname()

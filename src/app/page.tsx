@@ -1,6 +1,63 @@
 import { KeyIcon, QrCodeIcon, ShieldCheckIcon, SparklesIcon, ArrowPathIcon, PhotoIcon, DocumentIcon, DocumentTextIcon, CodeBracketIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
+const tools = [
+  {
+    name: 'Password Generator',
+    description: 'Create secure, random passwords with customizable options for length and character types.',
+    href: '/tools/password-generator',
+    icon: KeyIcon,
+  },
+  {
+    name: 'QR Code Generator',
+    description: 'Create QR codes for URLs, text, WiFi credentials, or contact information instantly.',
+    href: '/tools/qr-generator',
+    icon: QrCodeIcon,
+  },
+  {
+    name: 'Image Converter',
+    description: 'Convert images between different formats easily.',
+    href: '/tools/image-converter',
+    icon: PhotoIcon,
+  },
+  {
+    name: 'PDF Tools',
+    description: 'Merge, split, and compress PDF files securely in your browser without uploading files.',
+    href: '/tools/pdf-tools',
+    icon: DocumentIcon,
+  },
+  {
+    name: 'Text Tools',
+    description: 'Transform, clean, and analyze text with various operations like case conversion, sorting, and removing duplicates.',
+    href: '/tools/text-tools',
+    icon: DocumentTextIcon,
+  },
+  {
+    name: 'Regex Tester & Creator',
+    description: 'Test and create regular expressions. Find, match, and replace patterns in your text with instant feedback.',
+    href: '/tools/regex-tools',
+    icon: CodeBracketIcon,
+  },
+  {
+    name: 'Subnet Calculator',
+    description: 'Calculate IPv4 subnets, masks, ranges, and more. Great for network planning and troubleshooting.',
+    href: '/tools/subnet-calculator',
+    icon: CodeBracketIcon,
+  },
+  {
+    name: 'Docker Compose Generator',
+    description: 'Generate Docker Compose files with a simple UI.',
+    href: '/tools/docker-compose',
+    icon: CodeBracketIcon,
+  },
+  {
+    name: 'KaceCIR Builder',
+    description: 'Build custom inventory rules for Quest KACE.',
+    href: '/tools/kace-cir',
+    icon: CodeBracketIcon,
+  },
+];
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-gray-950">
@@ -42,109 +99,19 @@ export default function Home() {
         
         {/* Tools Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-7xl mx-auto">
-          {/* Password Generator Card */}
-          <Link href="/tools/password-generator" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
-            <div className="p-4">
-              <div className="mb-2 bg-blue-500/10 w-10 h-10 rounded-lg flex items-center justify-center">
-                <KeyIcon className="h-5 w-5 text-blue-400" />
+          {tools.map((tool) => (
+            <Link key={tool.href} href={tool.href} className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
+              <div className="p-4">
+                <div className="mb-2 bg-blue-500/10 w-10 h-10 rounded-lg flex items-center justify-center">
+                  <tool.icon className="h-5 w-5 text-blue-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-white mb-1">{tool.name}</h3>
+                <p className="text-slate-300 text-xs">
+                  {tool.description}
+                </p>
               </div>
-              <h3 className="text-lg font-semibold text-white mb-1">Password Generator</h3>
-              <p className="text-slate-300 text-xs">
-                Create secure, random passwords with customizable options for length and character types.
-              </p>
-            </div>
-          </Link>
-
-          {/* QR Code Generator Card */}
-          <Link href="/tools/qr-generator" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
-            <div className="p-4">
-              <div className="mb-2 bg-blue-500/10 w-10 h-10 rounded-lg flex items-center justify-center">
-                <QrCodeIcon className="h-5 w-5 text-blue-400" />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-1">QR Code Generator</h3>
-              <p className="text-slate-300 text-xs">
-                Create QR codes for URLs, text, WiFi credentials, or contact information instantly.
-              </p>
-            </div>
-          </Link>
-
-          {/* Image Converter Card */}
-          <Link href="/tools/image-converter" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
-            <div className="p-4">
-              <div className="mb-2 bg-blue-500/10 w-10 h-10 rounded-lg flex items-center justify-center">
-                <PhotoIcon className="h-5 w-5 text-blue-400" />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-1">Image Converter</h3>
-              <p className="text-slate-300 text-xs">
-                Convert images between different formats easily.
-              </p>
-            </div>
-          </Link>
-
-          {/* PDF Tools Card */}
-          <Link href="/tools/pdf-tools" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
-            <div className="p-4">
-              <div className="mb-2 bg-blue-500/10 w-10 h-10 rounded-lg flex items-center justify-center">
-                <DocumentIcon className="h-5 w-5 text-blue-400" />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-1">PDF Tools</h3>
-              <p className="text-slate-300 text-xs">
-                Merge, split, and compress PDF files securely in your browser without uploading files.
-              </p>
-            </div>
-          </Link>
-
-          {/* Text Tools Card */}
-          <Link href="/tools/text-tools" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
-            <div className="p-4">
-              <div className="mb-2 bg-blue-500/10 w-10 h-10 rounded-lg flex items-center justify-center">
-                <DocumentTextIcon className="h-5 w-5 text-blue-400" />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-1">Text Tools</h3>
-              <p className="text-slate-300 text-xs">
-                Transform, clean, and analyze text with various operations like case conversion, sorting, and removing duplicates.
-              </p>
-            </div>
-          </Link>
-
-          {/* Regex Tools Card */}
-          <Link href="/tools/regex-tools" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
-            <div className="p-4">
-              <div className="mb-2 bg-blue-500/10 w-10 h-10 rounded-lg flex items-center justify-center">
-                <CodeBracketIcon className="h-5 w-5 text-blue-400" />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-1">Regex Tester & Creator</h3>
-              <p className="text-slate-300 text-xs">
-                Test and create regular expressions. Find, match, and replace patterns in your text with instant feedback.
-              </p>
-            </div>
-          </Link>
-
-          {/* Subnet Calculator Card */}
-          <Link href="/tools/subnet-calculator" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
-            <div className="p-4">
-              <div className="mb-2 bg-blue-500/10 w-10 h-10 rounded-lg flex items-center justify-center">
-                <CodeBracketIcon className="h-5 w-5 text-blue-400" />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-1">Subnet Calculator</h3>
-              <p className="text-slate-300 text-xs">
-                Calculate IPv4 subnets, masks, ranges, and more. Great for network planning and troubleshooting.
-              </p>
-            </div>
-          </Link>
-
-          {/* Docker Compose Generator Card */}
-          <Link href="/tools/docker-compose" className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
-            <div className="p-4">
-              <div className="mb-2 bg-blue-500/10 w-10 h-10 rounded-lg flex items-center justify-center">
-                <CodeBracketIcon className="h-5 w-5 text-blue-400" />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-1">Docker Compose Generator</h3>
-              <p className="text-slate-300 text-xs">
-                Easily create and edit <code>docker-compose.yml</code> files for your containerized projects.
-              </p>
-            </div>
-          </Link>
+            </Link>
+          ))}
         </div>
 
         {/* Additional Information */}
