@@ -59,7 +59,23 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-      <script defer src="https://umami.poth.pro/script.js" data-website-id="7742ee2e-1965-4df4-9181-54c7839f7927"></script>
+      {/* <!-- Google tag (gtag.js) --> */}
+      <Script
+        strategy="afterInteractive"
+        src="https://www.googletagmanager.com/gtag/js?id=G-ZCDSKJ2KKJ"
+      />
+      <Script
+        id="google-analytics"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-ZCDSKJ2KKJ');
+          `,
+        }}
+        />
         <Script
           id="schema-script"
           type="application/ld+json"

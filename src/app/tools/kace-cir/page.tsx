@@ -482,69 +482,65 @@ export default function QuestKaceInventoryRuleBuilder() {
    * @param conditionStr The condition string to parse.
    * @returns A KaceCondition object or null if parsing fails.
    */
-  const parseConditionString = (conditionStr: string): KaceCondition | null => {
+  const parseConditionString = (conditionStr: string): { result: KaceCondition | null; error: string | null } => {
     for (const [key, funcDef] of Object.entries(KACE_FUNCTIONS)) {
         if (funcDef.parseRegex) {
             const match = conditionStr.match(funcDef.parseRegex);
-            if (match && match[1]) { // match[1] should contain the parameters string
+            if (match && match[1]) { 
                 const paramsStr = match[1];
-                // Simple comma split; assumes parameter values themselves don't contain unescaped commas.
                 const paramValuesArray = paramsStr.split(',').map(p => p.trim());
                 const paramValues: Record<string, string> = {};
 
-                // Special handling for registry functions where hive and path are combined in the string
-                if (key === 'RegistryKeyExists') { 
-                    if (paramValuesArray.length === 1) { // Expects one combined parameter
+                if (key === 'RegistryKeyExists') {
+                    if (paramValuesArray.length === 1) {
                         const fullPath = paramValuesArray[0];
                         const hiveIndex = KACE_REG_HIVES.findIndex(h => fullPath.toUpperCase().startsWith(h.toUpperCase() + '\\'));
                         if (hiveIndex > -1) {
-                            paramValues[funcDef.params[0].name] = KACE_REG_HIVES[hiveIndex]; // hive
-                            paramValues[funcDef.params[1].name] = fullPath.substring(KACE_REG_HIVES[hiveIndex].length + 1); // path
+                            paramValues[funcDef.params[0].name] = KACE_REG_HIVES[hiveIndex];
+                            paramValues[funcDef.params[1].name] = fullPath.substring(KACE_REG_HIVES[hiveIndex].length + 1);
                         } else {
-                             // Default if hive parsing fails
-                             console.warn(`Could not parse hive from RegistryKeyExists: ${fullPath}`);
-                             paramValues[funcDef.params[0].name] = KACE_REG_HIVES[0]; 
-                             paramValues[funcDef.params[1].name] = fullPath; 
+                            return { result: null, error: `Could not parse Hive (e.g., HKLM\\) from RegistryKeyExists path: "${fullPath}"` };
                         }
-                    } else { console.error(`Malformed RegistryKeyExists: ${conditionStr}`); return null; }
+                    } else { 
+                        return { result: null, error: `Invalid arguments for RegistryKeyExists: "${conditionStr}". Expected a single path argument like HIVE\\Path.`};
+                    }
                 } else if (key === 'RegistryValueEquals' || key === 'RegistryValueContains') {
-                     // Expects combined path, valueName, valueData
-                     if (paramValuesArray.length === funcDef.params.length -1) { 
-                        const fullPath = paramValuesArray[0]; // First param is combined hive\path
+                     if (paramValuesArray.length === funcDef.params.length -1) { // Expects combined path, valueName, valueData (3 string parts for 4 params)
+                        const fullPath = paramValuesArray[0]; 
                         const hiveIndex = KACE_REG_HIVES.findIndex(h => fullPath.toUpperCase().startsWith(h.toUpperCase() + '\\'));
                         if (hiveIndex > -1) {
-                            paramValues[funcDef.params[0].name] = KACE_REG_HIVES[hiveIndex]; // hive
-                            paramValues[funcDef.params[1].name] = fullPath.substring(KACE_REG_HIVES[hiveIndex].length + 1); // path
+                            paramValues[funcDef.params[0].name] = KACE_REG_HIVES[hiveIndex]; 
+                            paramValues[funcDef.params[1].name] = fullPath.substring(KACE_REG_HIVES[hiveIndex].length + 1); 
                         } else {
-                            console.warn(`Could not parse hive from ${key}: ${fullPath}`);
-                            paramValues[funcDef.params[0].name] = KACE_REG_HIVES[0]; 
-                            paramValues[funcDef.params[1].name] = fullPath; 
+                            return { result: null, error: `Could not parse Hive (e.g., HKLM\\) for ${funcDef.displayName} from path: "${fullPath}"` };
                         }
-                        paramValues[funcDef.params[2].name] = paramValuesArray[1]; // valueName
-                        paramValues[funcDef.params[3].name] = paramValuesArray[2]; // valueData
-                     } else { console.error(`Malformed ${key}: ${conditionStr}`); return null; }
+                        paramValues[funcDef.params[2].name] = paramValuesArray[1]; 
+                        paramValues[funcDef.params[3].name] = paramValuesArray[2]; 
+                     } else { 
+                        return { result: null, error: `Invalid argument count for ${funcDef.displayName}: "${conditionStr}". Expected combined Hive\\Path, ValueName, ValueData.`};
+                     }
                 }
-                // Generic parameter assignment for other functions
                 else if (paramValuesArray.length === funcDef.params.length) {
                     funcDef.params.forEach((paramDef, i) => {
                         paramValues[paramDef.name] = paramValuesArray[i];
                     });
                 } else {
-                    console.warn(`Param count mismatch for ${key}. Expected ${funcDef.params.length}, got ${paramValuesArray.length} from "${paramsStr}"`);
-                    return null;
+                    return { result: null, error: `Parameter count mismatch for ${funcDef.displayName}. Expected ${funcDef.params.length}, received ${paramValuesArray.length} from arguments: "${paramsStr}".` };
                 }
 
                 return {
-                    id: crypto.randomUUID(),
-                    type: 'condition',
-                    selectedFunctionKey: key,
-                    paramValues,
+                    result: {
+                        id: crypto.randomUUID(),
+                        type: 'condition',
+                        selectedFunctionKey: key,
+                        paramValues,
+                    },
+                    error: null
                 };
             }
         }
     }
-    console.warn("Could not parse condition string:", conditionStr);
-    return null;
+    return { result: null, error: `Unknown or malformed condition: "${conditionStr}"` };
   };
 
   /**
@@ -552,80 +548,111 @@ export default function QuestKaceInventoryRuleBuilder() {
    * @param segmentStr The rule string segment to parse.
    * @returns An object with parsed elements and operators, or null on failure.
    */
-  const parseRuleSegment = (segmentStr: string): { elements: KaceRuleElement[]; operators: ('AND' | 'OR')[] } | null => {
-    // Split the segment by top-level AND/OR operators.
-    const { parts, operators: topOperators } = splitTopLevel(segmentStr.trim(), ['AND', 'OR']);
-    const elements: KaceRuleElement[] = [];
+  const parseRuleSegment = (segmentStr: string): {
+    elements: KaceRuleElement[] | null;
+    operators: ('AND' | 'OR')[] | null;
+    error: string | null;
+    warning?: string | null; // Added to capture non-critical issues
+  } => {
+    const trimmedSegment = segmentStr.trim();
+    if (!trimmedSegment) {
+        return { elements: [], operators: [], error: null };
+    }
 
-    // Handle case where the segment is a single condition/group not caught by splitTopLevel (e.g. no operators)
-    if (parts.length === 0 && segmentStr.trim() !== "") { 
-        parts.push(segmentStr.trim());
+    const { parts, operators: topOperators } = splitTopLevel(trimmedSegment, ['AND', 'OR']);
+    const elements: KaceRuleElement[] = [];
+    let parsingWarning: string | null = null;
+
+    if (parts.length === 0 && trimmedSegment !== "") {
+        parts.push(trimmedSegment);
     }
 
     for (const partStr of parts) {
-        if (partStr.startsWith('(') && partStr.endsWith(')')) { // It's a group
-            const groupContent = partStr.substring(1, partStr.length - 1); // Get content inside parentheses
-            const parsedGroupChildren = parseRuleSegment(groupContent); // Recursively parse group content
-            
-            if (parsedGroupChildren && parsedGroupChildren.elements.length > 0) {
-                // Determine the join operator for the children of this group.
-                // Simplification: use the first operator found among children, or default to 'AND'.
+        const trimmedPartStr = partStr.trim();
+        if (trimmedPartStr.startsWith('(') && trimmedPartStr.endsWith(')')) {
+            const groupContent = trimmedPartStr.substring(1, trimmedPartStr.length - 1);
+            const parsedGroupResult = parseRuleSegment(groupContent);
+
+            if (parsedGroupResult.error) {
+                return { elements: null, operators: null, error: `Error within group "${trimmedPartStr.length > 40 ? trimmedPartStr.substring(0, 37) + '...' : trimmedPartStr}": ${parsedGroupResult.error}` };
+            }
+            if (parsedGroupResult.warning && !parsingWarning) { // Capture first warning from subgroups
+                parsingWarning = `Warning in group "${trimmedPartStr.length > 40 ? trimmedPartStr.substring(0, 37) + '...' : trimmedPartStr}": ${parsedGroupResult.warning}`;
+            }
+
+            if (parsedGroupResult.elements) {
                 let groupOp: 'AND' | 'OR' = 'AND';
-                if (parsedGroupChildren.operators.length > 0) {
-                    groupOp = parsedGroupChildren.operators[0];
-                    // Warn if mixed operators are found at the same level within a group without further sub-grouping.
-                    if (!parsedGroupChildren.operators.every(op => op === groupOp)) {
-                        console.warn("Mixed operators within a group level. Using first operator:", groupOp, "for group:", groupContent);
+                if (parsedGroupResult.operators && parsedGroupResult.operators.length > 0) {
+                    groupOp = parsedGroupResult.operators[0];
+                    if (!parsedGroupResult.operators.every(op => op === groupOp)) {
+                        // Capture this as a warning instead of console.warn
+                        const mixedOpWarning = `Mixed AND/OR operators found within group level: "${groupContent.length > 30 ? groupContent.substring(0,27)+'...' : groupContent}". The parser used the first operator ('${groupOp}') for this group. Review generated rule.`;
+                        if (!parsingWarning) parsingWarning = mixedOpWarning;
+                        else parsingWarning += `\n${mixedOpWarning}`;
                     }
                 }
                 elements.push({
                     id: crypto.randomUUID(),
                     type: 'group',
                     childrenJoinOperator: groupOp,
-                    children: parsedGroupChildren.elements,
+                    children: parsedGroupResult.elements,
                 });
-            } else if (parsedGroupChildren && parsedGroupChildren.elements.length === 0 && groupContent.trim() !== "") {
-                 console.error("Failed to parse non-empty group content (resulted in 0 elements):", groupContent); return null;
-            } else if (!parsedGroupChildren && groupContent.trim() !== "") {
-                 console.error("Failed to parse group content (parser returned null):", groupContent); return null;
-            }
-            // Allow empty groups if the content inside parentheses was genuinely empty.
-        } else { // It's a condition
-            const condition = parseConditionString(partStr);
-            if (condition) {
-                elements.push(condition);
             } else {
-                console.error("Failed to parse condition part:", partStr);
-                return null; // Stop parsing if a condition part fails
+                 return { elements: null, operators: null, error: `Failed to parse content of group: "${trimmedPartStr}"` };
+            }
+        } else {
+            const conditionResult = parseConditionString(trimmedPartStr);
+            if (conditionResult.error) {
+                return { elements: null, operators: null, error: `Error in condition "${trimmedPartStr.length > 40 ? trimmedPartStr.substring(0, 37) + '...' : trimmedPartStr}": ${conditionResult.error}` };
+            }
+            if (conditionResult.result) {
+                elements.push(conditionResult.result);
+            } else {
+                return { elements: null, operators: null, error: `Unknown error parsing condition: "${trimmedPartStr}"` };
             }
         }
     }
-    return { elements, operators: topOperators };
+    return { elements, operators: topOperators, error: null, warning: parsingWarning };
   };
-  
+
   /**
    * Handles the import of a KACE rule string from the text input.
    * Parses the string and updates the component state.
    */
   const handleImportRule = () => {
-    setParsingError(null); // Clear previous parsing errors
-    setValidationErrors({}); // Clear validation errors
-    setGeneratedRuleString(''); // Clear any previously generated string
+    setParsingError(null);
+    setValidationErrors({});
+    setGeneratedRuleString('');
 
-    if (!ruleInputText.trim()) { // If input is empty, reset the rule structure
+    const trimmedRuleInput = ruleInputText.trim();
+    if (!trimmedRuleInput) {
       setRuleElements([]);
       setTopLevelOperators([]);
       return;
     }
 
-    const parsedResult = parseRuleSegment(ruleInputText); // Attempt to parse the input string
+    const parsedResult = parseRuleSegment(trimmedRuleInput);
 
-    if (parsedResult) { // If parsing is successful
+    let currentError = parsedResult.error;
+    if (parsedResult.warning) {
+        if (currentError) {
+            currentError += `\n\nAdditionally: ${parsedResult.warning}`;
+        } else {
+            currentError = `Warning: ${parsedResult.warning}`;
+        }
+    }
+
+    if (currentError) {
+      setParsingError(currentError);
+      setRuleElements([]);
+      setTopLevelOperators([]);
+    } else if (parsedResult.elements && parsedResult.operators) {
       setRuleElements(parsedResult.elements);
       setTopLevelOperators(parsedResult.operators);
-    } else { // If parsing fails
-      setParsingError("Failed to parse the entire rule string. Please check the format and console for details.");
-      setRuleElements([]); // Reset rule structure on failure
+      setParsingError(null); 
+    } else {
+      setParsingError("Failed to parse the rule string. The structure might be invalid or an unknown error occurred.");
+      setRuleElements([]);
       setTopLevelOperators([]);
     }
   };
