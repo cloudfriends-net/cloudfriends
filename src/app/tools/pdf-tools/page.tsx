@@ -4,7 +4,6 @@ import { useState, useCallback, useEffect } from 'react'
 import { ArrowUpTrayIcon } from '@heroicons/react/24/outline'
 import { PDFDocument } from 'pdf-lib'
 import { useDropzone } from 'react-dropzone'
-import * as pdfjsLib from 'pdfjs-dist'
 
 type Operation = 'merge' | 'split' | 'compress'
 
@@ -24,7 +23,7 @@ export default function PDFTools() {
 
   const [processedFiles, setProcessedFiles] = useState<{
     type: Operation
-    files: { name: string; url: string; previewUrl?: string }[]
+    files: { name: string; url: string }[]
   } | null>(null)
   const [compressionStats, setCompressionStats] = useState<CompressionResult | null>(null)
 
@@ -109,10 +108,7 @@ export default function PDFTools() {
       const pdf = await PDFDocument.load(fileBuffer)
       const pageCount = pdf.getPageCount()
 
-      const files: { name: string; url: string; previewUrl: string }[] = []
-
-      // Load the PDF using pdfjs-dist for rendering previews
-      const pdfjsDoc = await pdfjsLib.getDocument({ data: fileBuffer }).promise
+      const files: { name: string; url: string }[] = []
 
       for (let i = 0; i < pageCount; i++) {
         const newPdf = await PDFDocument.create()
@@ -123,24 +119,9 @@ export default function PDFTools() {
         const blob = new Blob([pdfBytes], { type: 'application/pdf' })
         const url = URL.createObjectURL(blob)
 
-        // Generate a preview image for the page using pdfjs-dist
-        const pdfjsPage = await pdfjsDoc.getPage(i + 1)
-        const viewport = pdfjsPage.getViewport({ scale: 1 })
-        const canvas = document.createElement('canvas')
-        const context = canvas.getContext('2d')!
-        canvas.width = viewport.width
-        canvas.height = viewport.height
-
-        await pdfjsPage.render({ canvasContext: context, viewport }).promise
-        const previewUrl = canvas.toDataURL('image/png')
-
-        // Add the file with previewUrl to the files array
-        files.push({ name: `page-${i + 1}.pdf`, url, previewUrl })
+        files.push({ name: `page-${i + 1}.pdf`, url })
       }
 
-      console.log('Final files array:', files) // Debugging log
-
-      // Update the processedFiles state
       setProcessedFiles({
         type: 'split',
         files,
@@ -386,26 +367,14 @@ export default function PDFTools() {
             <div className="bg-white p-4 rounded-lg border border-gray-300">
               <h3 className="text-gray-900 font-semibold mb-3">Split Pages</h3>
               {processedFiles.files.map((file, index) => (
-                <div
+                <button
                   key={index}
-                  className="relative group"
+                  onClick={() => downloadFile(file.url, file.name)}
+                  className="w-full text-left p-3 bg-gray-200 hover:bg-gray-300 rounded flex items-center justify-between text-gray-900 mb-2"
                 >
-                  <button
-                    onClick={() => downloadFile(file.url, file.name)}
-                    className="w-full text-left p-3 bg-gray-200 hover:bg-gray-300 rounded flex items-center justify-between text-gray-900 mb-2"
-                  >
-                    <span>{file.name}</span>
-                    <span className="text-blue-600">Download</span>
-                  </button>
-                  {/* Preview on hover */}
-                  <div className="absolute left-full top-0 ml-4 hidden group-hover:block bg-white border border-gray-300 rounded shadow-lg">
-                    <img
-                      src={file.previewUrl}
-                      alt={`Preview of ${file.name}`}
-                      className="w-48 h-auto rounded"
-                    />
-                  </div>
-                </div>
+                  <span>{file.name}</span>
+                  <span className="text-blue-600">Download</span>
+                </button>
               ))}
             </div>
           )}
