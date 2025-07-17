@@ -2,6 +2,7 @@
 
 import { useState, ChangeEvent, Fragment, useEffect, useRef } from 'react' // Added useEffect, useRef
 import { TrashIcon, ClipboardDocumentIcon, ClipboardDocumentCheckIcon, ExclamationTriangleIcon, Bars3BottomLeftIcon, RectangleGroupIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline'
+import LightThemeLayout from '../../components/LightThemeLayout'
 
 // --- KACE Function Definitions ---
 
@@ -1071,108 +1072,110 @@ export default function QuestKaceInventoryRuleBuilder() {
 
   // --- JSX Rendering ---
   return (
-    <main className="min-h-screen bg-gray-950 flex flex-col items-center px-2 pb-20" style={{ paddingTop: '5.5rem' }}>
-      <div className="w-full max-w-4xl">
-        <h1 className="text-3xl font-bold text-center mb-2 text-white">Quest KACE Custom Inventory Rule Builder</h1>
-        <p className="text-blue-400 text-center mb-6 text-sm">
-          Build or import KACE inventory rules.
-        </p>
+    <LightThemeLayout>
+      <main className="min-h-screen bg-gray-100 flex flex-col items-center px-2 pb-20" style={{ paddingTop: '5.5rem' }}>
+        <div className="w-full max-w-4xl">
+          <h1 className="text-3xl font-bold text-center mb-2 text-gray-900">Quest KACE Custom Inventory Rule Builder</h1>
+          <p className="text-blue-600 text-center mb-6 text-sm">
+            Build or import KACE inventory rules.
+          </p>
 
-        {/* Import Rule Section */}
-        <div className="mb-8 p-5 bg-slate-800/70 rounded-lg border border-slate-700">
-            <h2 className="text-xl font-semibold text-white mb-3">Import Existing KACE Rule</h2>
+          {/* Import Rule Section */}
+          <div className="mb-8 p-5 bg-blue-100 rounded-lg border border-blue-300">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">Import Existing KACE Rule</h2>
             <textarea
-                value={ruleInputText}
-                onChange={(e) => setRuleInputText(e.target.value)}
-                placeholder="Paste your KACE CIR string here... e.g., FileExists(C:\Path\To\File.exe) AND (FileVersion(C:\Path\To\Other.dll, >=, 1.2.3) OR RegistryKeyExists(HKLM\Software\MyCompany))"
-                className="w-full bg-slate-900 text-slate-200 rounded px-3 py-2 border border-slate-600 focus:ring-blue-500 focus:border-blue-500 min-h-[100px] text-sm"
-                rows={4}
+              value={ruleInputText}
+              onChange={(e) => setRuleInputText(e.target.value)}
+              placeholder="Paste your KACE CIR string here... e.g., FileExists(C:\Path\To\File.exe) AND (FileVersion(C:\Path\To\Other.dll, >=, 1.2.3) OR RegistryKeyExists(HKLM\Software\MyCompany))"
+              className="w-full bg-gray-200 text-gray-900 rounded px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 min-h-[100px] text-sm"
+              rows={4}
             />
             <button
-                onClick={handleImportRule}
-                className="mt-3 w-full sm:w-auto flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-500 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
+              onClick={handleImportRule}
+              className="mt-3 w-full sm:w-auto flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-500 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
             >
-                <DocumentArrowDownIcon className="h-5 w-5" /> Import Rule from Text
+              <DocumentArrowDownIcon className="h-5 w-5" /> Import Rule from Text
             </button>
             {parsingError && (
-                <div className="mt-3 p-3 bg-red-900/50 border border-red-700/70 rounded-md text-sm text-red-300">
-                    <ExclamationTriangleIcon className="h-5 w-5 inline mr-2" /> {parsingError}
-                </div>
-            )}
-        </div>
-
-        {/* Rule Element Renderer: Displays the interactive rule builder UI */}
-        <RuleElementRenderer
-          elements={ruleElements}
-          operators={topLevelOperators}
-          onUpdateOperator={updateTopLevelOperator}
-          onRemoveElement={removeElementById}
-          onUpdateConditionFunction={updateConditionFunction}
-          onUpdateConditionParam={updateConditionParam}
-          onUpdateGroupOperator={updateGroupOperator}
-          onAddChildToGroup={addChildToGroup}
-          validationErrors={validationErrors}
-          isTopLevel={true} // Indicates this is the root level renderer
-        />
-
-        {/* Buttons to add top-level conditions or groups */}
-        <div className="mt-6 flex flex-col sm:flex-row gap-3">
-          <button
-            onClick={() => addTopLevelElement('condition')}
-            className="flex-1 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-lg font-semibold transition-colors"
-          >
-            <Bars3BottomLeftIcon className="h-5 w-5" /> Add Top-Level Condition
-          </button>
-          <button
-            onClick={() => addTopLevelElement('group')}
-            className="flex-1 flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-4 py-2.5 rounded-lg font-semibold transition-colors"
-          >
-            <RectangleGroupIcon className="h-5 w-5" /> Add Top-Level Group
-          </button>
-        </div>
-
-        {/* Section to display the generated rule string */}
-        {ruleElements.length > 0 && (
-          <div className="mt-8">
-            <button
-              onClick={generateKaceRule}
-              className="w-full bg-green-600 hover:bg-green-500 text-white px-4 py-2.5 rounded-lg font-semibold mb-4 transition-colors"
-            >
-              Generate KACE Rule String
-            </button>
-            {generatedRuleString && !Object.values(validationErrors).some(errors => errors.length > 0) && (
-              <div className="bg-slate-800/80 rounded-lg p-4 border border-slate-700">
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="text-lg font-semibold text-slate-200">Generated Rule:</h3>
-                  <button
-                    onClick={copyToClipboard}
-                    className="text-sm bg-slate-700 hover:bg-slate-600 text-slate-300 px-3 py-1.5 rounded-md flex items-center gap-2 transition-colors"
-                    title="Copy to clipboard"
-                  >
-                    {copied ? <ClipboardDocumentCheckIcon className="h-5 w-5 text-green-400" /> : <ClipboardDocumentIcon className="h-5 w-5" />}
-                    {copied ? 'Copied!' : 'Copy'}
-                  </button>
-                </div>
-                <pre className="text-slate-300 text-sm whitespace-pre-wrap bg-slate-900 p-3 rounded-md overflow-x-auto">
-                  {generatedRuleString}
-                </pre>
+              <div className="mt-3 p-3 bg-red-100 border border-red-300 rounded-md text-sm text-red-700">
+                <ExclamationTriangleIcon className="h-5 w-5 inline mr-2" /> {parsingError}
               </div>
             )}
           </div>
-        )}
-        
-        {/* Footer/Informational Text */}
-        <div className="text-slate-500 text-xs mt-8 text-center">
-          <p>
-            This tool helps construct custom inventory rules for Quest KACE. The generated string can be pasted into the KACE SMA.
-          </p>
-          <p className="mt-1">
-            Required fields are marked with <span className="text-red-500">*</span>. Empty groups will be omitted from the output.
-            The importer is experimental and works best with rules generated by this tool or simple KACE rules.
-          </p>
+
+          {/* Rule Element Renderer */}
+          <RuleElementRenderer
+            elements={ruleElements}
+            operators={topLevelOperators}
+            onUpdateOperator={updateTopLevelOperator}
+            onRemoveElement={removeElementById}
+            onUpdateConditionFunction={updateConditionFunction}
+            onUpdateConditionParam={updateConditionParam}
+            onUpdateGroupOperator={updateGroupOperator}
+            onAddChildToGroup={addChildToGroup}
+            validationErrors={validationErrors}
+            isTopLevel={true}
+          />
+
+          {/* Buttons to add top-level conditions or groups */}
+          <div className="mt-6 flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={() => addTopLevelElement('condition')}
+              className="flex-1 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-lg font-semibold transition-colors"
+            >
+              <Bars3BottomLeftIcon className="h-5 w-5" /> Add Top-Level Condition
+            </button>
+            <button
+              onClick={() => addTopLevelElement('group')}
+              className="flex-1 flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-4 py-2.5 rounded-lg font-semibold transition-colors"
+            >
+              <RectangleGroupIcon className="h-5 w-5" /> Add Top-Level Group
+            </button>
+          </div>
+
+          {/* Section to display the generated rule string */}
+          {ruleElements.length > 0 && (
+            <div className="mt-8">
+              <button
+                onClick={generateKaceRule}
+                className="w-full bg-green-600 hover:bg-green-500 text-white px-4 py-2.5 rounded-lg font-semibold mb-4 transition-colors"
+              >
+                Generate KACE Rule String
+              </button>
+              {generatedRuleString && !Object.values(validationErrors).some((errors) => errors.length > 0) && (
+                <div className="bg-gray-100 rounded-lg p-4 border border-gray-300">
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="text-lg font-semibold text-gray-900">Generated Rule:</h3>
+                    <button
+                      onClick={copyToClipboard}
+                      className="text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1.5 rounded-md flex items-center gap-2 transition-colors"
+                      title="Copy to clipboard"
+                    >
+                      {copied ? <ClipboardDocumentCheckIcon className="h-5 w-5 text-green-500" /> : <ClipboardDocumentIcon className="h-5 w-5" />}
+                      {copied ? 'Copied!' : 'Copy'}
+                    </button>
+                  </div>
+                  <pre className="text-gray-700 text-sm whitespace-pre-wrap bg-gray-200 p-3 rounded-md overflow-x-auto">
+                    {generatedRuleString}
+                  </pre>
+                </div>
+              )}
+            </div>
+          )}
+          
+          {/* Footer/Informational Text */}
+          <div className="text-gray-500 text-xs mt-8 text-center">
+            <p>
+              This tool helps construct custom inventory rules for Quest KACE. The generated string can be pasted into the KACE SMA.
+            </p>
+            <p className="mt-1">
+              Required fields are marked with <span className="text-red-500">*</span>. Empty groups will be omitted from the output.
+              The importer is experimental and works best with rules generated by this tool or simple KACE rules.
+            </p>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </LightThemeLayout>
   )
 }
 

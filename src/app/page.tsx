@@ -1,5 +1,6 @@
 import { KeyIcon, QrCodeIcon, ShieldCheckIcon, SparklesIcon, ArrowPathIcon, PhotoIcon, DocumentIcon, DocumentTextIcon, CodeBracketIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
+import LightThemeLayout from './components/LightThemeLayout'
 
 const tools = [
   {
@@ -56,82 +57,92 @@ const tools = [
     href: '/tools/kace-cir',
     icon: CodeBracketIcon,
   },
-];
+  {
+    name: 'Rack Planner',
+    description: 'Easily design and visualize server and network racks with drag-and-drop components.',
+    href: '/tools/rack-planner',
+    icon: CodeBracketIcon,
+  }
+]
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gray-950">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-center mb-8 text-white">
-          Free Online Tools
-        </h1>
+    <LightThemeLayout>
+      <main className="min-h-screen bg-gray-100">
+        <div className="container mx-auto px-4 py-8">
+          <h1 className="text-4xl font-bold text-center mb-8 text-gray-900">
+            Free Online Tools
+          </h1>
 
-        <div className="max-w-4xl mx-auto mb-8 p-4 bg-blue-500/10 border border-blue-400/20 rounded-lg text-center">
-          <p className="text-blue-400 text-lg">
-            🔒 All tools run entirely in your browser. No data is stored on our servers.
-          </p>
-        </div>
-        
-        {/* Feature Highlights */}
-        <div className="max-w-7xl mx-auto mb-12 grid md:grid-cols-3 gap-6">
-          <div className="bg-slate-800/50 rounded-lg p-6 text-center">
-            <ShieldCheckIcon className="h-8 w-8 text-blue-400 mx-auto mb-2" />
-            <h3 className="font-semibold mb-2 text-white">Privacy First</h3>
-            <p className="text-slate-300 text-sm">
-              Your data never leaves your device. Everything runs locally in your browser.
+          <div className="max-w-4xl mx-auto mb-8 p-4 bg-blue-100 border border-blue-300 rounded-lg text-center">
+            <p className="text-blue-700 text-lg">
+              🔒 All tools run entirely in your browser. No data is stored on our servers.
             </p>
           </div>
-          <div className="bg-slate-800/50 rounded-lg p-6 text-center">
-            <SparklesIcon className="h-8 w-8 text-blue-400 mx-auto mb-2" />
-            <h3 className="font-semibold mb-2 text-white">Always Free</h3>
-            <p className="text-slate-300 text-sm">
-              No registration, no subscriptions. All tools are completely free to use.
-            </p>
+
+          {/* Feature Highlights */}
+          <div className="max-w-7xl mx-auto mb-12 grid md:grid-cols-3 gap-6">
+            <div className="bg-white rounded-lg p-6 text-center border border-gray-300 shadow">
+              <ShieldCheckIcon className="h-8 w-8 text-blue-500 mx-auto mb-2" />
+              <h3 className="font-semibold mb-2 text-gray-900">Privacy First</h3>
+              <p className="text-gray-600 text-sm">
+                Your data never leaves your device. Everything runs locally in your browser.
+              </p>
+            </div>
+            <div className="bg-white rounded-lg p-6 text-center border border-gray-300 shadow">
+              <SparklesIcon className="h-8 w-8 text-blue-500 mx-auto mb-2" />
+              <h3 className="font-semibold mb-2 text-gray-900">Always Free</h3>
+              <p className="text-gray-600 text-sm">
+                No registration, no subscriptions. All tools are completely free to use.
+              </p>
+            </div>
+            <div className="bg-white rounded-lg p-6 text-center border border-gray-300 shadow">
+              <ArrowPathIcon className="h-8 w-8 text-blue-500 mx-auto mb-2" />
+              <h3 className="font-semibold mb-2 text-gray-900">Regular Updates</h3>
+              <p className="text-gray-600 text-sm">
+                We constantly add new tools and improve existing ones.
+              </p>
+            </div>
           </div>
-          <div className="bg-slate-800/50 rounded-lg p-6 text-center">
-            <ArrowPathIcon className="h-8 w-8 text-blue-400 mx-auto mb-2" />
-            <h3 className="font-semibold mb-2 text-white">Regular Updates</h3>
-            <p className="text-slate-300 text-sm">
-              We constantly add new tools and improve existing ones.
-            </p>
-          </div>
-        </div>
-        
-        {/* Tools Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-7xl mx-auto">
-          {tools.map((tool) => (
-            <Link key={tool.href} href={tool.href} className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors border border-slate-700">
-              <div className="p-4">
-                <div className="mb-2 bg-blue-500/10 w-10 h-10 rounded-lg flex items-center justify-center">
-                  <tool.icon className="h-5 w-5 text-blue-400" />
+
+          {/* Tools Grid */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-7xl mx-auto">
+            {tools.map((tool) => (
+              <Link
+                key={tool.href}
+                href={tool.href}
+                className="bg-white rounded-lg overflow-hidden hover:bg-gray-100 transition-colors border border-gray-300 shadow"
+              >
+                <div className="p-4">
+                  <div className="mb-2 bg-blue-100 w-10 h-10 rounded-lg flex items-center justify-center">
+                    <tool.icon className="h-5 w-5 text-blue-500" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">{tool.name}</h3>
+                  <p className="text-gray-600 text-xs">{tool.description}</p>
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-1">{tool.name}</h3>
-                <p className="text-slate-300 text-xs">
-                  {tool.description}
-                </p>
-              </div>
-            </Link>
-          ))}
-        </div>
+              </Link>
+            ))}
+          </div>
 
-        {/* Additional Information */}
-        <div className="max-w-4xl mx-auto mt-12 p-6 bg-slate-800 rounded-lg border border-slate-700">
-          <h2 className="text-2xl font-semibold text-white mb-4">About Our Tools</h2>
-          <div className="space-y-4 text-slate-300">
-            <p>
-              CloudFriends.net provides essential web tools that prioritize your privacy and security. 
-              Our tools are designed to be simple, efficient, and completely free to use.
-            </p>
-            <p>
-              Whether you need to generate secure passwords or create QR codes for your business, 
-              our tools help you get the job done without compromising your data.
-            </p>
-            <p className="text-sm text-slate-400">
-              Have a suggestion for a new tool? Contact us at contact@cloudfriends.net
-            </p>
+          {/* Additional Information */}
+          <div className="max-w-4xl mx-auto mt-12 p-6 bg-white rounded-lg border border-gray-300 shadow">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">About Our Tools</h2>
+            <div className="space-y-4 text-gray-600">
+              <p>
+                CloudFriends.net provides essential web tools that prioritize your privacy and security. 
+                Our tools are designed to be simple, efficient, and completely free to use.
+              </p>
+              <p>
+                Whether you need to generate secure passwords or create QR codes for your business, 
+                our tools help you get the job done without compromising your data.
+              </p>
+              <p className="text-sm text-gray-500">
+                Have a suggestion for a new tool? Contact us at contact@cloudfriends.net
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </LightThemeLayout>
   )
 }

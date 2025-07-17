@@ -90,13 +90,13 @@ export default function SubnetCalculator() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-950 flex flex-col items-center px-2" style={{ paddingTop: '5.5rem' }}>
+    <main className="min-h-screen bg-gray-100 flex flex-col items-center px-2" style={{ paddingTop: '5.5rem' }}>
       <div className="w-full max-w-xl">
-        <h1 className="text-3xl font-bold text-center mb-2 text-white">IP Subnet Calculator</h1>
-        <p className="text-blue-400 text-center mb-2 text-sm">
+        <h1 className="text-3xl font-bold text-center mb-2 text-gray-900">IP Subnet Calculator</h1>
+        <p className="text-blue-600 text-center mb-2 text-sm">
           Enter an IPv4 address and CIDR (e.g. <b>192.168.1.10/24</b>) to calculate network details.
         </p>
-        <div className="bg-slate-800/60 rounded-lg p-3 mb-4 text-xs text-slate-300">
+        <div className="bg-blue-100 rounded-lg p-3 mb-4 text-xs text-gray-700 border border-blue-300">
           <b>How it works:</b> This tool calculates the network address, subnet mask, broadcast address, usable host range, and more for any IPv4 subnet.
           <ul className="list-disc list-inside mt-2 space-y-1">
             <li><b>Network Address:</b> The first address in the subnet, used to identify the network.</li>
@@ -106,12 +106,12 @@ export default function SubnetCalculator() {
             <li><b>Wildcard Mask:</b> The inverse of the subnet mask, useful in some firewall rules.</li>
           </ul>
         </div>
-        <div className="bg-slate-800/60 rounded-lg p-3 mb-4 text-xs text-slate-300">
+        <div className="bg-blue-100 rounded-lg p-3 mb-4 text-xs text-gray-700 border border-blue-300">
           <b>Examples:</b>
           <ul className="list-disc list-inside mt-1">
-            <li><span className="text-blue-300">192.168.1.10/24</span> → Network: 192.168.1.0/24, Mask: 255.255.255.0, Hosts: 254</li>
-            <li><span className="text-blue-300">10.0.0.1/8</span> → Network: 10.0.0.0/8, Mask: 255.0.0.0, Hosts: 16777214</li>
-            <li><span className="text-blue-300">172.16.5.100/30</span> → Network: 172.16.5.100/30, Mask: 255.255.255.252, Hosts: 2</li>
+            <li><span className="text-blue-600">192.168.1.10/24</span> → Network: 192.168.1.0/24, Mask: 255.255.255.0, Hosts: 254</li>
+            <li><span className="text-blue-600">10.0.0.1/8</span> → Network: 10.0.0.0/8, Mask: 255.0.0.0, Hosts: 16777214</li>
+            <li><span className="text-blue-600">172.16.5.100/30</span> → Network: 172.16.5.100/30, Mask: 255.255.255.252, Hosts: 2</li>
           </ul>
         </div>
         <div className="flex gap-2 mb-4">
@@ -119,18 +119,18 @@ export default function SubnetCalculator() {
             type="text"
             value={ip}
             onChange={e => setIp(e.target.value)}
-            className="flex-1 bg-slate-800 text-slate-200 rounded-lg px-3 py-2 border border-slate-700"
+            className="flex-1 bg-gray-200 text-gray-900 rounded-lg px-3 py-2 border border-gray-300"
             placeholder="IP address (e.g. 192.168.1.10)"
             autoComplete="off"
           />
-          <span className="text-slate-300 flex items-center">/</span>
+          <span className="text-gray-700 flex items-center">/</span>
           <input
             type="number"
             value={cidr}
             onChange={e => setCidr(Number(e.target.value))}
             min={0}
             max={32}
-            className="w-16 bg-slate-800 text-slate-200 rounded-lg px-3 py-2 border border-slate-700"
+            className="w-16 bg-gray-200 text-gray-900 rounded-lg px-3 py-2 border border-gray-300"
             placeholder="CIDR"
           />
           <button
@@ -141,12 +141,12 @@ export default function SubnetCalculator() {
           </button>
         </div>
         {result && result.error && (
-          <div className="text-red-400 mb-2">{result.error}</div>
+          <div className="text-red-600 mb-2">{result.error}</div>
         )}
         {result && !result.error && (
-          <div className="bg-slate-800 rounded-lg p-4 border border-slate-700 text-slate-200 text-sm space-y-1">
+          <div className="bg-gray-100 rounded-lg p-4 border border-gray-300 text-gray-900 text-sm space-y-1">
             <div><b>Network Address:</b> {result.network}/{result.cidr}</div>
-            <div><b>Subnet Mask:</b> {result.mask} <span className="text-slate-400 ml-2">(Binary: {result.binaryMask})</span></div>
+            <div><b>Subnet Mask:</b> {result.mask} <span className="text-gray-600 ml-2">(Binary: {result.binaryMask})</span></div>
             <div><b>Wildcard Mask:</b> {result.wildcardMask}</div>
             <div><b>Broadcast Address:</b> {result.broadcast}</div>
             <div><b>First Host:</b> {result.firstHost}</div>
@@ -154,9 +154,9 @@ export default function SubnetCalculator() {
             <div><b>Usable Hosts:</b> {result.hosts}</div>
           </div>
         )}
-        <div className="text-slate-500 text-xs mt-4">
+        <div className="text-gray-500 text-xs mt-4">
           <p>
-            This calculator is for IPv4 only. CIDR /31 and /32 are handled according to <a href="https://datatracker.ietf.org/doc/html/rfc3021" target="_blank" rel="noopener noreferrer" className="underline text-blue-400">RFC 3021</a>.
+            This calculator is for IPv4 only. CIDR /31 and /32 are handled according to <a href="https://datatracker.ietf.org/doc/html/rfc3021" target="_blank" rel="noopener noreferrer" className="underline text-blue-600">RFC 3021</a>.
             <br />
             All calculations are performed locally in your browser.
           </p>

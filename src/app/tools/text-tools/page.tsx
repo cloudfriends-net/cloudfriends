@@ -8,7 +8,6 @@ type CaseOption = 'upper' | 'lower' | 'title' | 'sentence'
 type TransformOption = 'reverse' | 'sort' | 'shuffle' | 'removeDuplicates'
 type CleanOption = 'extraSpaces' | 'extraLines' | 'html' | 'trim'
 
-// Add these helper objects above your component:
 const operationDescriptions: Record<Operation, string> = {
   case: 'Change the capitalization style of your text.',
   transform: 'Rearrange, sort, or modify lines in your text.',
@@ -69,7 +68,6 @@ export default function TextTools() {
     setOutput(result)
   }, [text, selectedOperation, selectedCaseOption, selectedTransformOption, selectedCleanOption])
 
-  // Process text whenever relevant state changes
   useEffect(() => {
     if (text) {
       processText()
@@ -78,7 +76,6 @@ export default function TextTools() {
     }
   }, [text, selectedOperation, selectedCaseOption, selectedTransformOption, selectedCleanOption, processText])
 
-  // Update stats whenever text changes
   useEffect(() => {
     updateStats(text)
   }, [text])
@@ -156,34 +153,29 @@ export default function TextTools() {
   }
 
   return (
-    <main
-      className="min-h-screen bg-gray-950 flex flex-col items-center px-2"
-      style={{ paddingTop: '5.5rem' }} // Adjust this value to match your header height
-    >
+    <main className="min-h-screen bg-gray-100 flex flex-col items-center px-2" style={{ paddingTop: '5.5rem' }}>
       <div className="w-full max-w-2xl">
-        <h1 className="text-3xl font-bold text-center mb-2 text-white">Text Tools</h1>
-        <p className="text-blue-400 text-center mb-2 text-sm">
+        <h1 className="text-3xl font-bold text-center mb-2 text-gray-900">Text Tools</h1>
+        <p className="text-blue-600 text-center mb-2 text-sm">
           🔒 All processing happens in your browser. No data leaves your device.
         </p>
-        <p className="text-slate-400 text-center mb-6 text-sm">
-          Paste or type your text below, then choose an operation to transform, clean, or analyze your text. 
+        <p className="text-gray-600 text-center mb-6 text-sm">
+          Paste or type your text below, then choose an operation to transform, clean, or analyze your text.
           The result will appear instantly in the output box. Use the &quot;Copy&quot; button to quickly copy the result.
         </p>
 
-        {/* Input */}
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          className="w-full h-40 bg-slate-800 text-slate-200 rounded-lg p-4 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-3"
+          className="w-full h-40 bg-gray-200 text-gray-900 rounded-lg p-4 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-3"
           placeholder="Paste or type your text here..."
         />
 
-        {/* Operation selection */}
         <div className="flex flex-wrap gap-2 mb-1 justify-center">
           <select
             value={selectedOperation}
             onChange={e => setSelectedOperation(e.target.value as Operation)}
-            className="bg-slate-800 text-slate-200 rounded-lg px-3 py-2 border border-slate-700 focus:outline-none"
+            className="bg-gray-200 text-gray-900 rounded-lg px-3 py-2 border border-gray-300 focus:outline-none"
           >
             <option value="case">Change Case</option>
             <option value="transform">Transform</option>
@@ -195,7 +187,7 @@ export default function TextTools() {
             <select
               value={selectedCaseOption}
               onChange={e => setSelectedCaseOption(e.target.value as CaseOption)}
-              className="bg-slate-800 text-slate-200 rounded-lg px-3 py-2 border border-slate-700 focus:outline-none"
+              className="bg-gray-200 text-gray-900 rounded-lg px-3 py-2 border border-gray-300 focus:outline-none"
             >
               <option value="upper">UPPERCASE</option>
               <option value="lower">lowercase</option>
@@ -208,7 +200,7 @@ export default function TextTools() {
             <select
               value={selectedTransformOption}
               onChange={e => setSelectedTransformOption(e.target.value as TransformOption)}
-              className="bg-slate-800 text-slate-200 rounded-lg px-3 py-2 border border-slate-700 focus:outline-none"
+              className="bg-gray-200 text-gray-900 rounded-lg px-3 py-2 border border-gray-300 focus:outline-none"
             >
               <option value="reverse">Reverse Text</option>
               <option value="sort">Sort Lines</option>
@@ -221,7 +213,7 @@ export default function TextTools() {
             <select
               value={selectedCleanOption}
               onChange={e => setSelectedCleanOption(e.target.value as CleanOption)}
-              className="bg-slate-800 text-slate-200 rounded-lg px-3 py-2 border border-slate-700 focus:outline-none"
+              className="bg-gray-200 text-gray-900 rounded-lg px-3 py-2 border border-gray-300 focus:outline-none"
             >
               <option value="extraSpaces">Remove Extra Spaces</option>
               <option value="extraLines">Remove Extra Lines</option>
@@ -231,8 +223,7 @@ export default function TextTools() {
           )}
         </div>
 
-        {/* Dynamic helper text */}
-        <div className="mb-3 text-center text-xs text-slate-400 min-h-[1.5em]">
+        <div className="mb-3 text-center text-xs text-gray-600 min-h-[1.5em]">
           {selectedOperation === 'case' && caseDescriptions[selectedCaseOption]}
           {selectedOperation === 'transform' && transformDescriptions[selectedTransformOption]}
           {selectedOperation === 'clean' && cleanDescriptions[selectedCleanOption]}
@@ -240,14 +231,13 @@ export default function TextTools() {
           {!['case', 'transform', 'clean', 'count'].includes(selectedOperation) && operationDescriptions[selectedOperation]}
         </div>
 
-        {/* Output */}
         <div className="mb-2 flex items-center justify-between">
-          <span className="text-slate-400 text-xs">
+          <span className="text-gray-600 text-xs">
             {stats.chars} chars | {stats.words} words | {stats.lines} lines
           </span>
           <button
             onClick={copyToClipboard}
-            className="inline-flex items-center text-xs text-blue-400 hover:text-blue-300 transition-colors"
+            className="inline-flex items-center text-xs text-blue-600 hover:text-blue-500 transition-colors"
           >
             <ClipboardDocumentCheckIcon className="h-4 w-4 mr-1" />
             {copied ? 'Copied!' : 'Copy'}
@@ -257,23 +247,22 @@ export default function TextTools() {
           ref={outputRef}
           value={output}
           readOnly
-          className="w-full h-40 bg-slate-800 text-slate-200 rounded-lg p-4 border border-slate-700 focus:outline-none mb-2"
+          className="w-full h-40 bg-gray-200 text-gray-900 rounded-lg p-4 border border-gray-300 focus:outline-none mb-2"
         />
 
-        {/* Stats for Count */}
         {selectedOperation === 'count' && (
-          <div className="bg-slate-800 p-4 rounded-lg border border-slate-700 mt-2 flex justify-around text-center">
+          <div className="bg-gray-200 p-4 rounded-lg border border-gray-300 mt-2 flex justify-around text-center">
             <div>
-              <div className="text-blue-400 text-lg font-bold">{stats.chars}</div>
-              <div className="text-slate-400 text-xs">Characters</div>
+              <div className="text-blue-600 text-lg font-bold">{stats.chars}</div>
+              <div className="text-gray-600 text-xs">Characters</div>
             </div>
             <div>
-              <div className="text-blue-400 text-lg font-bold">{stats.words}</div>
-              <div className="text-slate-400 text-xs">Words</div>
+              <div className="text-blue-600 text-lg font-bold">{stats.words}</div>
+              <div className="text-gray-600 text-xs">Words</div>
             </div>
             <div>
-              <div className="text-blue-400 text-lg font-bold">{stats.lines}</div>
-              <div className="text-slate-400 text-xs">Lines</div>
+              <div className="text-blue-600 text-lg font-bold">{stats.lines}</div>
+              <div className="text-gray-600 text-xs">Lines</div>
             </div>
           </div>
         )}
