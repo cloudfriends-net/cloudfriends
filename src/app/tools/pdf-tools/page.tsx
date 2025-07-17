@@ -19,7 +19,8 @@ export default function PDFTools() {
   const [splitFile, setSplitFile] = useState<File | null>(null)
   const [compressFile, setCompressFile] = useState<File | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState<string | null>(null)
+
   const [processedFiles, setProcessedFiles] = useState<{
     type: Operation
     files: { name: string; url: string }[]
@@ -359,8 +360,15 @@ export default function PDFTools() {
               ))}
             </div>
           )}
+
+          {error && (
+            <div className="bg-red-100 border border-red-300 text-red-700 p-4 rounded mb-4">
+              {error}
+            </div>
+          )}
         </div>
       </div>
     </main>
   )
 }
+

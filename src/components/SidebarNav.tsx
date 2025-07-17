@@ -22,7 +22,7 @@ const tools = [
 export function SidebarNav() {
   const pathname = usePathname()
   const [search, setSearch] = useState('')
-  const [open, setOpen] = useState(true) // Default to true for SSR
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
     const handleResize = () => {
@@ -103,22 +103,32 @@ export function SidebarNav() {
           </div>
         </div>
         {/* Tools List */}
-        <nav className="flex-1 flex flex-col gap-1 overflow-y-auto px-1">
+        <nav className="flex-1 flex flex-col gap-1 overflow-y-auto px-2">
           {filteredTools.length === 0 && (
-            <span className="text-gray-500 px-3 py-2">No tools found.</span>
+            <span className="text-gray-500 px-2 py-1 text-sm font-light">No tools found.</span>
           )}
           {filteredTools.map(tool => (
             <Link
               key={tool.path}
               href={tool.path}
-              className={`px-4 py-3 rounded-md transition-all font-[Outfit] text-base font-normal ${
+              className={`flex items-center gap-2 px-2 py-1 rounded-md transition-all font-[Outfit] text-sm ${
                 pathname === tool.path
                   ? 'bg-blue-100 text-blue-600 border border-blue-200'
-                  : 'text-gray-700 hover:bg-gray-100'
+                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
               }`}
               onClick={() => setOpen(false)}
             >
-              {tool.name}
+              {/* Compact Icon */}
+              <div
+                className={`flex items-center justify-center w-6 h-6 rounded-md ${
+                  pathname === tool.path ? 'bg-blue-200' : 'bg-gray-100'
+                }`}
+              >
+                <span className="text-xs font-bold text-gray-500">
+                  {tool.name.charAt(0)}
+                </span>
+              </div>
+              <span className="truncate font-medium">{tool.name}</span>
             </Link>
           ))}
         </nav>

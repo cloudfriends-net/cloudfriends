@@ -1,12 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { PlusIcon, ServerIcon } from '@heroicons/react/24/outline'
-import { DndProvider, useDrag, useDrop } from 'react-dnd'
+import { DndProvider, useDrag } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { ArrowsRightLeftIcon, AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline'
-import { parseStringPromise } from 'xml2js' // Install xml2js for XML parsing
-import LightThemeLayout from '../../components/LightThemeLayout' // Import the LightThemeLayout component
+import { parseStringPromise } from 'xml2js'
+import LightThemeLayout from '../../components/LightThemeLayout'
 
 interface Rack {
   id: string
@@ -18,15 +16,17 @@ interface RackComponent {
   id: string
   type: 'switch' | 'patch-panel' | 'server'
   name: string
+  model?: string
+  serialNumber?: string
   ports?: number
 }
 
 const DraggableComponent = ({
   component,
-  onRename,
+  onUpdate,
 }: {
   component: RackComponent
-  onRename: (id: string, newName: string) => void
+  onUpdate: (id: string, updatedComponent: Partial<RackComponent>) => void
 }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'COMPONENT',
@@ -36,40 +36,53 @@ const DraggableComponent = ({
     }),
   }))
 
-  const getIcon = (type: RackComponent['type']) => {
-    switch (type) {
-      case 'switch':
-        return <ArrowsRightLeftIcon className="h-5 w-5 text-green-400" />
-      case 'patch-panel':
-        return <AdjustmentsHorizontalIcon className="h-5 w-5 text-yellow-400" />
-      case 'server':
-        return <ServerIcon className="h-5 w-5 text-red-400" />
-      default:
-        return null
-    }
-  }
-
   return (
     <div
       ref={drag as unknown as React.Ref<HTMLDivElement>}
-      className={`bg-slate-900 p-3 rounded border border-slate-700 flex items-center gap-3 ${
+      className={`bg-gray-100 p-3 rounded border border-gray-300 flex flex-col gap-2 ${
         isDragging ? 'opacity-50' : ''
       }`}
     >
-      {getIcon(component.type)}
       <input
         type="text"
         value={component.name}
-        onChange={(e) => onRename(component.id, e.target.value)}
-        className="bg-transparent text-gray-100 w-full"
+        onChange={(e) => onUpdate(component.id, { name: e.target.value })}
+        placeholder="Name"
+        className="bg-white border border-gray-300 rounded px-2 py-1 text-sm"
       />
-      <span className="text-sm text-gray-400"> ({component.type})</span>
+      <input
+        type="text"
+        value={component.model || ''}
+        onChange={(e) => onUpdate(component.id, { model: e.target.value })}
+        placeholder="Model"
+        className="bg-white border border-gray-300 rounded px-2 py-1 text-sm"
+      />
+      {component.type === 'server' && (
+        <input
+          type="text"
+          value={component.serialNumber || ''}
+          onChange={(e) => onUpdate(component.id, { serialNumber: e.target.value })}
+          placeholder="Serial Number"
+          className="bg-white border border-gray-300 rounded px-2 py-1 text-sm"
+        />
+      )}
+      {(component.type === 'switch' || component.type === 'patch-panel') && (
+        <input
+          type="number"
+          value={component.ports || ''}
+          onChange={(e) => onUpdate(component.id, { ports: Number(e.target.value) })}
+          placeholder="Ports"
+          className="bg-white border border-gray-300 rounded px-2 py-1 text-sm"
+        />
+      )}
+      <span className="text-sm text-gray-500">Type: {component.type}</span>
     </div>
   )
 }
 
 export default function RackPlanner() {
   const [racks, setRacks] = useState<Rack[]>([])
+  const [selectedRackId, setSelectedRackId] = useState<string | null>(null)
 
   const addRack = () => {
     const newRack: Rack = {
@@ -78,6 +91,7 @@ export default function RackPlanner() {
       components: [],
     }
     setRacks([...racks, newRack])
+    setSelectedRackId(newRack.id)
   }
 
   const addComponentToRack = (rackId: string, componentType: RackComponent['type']) => {
@@ -91,7 +105,7 @@ export default function RackPlanner() {
                 {
                   id: `component-${Date.now()}`,
                   type: componentType,
-                  name: `${componentType} ${rack.components.length + 1}`,
+                  name: '',
                 },
               ],
             }
@@ -100,42 +114,14 @@ export default function RackPlanner() {
     )
   }
 
-  const moveComponent = (sourceRackId: string, targetRackId: string, componentId: string) => {
-    const sourceRack = racks.find((rack) => rack.id === sourceRackId)
-    const targetRack = racks.find((rack) => rack.id === targetRackId)
-
-    if (!sourceRack || !targetRack) return
-
-    const componentToMove = sourceRack.components.find((component) => component.id === componentId)
-    if (!componentToMove) return
-
-    setRacks((prevRacks) =>
-      prevRacks.map((rack) => {
-        if (rack.id === sourceRackId) {
-          return {
-            ...rack,
-            components: rack.components.filter((component) => component.id !== componentId),
-          }
-        }
-        if (rack.id === targetRackId) {
-          return {
-            ...rack,
-            components: [...rack.components, componentToMove],
-          }
-        }
-        return rack
-      })
-    )
-  }
-
-  const renameComponent = (rackId: string, componentId: string, newName: string) => {
+  const updateComponent = (rackId: string, componentId: string, updatedComponent: Partial<RackComponent>) => {
     setRacks((prevRacks) =>
       prevRacks.map((rack) =>
         rack.id === rackId
           ? {
               ...rack,
               components: rack.components.map((component) =>
-                component.id === componentId ? { ...component, name: newName } : component
+                component.id === componentId ? { ...component, ...updatedComponent } : component
               ),
             }
           : rack
@@ -150,7 +136,7 @@ export default function RackPlanner() {
           `<Rack id="${rack.id}" name="${rack.name}">${rack.components
             .map(
               (component) =>
-                `<Component id="${component.id}" type="${component.type}" name="${component.name}" />`
+                `<Component id="${component.id}" type="${component.type}" name="${component.name}" model="${component.model}" serialNumber="${component.serialNumber}" ports="${component.ports}" />`
             )
             .join('')}</Rack>`
       )
@@ -163,110 +149,127 @@ export default function RackPlanner() {
     link.click()
   }
 
-  const importProject = async (file: File) => {
+const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files?.[0]
+  if (file) {
     const text = await file.text()
     const result = await parseStringPromise(text)
 
     if (result && result.RackPlanner && result.RackPlanner.Rack) {
-      const importedRacks: Rack[] = result.RackPlanner.Rack.map((rack: any) => ({
+      const importedRacks: Rack[] = result.RackPlanner.Rack.map((rack: { $: { id: string; name: string }; Component?: Array<{ $: { id: string; type: string; name: string; model?: string; serialNumber?: string; ports?: string } }> }) => ({
         id: rack.$.id,
         name: rack.$.name,
         components: rack.Component
-          ? rack.Component.map((component: any) => ({
+          ? rack.Component.map((component) => ({
               id: component.$.id,
               type: component.$.type,
               name: component.$.name,
+              model: component.$.model,
+              serialNumber: component.$.serialNumber,
+              ports: component.$.ports ? parseInt(component.$.ports) : undefined,
             }))
           : [],
       }))
       setRacks(importedRacks)
     }
   }
+}
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      importProject(file)
-    }
-  }
+  const selectedRack = racks.find((rack) => rack.id === selectedRackId)
 
   return (
     <LightThemeLayout>
       <DndProvider backend={HTML5Backend}>
         <div className="min-h-screen" style={{ paddingTop: '5.5rem' }}>
-          <main className="container mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Configuration Section */}
-            <section className="bg-white p-6 rounded-lg border border-gray-300 shadow">
-              <h2 className="text-xl font-semibold mb-4">Configuration</h2>
-              <button
-                onClick={addRack}
-                className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors mb-4"
-              >
-                Add Rack
-              </button>
-              <input
-                type="file"
-                accept=".xml"
-                onChange={handleFileUpload}
-                className="w-full bg-gray-200 text-gray-900 px-4 py-2 rounded mb-4"
-              />
-              <div className="space-y-4">
-                {racks.map((rack) => (
-                  <div key={rack.id} className="bg-gray-100 p-4 rounded border border-gray-300 shadow">
-                    <h3 className="text-lg font-semibold">{rack.name}</h3>
-                    <div className="mt-2 space-y-2">
+          <header className="py-8 border-b border-gray-200">
+            <div className="container mx-auto px-4 text-center">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Rack Planner</h1>
+              <p className="text-gray-600 text-sm">
+                Design and customize server and network racks. Save and import your projects easily.
+              </p>
+            </div>
+          </header>
+
+          <main className="container mx-auto px-4 py-8">
+            <div className="flex gap-8">
+              {/* Sidebar */}
+              <aside className="w-1/3 bg-white p-6 rounded-lg border border-gray-300 shadow">
+                <h2 className="text-xl font-semibold mb-4">Configuration</h2>
+                <button
+                  onClick={addRack}
+                  className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors mb-4"
+                >
+                  Add Rack
+                </button>
+                <input
+                  type="file"
+                  accept=".xml"
+                  onChange={handleFileUpload}
+                  className="w-full bg-gray-200 text-gray-900 px-4 py-2 rounded mb-4"
+                />
+                <ul className="space-y-2">
+                  {racks.map((rack) => (
+                    <li
+                      key={rack.id}
+                      className={`p-2 rounded cursor-pointer ${
+                        selectedRackId === rack.id ? 'bg-gray-200' : 'hover:bg-gray-100'
+                      }`}
+                      onClick={() => setSelectedRackId(rack.id)}
+                    >
+                      {rack.name}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={saveProject}
+                  className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors mt-4"
+                >
+                  Save Project
+                </button>
+              </aside>
+
+              {/* Main Content */}
+              <section className="w-2/3 bg-white p-6 rounded-lg border border-gray-300 shadow">
+                {selectedRack ? (
+                  <>
+                    <h2 className="text-xl font-semibold mb-4">{selectedRack.name}</h2>
+                    <div className="space-y-4">
                       <button
-                        onClick={() => addComponentToRack(rack.id, 'switch')}
+                        onClick={() => addComponentToRack(selectedRack.id, 'switch')}
                         className="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors"
                       >
                         Add Switch
                       </button>
                       <button
-                        onClick={() => addComponentToRack(rack.id, 'patch-panel')}
+                        onClick={() => addComponentToRack(selectedRack.id, 'patch-panel')}
                         className="w-full bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition-colors"
                       >
                         Add Patch Panel
                       </button>
                       <button
-                        onClick={() => addComponentToRack(rack.id, 'server')}
+                        onClick={() => addComponentToRack(selectedRack.id, 'server')}
                         className="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
                       >
                         Add Server
                       </button>
                     </div>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-8">
-                <button
-                  onClick={saveProject}
-                  className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-                >
-                  Save Project
-                </button>
-              </div>
-            </section>
-
-            {/* Preview Section */}
-            <section className="bg-white p-6 rounded-lg border border-gray-300 shadow">
-              <h2 className="text-xl font-semibold mb-4">Preview</h2>
-              <div className="space-y-6">
-                {racks.map((rack) => (
-                  <div key={rack.id} className="bg-gray-100 p-4 rounded border border-gray-300 shadow">
-                    <h3 className="text-lg font-semibold mb-2">{rack.name}</h3>
-                    <ul className="space-y-2">
-                      {rack.components.map((component) => (
+                    <div className="mt-6 space-y-4">
+                      {selectedRack.components.map((component) => (
                         <DraggableComponent
                           key={component.id}
                           component={component}
-                          onRename={(id, newName) => renameComponent(rack.id, id, newName)}
+                          onUpdate={(id, updatedComponent) =>
+                            updateComponent(selectedRack.id, id, updatedComponent)
+                          }
                         />
                       ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </section>
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-gray-600">Select a rack to configure.</p>
+                )}
+              </section>
+            </div>
           </main>
         </div>
       </DndProvider>

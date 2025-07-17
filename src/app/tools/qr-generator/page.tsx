@@ -412,6 +412,35 @@ END:VCARD`
               >
                 Download QR Code
               </button>
+
+              <div className="mt-2 text-center">
+                <button
+                  onClick={() => setShowCustomSize(!showCustomSize)}
+                  className="text-blue-600 text-sm underline hover:text-blue-800"
+                >
+                  Not big enough?
+                </button>
+              </div>
+
+              {showCustomSize && (
+                <div className="mt-4">
+                  <label className="block text-sm font-medium mb-2">Custom Size (px)</label>
+                  <input
+                    type="number"
+                    min="128"
+                    max="2048"
+                    value={customSize}
+                    onChange={(e) => setCustomSize(parseInt(e.target.value))}
+                    className="w-full bg-gray-200 text-gray-900 px-3 py-2 rounded border border-gray-300"
+                  />
+                  <button
+                    onClick={downloadCustomQR}
+                    className="w-full mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+                  >
+                    Download Custom QR Code
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
