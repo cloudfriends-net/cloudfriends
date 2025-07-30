@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import { MagnifyingGlassIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { MagnifyingGlassIcon, Bars3Icon, XMarkIcon, HomeIcon, InformationCircleIcon, RocketLaunchIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 
 const tools = [
@@ -23,6 +23,7 @@ export function SidebarNav() {
   const pathname = usePathname()
   const [search, setSearch] = useState('')
   const [open, setOpen] = useState(false)
+  const [hoveredTool, setHoveredTool] = useState<string | null>(null)
 
   useEffect(() => {
     const handleResize = () => {
@@ -43,125 +44,196 @@ export function SidebarNav() {
     <>
       {/* Mobile top bar with logo and menu button */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 flex items-center h-16 px-4 shadow-sm">
-        <Link href="/" className="flex items-center gap-2 hover:text-blue-500 transition-colors">
+        <Link href="/" className="flex items-center gap-2">
           <Image
             src="/logo-dark.png"
             alt="CloudFriends Logo"
-            width={250}
+            width={200}
             height={32}
             priority
             className="rounded"
           />
         </Link>
         <button
-          className="ml-auto bg-white border border-gray-300 rounded-md p-2 text-gray-700"
+          className="ml-auto bg-gradient-to-r from-blue-500 to-indigo-500 rounded-md p-2 text-white hover:shadow-md transition-all"
           onClick={() => setOpen(!open)}
           aria-label={open ? "Hide sidebar" : "Show sidebar"}
         >
-          {open ? <XMarkIcon className="h-6 w-6" /> : <Bars3Icon className="h-6 w-6" />}
+          {open ? <XMarkIcon className="h-5 w-5" /> : <Bars3Icon className="h-5 w-5" />}
         </button>
       </div>
+      
       {/* Sidebar */}
       <aside
         className={`
-          bg-white border-r border-gray-200 h-screen w-64 flex flex-col pt-0 pb-6
-          md:sticky md:top-0 md:h-screen md:overflow-y-auto
-          fixed md:static z-30 transition-transform duration-200
-          px-4
+          bg-white border-r border-gray-200 h-screen flex flex-col
+          md:sticky md:top-0 md:h-screen md:overflow-y-auto md:w-72
+          fixed md:static z-30 transition-all duration-300 w-64
+          shadow-lg md:shadow-none
           transform-gpu
           ${open ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0
           top-0 left-0
         `}
       >
-        {/* Logo at the very top (hidden on mobile, visible on desktop) */}
-        <div className="hidden md:flex items-center gap-2 h-20 px-2 border-b border-gray-200 mb-6">
-          <Link 
-            href="/" 
-            className="flex items-center gap-2 hover:text-blue-500 transition-colors"
-          >
-            <Image
-              src="/logo-dark.png"
-              alt="CloudFriends Logo"
-              width={250}
-              height={36}
-              priority
-            />
-            <span className="sr-only">CloudFriends Home</span>
-          </Link>
-        </div>
-        {/* Search */}
-        <div className="mb-4 mt-20 md:mt-0">
-          <div className="relative">
-            <MagnifyingGlassIcon className="h-5 w-5 text-gray-400 absolute left-3 top-2.5 pointer-events-none" />
-            <input
-              type="text"
-              placeholder="Search tools..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="w-full pl-10 pr-3 py-2 rounded bg-gray-100 text-gray-700 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-        </div>
-        {/* Tools List */}
-        <nav className="flex-1 flex flex-col gap-1 overflow-y-auto px-2">
-          {filteredTools.length === 0 && (
-            <span className="text-gray-500 px-2 py-1 text-sm font-light">No tools found.</span>
-          )}
-          {filteredTools.map(tool => (
-            <Link
-              key={tool.path}
-              href={tool.path}
-              className={`flex items-center gap-2 px-2 py-1 rounded-md transition-all font-[Outfit] text-sm ${
-                pathname === tool.path
-                  ? 'bg-blue-100 text-blue-600 border border-blue-200'
-                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
-              }`}
-              onClick={() => setOpen(false)}
-            >
-              {/* Compact Icon */}
-              <div
-                className={`flex items-center justify-center w-6 h-6 rounded-md ${
-                  pathname === tool.path ? 'bg-blue-200' : 'bg-gray-100'
-                }`}
-              >
-                <span className="text-xs font-bold text-gray-500">
-                  {tool.name.charAt(0)}
-                </span>
-              </div>
-              <span className="truncate font-medium">{tool.name}</span>
+        {/* Background Gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-50 to-transparent opacity-50 pointer-events-none"></div>
+        
+        {/* Content container */}
+        <div className="relative z-10 flex flex-col h-full">
+          {/* Logo at the very top */}
+          <div className="flex items-center justify-between h-20 px-6 border-b border-gray-200 bg-white">
+            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <Image
+                src="/logo-dark.png"
+                alt="CloudFriends Logo"
+                width={250}
+                height={36}
+                priority
+                className="rounded"
+              />
             </Link>
-          ))}
-        </nav>
-        {/* Divider and Main Navigation Links */}
-        <div className="mt-8 border-t border-gray-200 pt-6 flex flex-col gap-2 px-1">
-          <Link
-            href="/"
-            className={`px-4 py-3 rounded-md transition-all font-[Outfit] text-base font-normal flex items-center gap-2 ${
-              pathname === '/'
-                ? 'bg-blue-100 text-blue-600 border border-blue-200'
-                : 'text-gray-700 hover:bg-gray-100'
-            }`}
-            onClick={() => setOpen(false)}
-          >
-            Home
-          </Link>
-          <Link
-            href="/about"
-            className={`px-4 py-3 rounded-md transition-all font-[Outfit] text-base font-normal flex items-center gap-2 ${
-              pathname === '/about'
-                ? 'bg-blue-100 text-blue-600 border border-blue-200'
-                : 'text-gray-700 hover:bg-gray-100'
-            }`}
-            onClick={() => setOpen(false)}
-          >
-            About
-          </Link>
+            <button
+              className="md:hidden bg-white text-gray-500 rounded-md p-1"
+              onClick={() => setOpen(false)}
+              aria-label="Hide sidebar"
+            >
+              <XMarkIcon className="h-6 w-6" />
+            </button>
+          </div>
+          
+          {/* Search */}
+          <div className="p-4 pb-2">
+            <div className="relative group">
+              <MagnifyingGlassIcon className="h-4 w-4 text-gray-400 absolute left-3 top-3 group-focus-within:text-blue-500 transition-colors" />
+              <input
+                type="text"
+                placeholder="Search tools..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="w-full pl-10 pr-3 py-2.5 rounded-lg bg-gray-50 text-gray-700 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
+              />
+              {search && (
+                <button
+                  onClick={() => setSearch('')}
+                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
+                  aria-label="Clear search"
+                >
+                  <XMarkIcon className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+          </div>
+          
+          {/* Tools Category */}
+          <div className="px-4 py-2">
+            <div className="flex items-center gap-2 px-2 mb-2">
+              <RocketLaunchIcon className="h-4 w-4 text-blue-600" />
+              <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Tools</span>
+            </div>
+          </div>
+          
+          {/* Tools List */}
+          <nav className="flex-1 flex flex-col gap-1 overflow-y-auto px-4">
+            {filteredTools.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-8 text-center px-4">
+                <div className="bg-gray-100 rounded-full w-12 h-12 flex items-center justify-center mb-3">
+                  <MagnifyingGlassIcon className="h-6 w-6 text-gray-400" />
+                </div>
+                <p className="text-gray-500 text-sm font-medium">No tools found for &rdquo;{search}&rdquo;</p>
+                <button 
+                  onClick={() => setSearch('')}
+                  className="mt-2 text-blue-500 text-sm hover:text-blue-700 transition-colors"
+                >
+                  Clear search
+                </button>
+              </div>
+            )}
+            
+            <div className="space-y-1">
+              {filteredTools.map(tool => (
+                <Link
+                  key={tool.path}
+                  href={tool.path}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all
+                    ${pathname === tool.path
+                      ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md'
+                      : 'hover:bg-blue-50 text-gray-700'
+                    }
+                  `}
+                  onClick={() => setOpen(false)}
+                  onMouseEnter={() => setHoveredTool(tool.name)}
+                  onMouseLeave={() => setHoveredTool(null)}
+                >
+                  {/* Tool Icon */}
+                  <div
+                    className={`flex items-center justify-center w-8 h-8 rounded-md
+                      ${pathname === tool.path 
+                        ? 'bg-white/20 text-white' 
+                        : hoveredTool === tool.name 
+                          ? 'bg-blue-100 text-blue-600' 
+                          : 'bg-gray-100 text-gray-500'
+                      }
+                      transition-all
+                    `}
+                  >
+                    <span className="text-xs font-bold">
+                      {tool.name.charAt(0)}
+                    </span>
+                  </div>
+                  <span className={`truncate font-medium ${pathname === tool.path ? 'font-semibold' : ''}`}>
+                    {tool.name}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </nav>
+          
+          {/* Divider and Main Navigation Links */}
+          <div className="mt-4 mb-4 border-t border-gray-200 pt-4 px-4">
+            <div className="flex items-center gap-2 px-2 mb-2">
+              <InformationCircleIcon className="h-4 w-4 text-blue-600" />
+              <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Navigation</span>
+            </div>
+            
+            <div className="space-y-1">
+              <Link
+                href="/"
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all
+                  ${pathname === '/'
+                    ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md'
+                    : 'hover:bg-blue-50 text-gray-700'
+                  }
+                `}
+                onClick={() => setOpen(false)}
+              >
+                <HomeIcon className={`h-5 w-5 ${pathname === '/' ? 'text-white' : 'text-gray-500'}`} />
+                <span className="font-medium">Home</span>
+              </Link>
+              
+              <Link
+                href="/about"
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all
+                  ${pathname === '/about'
+                    ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md'
+                    : 'hover:bg-blue-50 text-gray-700'
+                  }
+                `}
+                onClick={() => setOpen(false)}
+              >
+                <InformationCircleIcon className={`h-5 w-5 ${pathname === '/about' ? 'text-white' : 'text-gray-500'}`} />
+                <span className="font-medium">About</span>
+              </Link>
+            </div>
+          </div>
+          
+          {/* Removed Pro Version section */}
         </div>
       </aside>
+      
       {/* Overlay for mobile when sidebar is open */}
       {open && (
         <div
-          className="fixed inset-0 bg-black/40 z-20 md:hidden"
+          className="fixed inset-0 bg-black/40 z-20 md:hidden backdrop-blur-sm transition-all"
           onClick={() => setOpen(false)}
           aria-hidden="true"
         />
