@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "jszip": "^3.10.1",
     "next": "15.3.3",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^5.3.93",
