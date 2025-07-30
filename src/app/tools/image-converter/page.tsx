@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, ChangeEvent } from 'react'
-import { ArrowUpTrayIcon, PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { ArrowUpTrayIcon, PhotoIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import JSZip from 'jszip'
 
