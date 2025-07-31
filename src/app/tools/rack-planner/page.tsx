@@ -16,7 +16,7 @@ interface Rack {
 
 interface RackComponent {
   id: string
-  type: 'switch' | 'patch-panel' | 'server' | 'ups' | 'storage' | 'router'
+  type: 'switch' | 'patch-panel' | 'server' | 'ups' | 'storage' | 'router' | 'pdu'
   name: string
   model?: string
   serialNumber?: string
@@ -25,6 +25,7 @@ interface RackComponent {
   position?: number // Position in the rack (1-42)
   powerConsumption?: number // In watts
   weight?: number // In kg
+  outlets?: number // Number of outlets (for PDUs)
 }
 
 const componentColors = {
@@ -34,6 +35,7 @@ const componentColors = {
   'ups': 'bg-purple-200 border-purple-500 text-purple-800',
   'storage': 'bg-blue-200 border-blue-500 text-blue-800',
   'router': 'bg-orange-200 border-orange-500 text-orange-800',
+  'pdu': 'bg-gray-300 border-gray-800 text-gray-900', // Changed from indigo to black/gray
 };
 
 const componentIcons = {
@@ -43,6 +45,7 @@ const componentIcons = {
   'ups': '🔋',
   'storage': '💾',
   'router': '🌐',
+  'pdu': '⚡',
 };
 
 const RackPosition = ({ 
@@ -233,6 +236,16 @@ const DraggableComponent = ({
           className="bg-white border border-gray-300 rounded px-2 py-1 text-sm"
         />
       </div>
+      
+      {component.type === 'pdu' && (
+        <input
+          type="number"
+          value={component.outlets || ''}
+          onChange={(e) => onUpdate(component.id, { outlets: Number(e.target.value) })}
+          placeholder="Outlets"
+          className="bg-white border border-gray-300 rounded px-2 py-1 text-sm"
+        />
+      )}
       
       <span className="text-sm text-gray-500">Type: {component.type}</span>
     </div>
@@ -428,7 +441,8 @@ export default function RackPlanner() {
       'patch-panel': 1,
       'ups': 2,
       'storage': 3,
-      'router': 1
+      'router': 1,
+      'pdu': 1  // Default size for PDU
     };
 
     setRacks((prevRacks) =>
@@ -804,6 +818,12 @@ export default function RackPlanner() {
                             className="bg-orange-500 text-white px-3 py-2 rounded hover:bg-orange-600 transition-colors flex items-center justify-center"
                           >
                             <span className="mr-2">🌐</span> Router
+                          </button>
+                          <button
+                            onClick={() => addComponentToRack(selectedRack.id, 'pdu')}
+                            className="bg-gray-800 text-white px-3 py-2 rounded hover:bg-black transition-colors flex items-center justify-center"
+                          >
+                            <span className="mr-2">⚡</span> PDU
                           </button>
                         </div>
                         
