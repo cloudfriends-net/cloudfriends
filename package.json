@@ -21,6 +21,7 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^19.0.0",
     "react-dropzone": "^14.3.8",
+    "react-feather": "^2.0.10",
     "react-pdf": "^10.0.1",
     "xml2js": "^0.6.2"
   },
