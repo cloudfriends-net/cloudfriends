@@ -108,11 +108,6 @@ export default function About() {
               </p>
             </section>
           </div>
-          
-          {/* Footer */}
-          <div className="mt-16 text-center text-gray-500 text-sm">
-            <p>© {new Date().getFullYear()} CloudFriends. All tools are free to use.</p>
-          </div>
         </div>
       </div>
     </main>
