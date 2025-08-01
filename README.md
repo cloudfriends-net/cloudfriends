@@ -21,7 +21,7 @@ A collection of free, privacy-focused web tools that run entirely in your browse
 - 💫 **Always Free**: No registration or subscription required.
 - 🔄 **Regular Updates**: New tools and improvements added regularly.
 - 📱 **Responsive Design**: Works on desktop and mobile devices.
-- 🎨 **Light Theme**: Clean and professional design for better readability.
+- 🎨 **Modern UI**: Clean, intuitive interface with smooth animations and a professional design.
 
 ## Getting Started
 
@@ -45,10 +45,19 @@ npm run dev
 
 ## Tech Stack
 
+**Frontend framework**
 - [Next.js](https://nextjs.org) - React framework.
-- [TailwindCSS](https://tailwindcss.com) - Styling.
+- [React](https://reactjs.org) - UI library
+
+**Styling & UI**
 - [Heroicons](https://heroicons.com) - Icons.
-- [QRCode.react](https://npmjs.com/package/qrcode.react) - QR code generation.
+- [TailwindCSS](https://tailwindcss.com) - Styling.
+
+**Tool-specific libraries**
+- [QRCode.react](https://npmjs.com/package/qrcode.react) - QR code generation
+- [PDF-lib](https://pdf-lib.js.org/) - PDF manipulation
+- [FileSaver.js](https://github.com/eligrey/FileSaver.js) - Client-side file saving
+- [js-yaml](https://github.com/nodeca/js-yaml) - YAML processing for Docker Compose
 
 ## License
 
