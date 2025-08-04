@@ -2,9 +2,10 @@ import { PasswordStrength } from '../utils'
 
 interface Props {
   strength: PasswordStrength
+  className?: string
 }
 
-export function StrengthIndicator({ strength }: Props) {
+export function StrengthIndicator({ strength, className = '' }: Props) {
   const getBackgroundColor = (score: number) => {
     switch (score) {
       case 0: return 'bg-red-500'
@@ -17,14 +18,14 @@ export function StrengthIndicator({ strength }: Props) {
   }
 
   return (
-    <div className="mt-2">
+    <div className={`${className}`}>
       <div className="flex justify-between items-center">
         <span className="text-sm">Password Strength:</span>
         <span className={`text-sm font-medium ${strength.color}`}>
           {strength.label}
         </span>
       </div>
-      <div className="mt-1 h-2 w-full bg-gray-700 rounded-full overflow-hidden">
+      <div className="mt-1 h-2 w-full bg-gray-200 rounded-full overflow-hidden">
         <div 
           className={`h-full ${getBackgroundColor(strength.score)} transition-all duration-300`}
           style={{ width: `${(strength.score + 1) * 20}%` }}
