@@ -4,6 +4,8 @@ import { useState, useRef, ChangeEvent } from 'react'
 import { ArrowUpTrayIcon, PhotoIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import JSZip from 'jszip'
+import ThemeAwareLayout from '../../../components/ThemeAwareLayout'
+import { useThemeContext } from '../../../components/ThemeProvider'
 
 type ImageFormat = 'image/jpeg' | 'image/png' | 'image/webp'
 
@@ -15,6 +17,7 @@ interface ImageFile {
 }
 
 export default function ImageConverter() {
+  const { resolvedTheme } = useThemeContext()
   const [imageFiles, setImageFiles] = useState<ImageFile[]>([])
   const [targetFormat, setTargetFormat] = useState<ImageFormat>('image/jpeg')
   const [isConverting, setIsConverting] = useState(false)
@@ -184,29 +187,54 @@ export default function ImageConverter() {
   }
   
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-900" style={{ paddingTop: '5.5rem' }}>
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex items-center gap-3 mb-8">
-            <PhotoIcon className="h-8 w-8 text-blue-500" />
-            <h1 className="text-3xl font-bold">Bulk Image Converter</h1>
-          </div>
+    <ThemeAwareLayout showThemeToggle={false}>
+      <div className={`min-h-screen ${
+        resolvedTheme === 'dark' ? 'bg-gray-900 text-gray-100' : 'bg-gray-100 text-gray-900'
+      }`} style={{ paddingTop: '5.5rem' }}>
+        <main className="container mx-auto px-4 py-8">
+          <div className="max-w-5xl mx-auto">
+            <div className="flex items-center gap-3 mb-8">
+              <PhotoIcon className="h-8 w-8 text-blue-500" />
+              <h1 className={`text-3xl font-bold ${
+                resolvedTheme === 'dark' ? 'text-gray-100' : 'text-gray-900'
+              }`}>Bulk Image Converter</h1>
+            </div>
 
-          {/* How to use */}
-          <div className="mb-8 bg-blue-100 border border-blue-300 rounded-lg p-5">
-            <h2 className="text-xl font-semibold mb-2 text-blue-600">How to use</h2>
-            <ul className="list-disc list-inside text-gray-700">
-              <li>Click the upload area or drag and drop multiple image files.</li>
-              <li>Select your desired output format (JPG, PNG, or WebP).</li>
-              <li>Click <span className="font-semibold text-blue-600">Convert All</span> to process all images.</li>
-              <li>Download individual images or all images as a ZIP file.</li>
-            </ul>
-          </div>
+            {/* How to use */}
+            <div className={`mb-8 ${
+              resolvedTheme === 'dark' 
+                ? 'bg-blue-900/20 border-blue-700' 
+                : 'bg-blue-100 border-blue-300'
+            } border rounded-lg p-5`}>
+              <h2 className={`text-xl font-semibold mb-2 ${
+                resolvedTheme === 'dark' ? 'text-blue-400' : 'text-blue-600'
+              }`}>How to use</h2>
+              <ul className={`list-disc list-inside ${
+                resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+              }`}>
+                <li>Click the upload area or drag and drop multiple image files.</li>
+                <li>Select your desired output format (JPG, PNG, or WebP).</li>
+                <li>Click <span className={`font-semibold ${
+                  resolvedTheme === 'dark' ? 'text-blue-400' : 'text-blue-600'
+                }`}>Convert All</span> to process all images.</li>
+                <li>Download individual images or all images as a ZIP file.</li>
+              </ul>
+            </div>
 
-          <div className="bg-white p-6 rounded-lg border border-gray-300 shadow mb-8">
-            <h2 className="text-xl font-semibold mb-4">Upload Images</h2>
+            <div className={`${
+              resolvedTheme === 'dark' 
+                ? 'bg-gray-800 border-gray-700' 
+                : 'bg-white border-gray-300'
+            } p-6 rounded-lg border shadow mb-8`}>
+              <h2 className={`text-xl font-semibold mb-4 ${
+                resolvedTheme === 'dark' ? 'text-gray-100' : 'text-gray-900'
+              }`}>Upload Images</h2>
 
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+              <div className={`border-2 border-dashed ${
+                resolvedTheme === 'dark' 
+                  ? 'border-gray-600 hover:border-gray-500' 
+                  : 'border-gray-300 hover:border-gray-400'
+              } rounded-lg p-8 text-center transition-colors`}>
               <input
                 type="file"
                 onChange={handleFileChange}
@@ -216,8 +244,10 @@ export default function ImageConverter() {
                 multiple
               />
               <label htmlFor="imageInput" className="cursor-pointer">
-                <ArrowUpTrayIcon className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                <p className="text-gray-600">
+                <ArrowUpTrayIcon className={`h-12 w-12 mx-auto mb-4 ${
+                  resolvedTheme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+                }`} />
+                <p className={resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>
                   Drop images here or click to select multiple files
                 </p>
               </label>
@@ -225,11 +255,17 @@ export default function ImageConverter() {
 
             <div className="mt-6 flex flex-wrap gap-4">
               <div className="w-full md:w-auto flex-1">
-                <label className="block text-sm font-medium mb-2">Convert to:</label>
+                <label className={`block text-sm font-medium mb-2 ${
+                  resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-900'
+                }`}>Convert to:</label>
                 <select
                   value={targetFormat}
                   onChange={(e) => setTargetFormat(e.target.value as ImageFormat)}
-                  className="w-full bg-gray-200 text-gray-900 px-3 py-2 rounded border border-gray-300"
+                  className={`w-full px-3 py-2 rounded border ${
+                    resolvedTheme === 'dark'
+                      ? 'bg-gray-700 text-gray-100 border-gray-600'
+                      : 'bg-gray-200 text-gray-900 border-gray-300'
+                  }`}
                 >
                   <option value="image/jpeg">JPG</option>
                   <option value="image/png">PNG</option>
@@ -241,7 +277,11 @@ export default function ImageConverter() {
                 <button
                   onClick={convertAllImages}
                   disabled={!imageFiles.length || isConverting}
-                  className="flex-1 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors disabled:bg-gray-300"
+                  className={`flex-1 px-4 py-2 rounded transition-colors ${
+                    !imageFiles.length || isConverting
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-blue-600 text-white hover:bg-blue-700'
+                  }`}
                 >
                   {isConverting ? `Converting... ${conversionProgress}%` : 'Convert All'}
                 </button>
@@ -249,7 +289,11 @@ export default function ImageConverter() {
                 <button
                   onClick={downloadAllAsZip}
                   disabled={!imageFiles.some(file => file.status === 'completed')}
-                  className="flex-1 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors disabled:bg-gray-300"
+                  className={`flex-1 px-4 py-2 rounded transition-colors ${
+                    !imageFiles.some(file => file.status === 'completed')
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-green-600 text-white hover:bg-green-700'
+                  }`}
                 >
                   Download All (ZIP)
                 </button>
@@ -268,21 +312,41 @@ export default function ImageConverter() {
 
           {/* Image List */}
           {imageFiles.length > 0 && (
-            <div className="bg-white p-6 rounded-lg border border-gray-300 shadow">
-              <h2 className="text-xl font-semibold mb-4">Images ({imageFiles.length})</h2>
+            <div className={`${
+              resolvedTheme === 'dark' 
+                ? 'bg-gray-800 border-gray-700' 
+                : 'bg-white border-gray-300'
+            } p-6 rounded-lg border shadow`}>
+              <h2 className={`text-xl font-semibold mb-4 ${
+                resolvedTheme === 'dark' ? 'text-gray-100' : 'text-gray-900'
+              }`}>Images ({imageFiles.length})</h2>
               
               <div className="overflow-auto max-h-[600px]">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                <table className={`min-w-full divide-y ${
+                  resolvedTheme === 'dark' ? 'divide-gray-700' : 'divide-gray-200'
+                }`}>
+                  <thead className={resolvedTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-50'}>
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Preview</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Filename</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Size</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                      <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                        resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                      }`}>Preview</th>
+                      <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                        resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                      }`}>Filename</th>
+                      <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                        resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                      }`}>Size</th>
+                      <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                        resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                      }`}>Status</th>
+                      <th className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                        resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                      }`}>Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className={`${
+                    resolvedTheme === 'dark' ? 'bg-gray-800 divide-gray-700' : 'bg-white divide-gray-200'
+                  } divide-y`}>
                     {imageFiles.map((imageFile, index) => (
                       <tr key={index}>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -297,10 +361,14 @@ export default function ImageConverter() {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{imageFile.file.name}</div>
+                          <div className={`text-sm ${
+                            resolvedTheme === 'dark' ? 'text-gray-100' : 'text-gray-900'
+                          }`}>{imageFile.file.name}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-500">
+                          <div className={`text-sm ${
+                            resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                          }`}>
                             {(imageFile.file.size / 1024).toFixed(1)} KB
                           </div>
                         </td>
@@ -341,11 +409,21 @@ export default function ImageConverter() {
           <canvas ref={canvasRef} className="hidden" />
 
           {/* How does it work */}
-          <div className="mt-10 mb-8 bg-blue-100 border border-blue-300 rounded-lg p-5">
-            <h2 className="text-xl font-semibold mb-2 text-blue-600">How does it work?</h2>
-            <ul className="list-disc list-inside text-gray-700">
+          <div className={`mt-10 mb-8 ${
+            resolvedTheme === 'dark' 
+              ? 'bg-blue-900/20 border-blue-700' 
+              : 'bg-blue-100 border-blue-300'
+          } border rounded-lg p-5`}>
+            <h2 className={`text-xl font-semibold mb-2 ${
+              resolvedTheme === 'dark' ? 'text-blue-400' : 'text-blue-600'
+            }`}>How does it work?</h2>
+            <ul className={`list-disc list-inside ${
+              resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>
               <li>
-                <span className="font-semibold">Privacy:</span> All image processing happens <span className="text-blue-600">locally in your browser</span>. Your images are never uploaded to any server.
+                <span className="font-semibold">Privacy:</span> All image processing happens <span className={
+                  resolvedTheme === 'dark' ? 'text-blue-400' : 'text-blue-600'
+                }>locally in your browser</span>. Your images are never uploaded to any server.
               </li>
               <li>
                 <span className="font-semibold">Bulk Processing:</span> Convert multiple images at once and download them individually or as a ZIP archive.
@@ -357,6 +435,7 @@ export default function ImageConverter() {
           </div>
         </div>
       </main>
-    </div>
+      </div>
+    </ThemeAwareLayout>
   )
 }

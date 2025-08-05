@@ -7,8 +7,7 @@ import {
   DocumentDuplicateIcon,
   CheckIcon
 } from '@heroicons/react/24/outline'
-import ThemeAwareLayout from '../../../components/ThemeAwareLayout'
-import { useThemeContext } from '../../../components/ThemeProvider'
+import LightThemeLayout from '../../components/LightThemeLayout'
 
 interface Service {
   id: string
@@ -109,7 +108,6 @@ function generateCompose(services: Service[], networks: string[] = [], volumes: 
 }
 
 export default function DockerComposeGenerator() {
-  const { resolvedTheme } = useThemeContext()
   const [services, setServices] = useState<Service[]>([
     { 
       id: '1',
@@ -188,18 +186,12 @@ export default function DockerComposeGenerator() {
   }
 
   return (
-    <ThemeAwareLayout>
-      <main className={`min-h-screen py-8 px-4 transition-colors duration-300 ${
-        resolvedTheme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'
-      }`}>
+    <LightThemeLayout>
+      <main className="min-h-screen bg-gray-50 py-8 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
-            <h1 className={`text-4xl font-bold mb-4 ${
-              resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'
-            }`}>Docker Compose Generator</h1>
-            <p className={`text-lg max-w-2xl mx-auto ${
-              resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-600'
-            }`}>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Docker Compose Generator</h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Create Docker Compose files visually with our modern, user-friendly interface. 
               Perfect for developers who want to quickly set up multi-container applications.
             </p>
@@ -207,13 +199,9 @@ export default function DockerComposeGenerator() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Configuration Panel */}
-            <div className={`rounded-lg shadow-lg p-6 ${
-              resolvedTheme === 'dark' ? 'bg-gray-800' : 'bg-white'
-            }`}>
+            <div className="bg-white rounded-lg shadow-lg p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className={`text-2xl font-semibold ${
-                  resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'
-                }`}>Services Configuration</h2>
+                <h2 className="text-2xl font-semibold text-gray-900">Services Configuration</h2>
                 <button
                   onClick={addService}
                   className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
@@ -225,15 +213,9 @@ export default function DockerComposeGenerator() {
 
               <div className="space-y-6">
                 {services.map((service, idx) => (
-                  <div key={service.id} className={`border rounded-lg p-4 ${
-                    resolvedTheme === 'dark' 
-                      ? 'border-gray-600 bg-gray-700' 
-                      : 'border-gray-200 bg-gray-50'
-                  }`}>
+                  <div key={service.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className={`text-lg font-medium ${
-                        resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'
-                      }`}>
+                      <h3 className="text-lg font-medium text-gray-900">
                         Service {idx + 1}: {service.name || 'Unnamed'}
                       </h3>
                       {services.length > 1 && (
@@ -248,68 +230,44 @@ export default function DockerComposeGenerator() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className={`block text-sm font-medium mb-1 ${
-                          resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                        }`}>Service Name</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Service Name</label>
                         <input
                           type="text"
                           value={service.name}
                           onChange={(e) => updateService(idx, 'name', e.target.value)}
-                          className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                            resolvedTheme === 'dark'
-                              ? 'bg-gray-600 border-gray-500 text-white placeholder-gray-400'
-                              : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
-                          }`}
+                          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           placeholder="e.g., web, db, redis"
                         />
                       </div>
 
                       <div>
-                        <label className={`block text-sm font-medium mb-1 ${
-                          resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                        }`}>Docker Image</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Docker Image</label>
                         <input
                           type="text"
                           value={service.image}
                           onChange={(e) => updateService(idx, 'image', e.target.value)}
-                          className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                            resolvedTheme === 'dark'
-                              ? 'bg-gray-600 border-gray-500 text-white placeholder-gray-400'
-                              : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
-                          }`}
+                          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           placeholder="e.g., nginx:latest, postgres:13"
                         />
                       </div>
 
                       <div>
-                        <label className={`block text-sm font-medium mb-1 ${
-                          resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                        }`}>Ports</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Ports</label>
                         <input
                           type="text"
                           value={service.ports.join(', ')}
                           onChange={(e) => updateArrayField(idx, 'ports', e.target.value)}
-                          className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                            resolvedTheme === 'dark'
-                              ? 'bg-gray-600 border-gray-500 text-white placeholder-gray-400'
-                              : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
-                          }`}
+                          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           placeholder="e.g., 80:80, 443:443"
                         />
                       </div>
 
                       <div>
-                        <label className={`block text-sm font-medium mb-1 ${
-                          resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                        }`}>Restart Policy</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Restart Policy</label>
                         <select
                           value={service.restart}
                           onChange={(e) => updateService(idx, 'restart', e.target.value)}
-                          className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                            resolvedTheme === 'dark'
-                              ? 'bg-gray-600 border-gray-500 text-white'
-                              : 'bg-white border-gray-300 text-gray-900'
-                          }`}
+                          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         >
                           <option value="no">No</option>
                           <option value="always">Always</option>
@@ -319,52 +277,34 @@ export default function DockerComposeGenerator() {
                       </div>
 
                       <div className="md:col-span-2">
-                        <label className={`block text-sm font-medium mb-1 ${
-                          resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                        }`}>Environment Variables</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Environment Variables</label>
                         <input
                           type="text"
                           value={service.environment.map(env => `${env.key}=${env.value}`).join(', ')}
                           onChange={(e) => updateEnvironment(idx, e.target.value)}
-                          className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                            resolvedTheme === 'dark'
-                              ? 'bg-gray-600 border-gray-500 text-white placeholder-gray-400'
-                              : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
-                          }`}
+                          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           placeholder="e.g., NODE_ENV=production, DB_HOST=localhost"
                         />
                       </div>
 
                       <div className="md:col-span-2">
-                        <label className={`block text-sm font-medium mb-1 ${
-                          resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                        }`}>Volumes</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Volumes</label>
                         <input
                           type="text"
                           value={service.volumes.join(', ')}
                           onChange={(e) => updateArrayField(idx, 'volumes', e.target.value)}
-                          className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                            resolvedTheme === 'dark'
-                              ? 'bg-gray-600 border-gray-500 text-white placeholder-gray-400'
-                              : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
-                          }`}
+                          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           placeholder="e.g., ./data:/app/data, logs:/var/log"
                         />
                       </div>
 
                       <div className="md:col-span-2">
-                        <label className={`block text-sm font-medium mb-1 ${
-                          resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                        }`}>Command (Optional)</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Command (Optional)</label>
                         <input
                           type="text"
                           value={service.command}
                           onChange={(e) => updateService(idx, 'command', e.target.value)}
-                          className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                            resolvedTheme === 'dark'
-                              ? 'bg-gray-600 border-gray-500 text-white placeholder-gray-400'
-                              : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
-                          }`}
+                          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           placeholder="e.g., npm start, python app.py"
                         />
                       </div>
@@ -375,13 +315,9 @@ export default function DockerComposeGenerator() {
             </div>
 
             {/* Output Panel */}
-            <div className={`rounded-lg shadow-lg p-6 ${
-              resolvedTheme === 'dark' ? 'bg-gray-800' : 'bg-white'
-            }`}>
+            <div className="bg-white rounded-lg shadow-lg p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className={`text-2xl font-semibold ${
-                  resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'
-                }`}>Generated docker-compose.yml</h2>
+                <h2 className="text-2xl font-semibold text-gray-900">Generated docker-compose.yml</h2>
                 <div className="flex gap-2">
                   <button
                     onClick={copyToClipboard}
@@ -403,40 +339,24 @@ export default function DockerComposeGenerator() {
               </div>
 
               <div className="relative">
-                <pre className={`p-4 rounded-lg overflow-auto max-h-96 text-sm font-mono ${
-                  resolvedTheme === 'dark' 
-                    ? 'bg-gray-900 text-green-400' 
-                    : 'bg-gray-900 text-green-400'
-                }`}>
+                <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-auto max-h-96 text-sm font-mono">
                   <code>{output}</code>
                 </pre>
               </div>
 
-              <div className={`mt-6 p-4 rounded-lg border ${
-                resolvedTheme === 'dark'
-                  ? 'bg-blue-900/30 border-blue-700/50'
-                  : 'bg-blue-50 border-blue-200'
-              }`}>
-                <h3 className={`text-sm font-medium mb-2 ${
-                  resolvedTheme === 'dark' ? 'text-blue-300' : 'text-blue-900'
-                }`}>Quick Start Guide:</h3>
-                <ol className={`text-sm space-y-1 ${
-                  resolvedTheme === 'dark' ? 'text-blue-200' : 'text-blue-800'
-                }`}>
+              <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <h3 className="text-sm font-medium text-blue-900 mb-2">Quick Start Guide:</h3>
+                <ol className="text-sm text-blue-800 space-y-1">
                   <li>1. Copy or download the generated docker-compose.yml file</li>
                   <li>2. Place it in your project directory</li>
-                  <li>3. Run <code className={`px-1 rounded ${
-                    resolvedTheme === 'dark' ? 'bg-blue-800/50' : 'bg-blue-100'
-                  }`}>docker-compose up</code> to start your services</li>
-                  <li>4. Use <code className={`px-1 rounded ${
-                    resolvedTheme === 'dark' ? 'bg-blue-800/50' : 'bg-blue-100'
-                  }`}>docker-compose down</code> to stop them</li>
+                  <li>3. Run <code className="bg-blue-100 px-1 rounded">docker-compose up</code> to start your services</li>
+                  <li>4. Use <code className="bg-blue-100 px-1 rounded">docker-compose down</code> to stop them</li>
                 </ol>
               </div>
             </div>
           </div>
         </div>
       </main>
-    </ThemeAwareLayout>
+    </LightThemeLayout>
   )
 }

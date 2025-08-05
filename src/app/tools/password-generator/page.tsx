@@ -5,11 +5,14 @@ import { KeyIcon, EyeIcon, EyeSlashIcon, ArrowPathIcon, ClipboardDocumentIcon } 
 import { generatePassword, generatePassphrase, checkPasswordStrength, checkPassphraseStrength, copyToClipboard } from './utils'
 import { StrengthIndicator } from './components/StrengthIndicator'
 import { motion, AnimatePresence } from 'framer-motion'
+import ThemeAwareLayout from '../../../components/ThemeAwareLayout'
+import { useThemeContext } from '../../../components/ThemeProvider'
 
 type GeneratorType = 'password' | 'passphrase'
 type PasswordHistoryItem = { value: string; timestamp: number; type: GeneratorType }
 
 export default function PasswordGenerator() {
+  const { resolvedTheme } = useThemeContext()
   const [generatorType, setGeneratorType] = useState<GeneratorType>('password')
   const [password, setPassword] = useState('')
   const [passphrase, setPassphrase] = useState('')
@@ -79,25 +82,34 @@ export default function PasswordGenerator() {
     : checkPassphraseStrength(passphrase)
 
   return (
-    <div
-      className="min-h-screen bg-gray-50 text-gray-900 flex flex-col items-center"
-      style={{ paddingTop: '5.5rem' }}
-    >
-      <div className="w-full max-w-2xl mx-auto px-4">
-        {/* Title */}
-        <div className="mb-8 text-center">
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <KeyIcon className="h-12 w-12 text-blue-500 inline-block" />
-            <h1 className="text-3xl font-bold mt-3">Secure Password Generator</h1>
-            <p className="mt-2 text-gray-600">Create strong, unique passwords and passphrases</p>
-          </motion.div>
-        </div>
+    <ThemeAwareLayout showThemeToggle={false}>
+      <div
+        className={`min-h-screen ${
+          resolvedTheme === 'dark' ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'
+        } flex flex-col items-center`}
+        style={{ paddingTop: '5.5rem' }}
+      >
+        <div className="w-full max-w-2xl mx-auto px-4">
+          {/* Title */}
+          <div className="mb-8 text-center">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <KeyIcon className="h-12 w-12 text-blue-500 inline-block" />
+              <h1 className="text-3xl font-bold mt-3">Secure Password Generator</h1>
+              <p className={`mt-2 ${
+                resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+              }`}>Create strong, unique passwords and passphrases</p>
+            </motion.div>
+          </div>
         
-        <div className="bg-white border border-gray-200 rounded-xl shadow-xl p-6 mb-6">
+        <div className={`${
+          resolvedTheme === 'dark' 
+            ? 'bg-gray-800 border-gray-700' 
+            : 'bg-white border-gray-200'
+        } border rounded-xl shadow-xl p-6 mb-6`}>
           {/* Generator type tabs */}
           <div className="flex justify-center mb-6 gap-2">
             <button
@@ -109,7 +121,9 @@ export default function PasswordGenerator() {
               className={`px-6 py-3 rounded-lg text-base font-semibold transition-all ${
                 generatorType === 'password'
                   ? 'bg-blue-500 text-white shadow-md'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  : resolvedTheme === 'dark'
+                    ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
               Password
@@ -123,7 +137,9 @@ export default function PasswordGenerator() {
               className={`px-6 py-3 rounded-lg text-base font-semibold transition-all ${
                 generatorType === 'passphrase'
                   ? 'bg-blue-500 text-white shadow-md'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  : resolvedTheme === 'dark'
+                    ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
               Passphrase
@@ -147,12 +163,20 @@ export default function PasswordGenerator() {
                     type={showPassword ? "text" : "password"}
                     value={getCurrentPassword()}
                     readOnly
-                    className="w-full px-4 py-3 text-lg font-mono rounded-l-lg bg-gray-100 text-gray-900"
+                    className={`w-full px-4 py-3 text-lg font-mono rounded-l-lg ${
+                      resolvedTheme === 'dark' 
+                        ? 'bg-gray-700 text-gray-200' 
+                        : 'bg-gray-100 text-gray-900'
+                    }`}
                     aria-label={`Generated ${generatorType}`}
                   />
                   <button
                     onClick={() => setShowPassword(!showPassword)}
-                    className="px-3 bg-gray-100 hover:bg-gray-200"
+                    className={`px-3 ${
+                      resolvedTheme === 'dark' 
+                        ? 'bg-gray-700 hover:bg-gray-600' 
+                        : 'bg-gray-100 hover:bg-gray-200'
+                    }`}
                     aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? 
@@ -162,7 +186,11 @@ export default function PasswordGenerator() {
                   </button>
                   <button
                     onClick={() => generatorType === 'password' ? handleGeneratePassword() : handleGeneratePassphrase()}
-                    className="px-3 bg-gray-100 hover:bg-gray-200"
+                    className={`px-3 ${
+                      resolvedTheme === 'dark' 
+                        ? 'bg-gray-700 hover:bg-gray-600' 
+                        : 'bg-gray-100 hover:bg-gray-200'
+                    }`}
                     aria-label="Generate new"
                   >
                     <ArrowPathIcon className="h-5 w-5" />
@@ -197,7 +225,9 @@ export default function PasswordGenerator() {
                       <label className="block text-sm font-semibold mb-1">
                         Length
                       </label>
-                      <span className="text-sm px-2 py-1 rounded-full bg-gray-200">
+                      <span className={`text-sm px-2 py-1 rounded-full ${
+                        resolvedTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'
+                      }`}>
                         {passwordOptions.length} chars
                       </span>
                     </div>
@@ -254,7 +284,9 @@ export default function PasswordGenerator() {
                         label: 'Make pronounceable',
                       },
                     ].map(({ key, label }) => (
-                      <label key={key} className="flex items-center p-2 rounded-lg hover:bg-gray-100">
+                      <label key={key} className={`flex items-center p-2 rounded-lg ${
+                        resolvedTheme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                      }`}>
                         <input
                           type="checkbox"
                           checked={Boolean(passwordOptions[key as keyof typeof passwordOptions])}
@@ -410,18 +442,23 @@ export default function PasswordGenerator() {
           <p className="text-gray-700 mb-3">
             Strong, unique passwords are your first line of defense against unauthorized access to your accounts.
           </p>
-          <ul className="list-disc list-inside text-gray-600 mb-3 space-y-1">
+          <ul className={`list-disc list-inside ${
+            resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+          } mb-3 space-y-1`}>
             <li>Never reuse passwords across different accounts</li>
             <li>Longer passwords (16+ characters) provide better security</li>
             <li>Use a mix of character types for maximum entropy</li>
             <li>Consider a password manager to securely store credentials</li>
             <li>Enable two-factor authentication whenever possible</li>
           </ul>
-          <p className="text-gray-500 font-medium">
+          <p className={`${
+            resolvedTheme === 'dark' ? 'text-gray-500' : 'text-gray-500'
+          } font-medium`}>
             <strong>Pro Tip:</strong> Passphrases made of random words are both secure and easier to memorize than complex passwords!
           </p>
         </div>
       </div>
     </div>
+    </ThemeAwareLayout>
   )
 }
