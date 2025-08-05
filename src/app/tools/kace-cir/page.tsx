@@ -915,6 +915,42 @@ export default function QuestKaceInventoryRuleBuilder() {
     }
   }, []); // Empty dependency array means this runs once on mount
   
+  /**
+   * Generates the KACE rule string from the current rule elements and operators.
+   * Updates the component state with the generated rule string or validation errors.
+   */
+  const generateKaceRule = useCallback((): void => {
+    // Clear any previous errors
+    setParsingError(null);
+    
+    // Create a new validation errors object to store any validation issues
+    const newValidationErrors: Record<string, string[]> = {};
+    
+    // Call the internal function to generate the rule string
+    const { rule, hasErrors } = generateKaceRuleStringInternal(
+      ruleElements,
+      topLevelOperators,
+      newValidationErrors
+    );
+    
+    // Update validation errors state
+    setValidationErrors(newValidationErrors);
+    
+    if (hasErrors) {
+      setParsingError("Please fix validation errors before generating the rule string.");
+      return;
+    }
+    
+    // If no errors, update the generated rule string
+    setGeneratedRuleString(rule);
+    
+    // Scroll to the generated rule if needed
+    setTimeout(() => {
+      const ruleElement = document.getElementById('generated-rule');
+      ruleElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+  }, [ruleElements, topLevelOperators, generateKaceRuleStringInternal]);
+  
   // 4. Add the missing generateKaceRule dependency to useCallback at line 1357
   const saveCurrentRule = useCallback(() => {
     if (!currentRuleName.trim()) return;
@@ -942,7 +978,7 @@ export default function QuestKaceInventoryRuleBuilder() {
     setCurrentRuleName('');
     setCurrentRuleDescription('');
   }, [currentRuleName, currentRuleDescription, ruleElements, topLevelOperators, 
-    generatedRuleString, savedRules]); // Removed unnecessary dependency
+    generatedRuleString, savedRules, generateKaceRule]);
   
   // Load a saved rule
   const loadSavedRule = useCallback((ruleId: string) => {
@@ -1091,7 +1127,7 @@ export default function QuestKaceInventoryRuleBuilder() {
     documentationLines.push('');
     
     return documentationLines.join('\n');
-  }, [ruleElements, topLevelOperators, generatedRuleString, currentRuleName, currentRuleDescription]);
+  }, [ruleElements, topLevelOperators, generatedRuleString, currentRuleName, currentRuleDescription, generateKaceRule]);
   
   const downloadDocumentation = useCallback(() => {
     const documentation = generateRuleDocumentation();
@@ -1481,7 +1517,7 @@ export default function QuestKaceInventoryRuleBuilder() {
                 Generate KACE Rule String
               </button>
               {generatedRuleString && !Object.values(validationErrors).some((errors) => errors.length > 0) && (
-                <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
+                <div id="generated-rule" className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
                   <div className="flex justify-between items-center mb-2">
                     <h3 className="text-lg font-semibold text-gray-900">Generated Rule:</h3>
                     <button
@@ -1897,7 +1933,3 @@ const RuleElementRenderer: React.FC<RuleElementRendererProps> = ({
     </div>
   );
 };
-
-function generateKaceRule() {
-  throw new Error('Function not implemented.');
-}
