@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { KeyIcon, EyeIcon, EyeSlashIcon, ArrowPathIcon, ClipboardDocumentIcon } from '@heroicons/react/24/outline'
 import { generatePassword, generatePassphrase, checkPasswordStrength, checkPassphraseStrength, copyToClipboard } from './utils'
 import { StrengthIndicator } from './components/StrengthIndicator'
@@ -36,6 +36,25 @@ export default function PasswordGenerator() {
     includeNumber: true,
     includeSpecial: false,
   })
+  
+  const addToHistory = useCallback((value: string, type: GeneratorType) => {
+    setPasswordHistory(prev => {
+      const newHistory = [{ value, timestamp: Date.now(), type }, ...prev.slice(0, 4)]
+      return newHistory
+    })
+  }, [])
+
+  const handleGeneratePassword = useCallback(() => {
+    const newPassword = generatePassword(passwordOptions)
+    setPassword(newPassword)
+    addToHistory(newPassword, 'password')
+  }, [passwordOptions, addToHistory])
+
+  const handleGeneratePassphrase = useCallback(() => {
+    const newPassphrase = generatePassphrase(passphraseOptions)
+    setPassphrase(newPassphrase)
+    addToHistory(newPassphrase, 'passphrase')
+  }, [passphraseOptions, addToHistory])
 
   // Auto-generate on initial load and when options change
   useEffect(() => {
@@ -44,19 +63,7 @@ export default function PasswordGenerator() {
     } else {
       handleGeneratePassphrase();
     }
-  }, [generatorType, passwordOptions.length, passphraseOptions.wordCount]);
-
-  const handleGeneratePassword = () => {
-    const newPassword = generatePassword(passwordOptions)
-    setPassword(newPassword)
-    addToHistory(newPassword, 'password')
-  }
-
-  const handleGeneratePassphrase = () => {
-    const newPassphrase = generatePassphrase(passphraseOptions)
-    setPassphrase(newPassphrase)
-    addToHistory(newPassphrase, 'passphrase')
-  }
+  }, [generatorType, handleGeneratePassword, handleGeneratePassphrase]);
 
   const handleCopy = async (text: string) => {
     const success = await copyToClipboard(text)
@@ -64,13 +71,6 @@ export default function PasswordGenerator() {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     }
-  }
-  
-  const addToHistory = (value: string, type: GeneratorType) => {
-    setPasswordHistory(prev => {
-      const newHistory = [{ value, timestamp: Date.now(), type }, ...prev.slice(0, 4)]
-      return newHistory
-    })
   }
   
   const getCurrentPassword = () => generatorType === 'password' ? password : passphrase
