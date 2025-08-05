@@ -3,6 +3,7 @@ import "./globals.css"
 import { Footer } from "@/components/Footer"
 import { SidebarNav } from "@/components/SidebarNav"
 import Script from "next/script"
+import { ThemeProvider } from "@/components/ThemeProvider"
 
 export const metadata: Metadata = {
   title: "CloudFriends - Free Privacy-Focused Web Tools",
@@ -96,12 +97,14 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen bg-gray-950">
-        <div className="flex">
-          <SidebarNav />
-          <main className="flex-1">{children}</main>
-        </div>
-        <Footer />
+      <body>
+        <ThemeProvider>
+          <div className="flex">
+            <SidebarNav />
+            <main className="flex-1">{children}</main>
+          </div>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   )

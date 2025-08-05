@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import ThemeAwareLayout from '../../../components/ThemeAwareLayout'
+import { useThemeContext } from '../../../components/ThemeProvider'
 
 type SubnetResult = {
   network: string
@@ -81,6 +83,7 @@ function calculateSubnet(ip: string, cidr: number) {
 }
 
 export default function SubnetCalculator() {
+  const { resolvedTheme } = useThemeContext()
   const [ip, setIp] = useState('')
   const [cidr, setCidr] = useState(24)
   const [result, setResult] = useState<SubnetResult | null>(null)
@@ -90,7 +93,10 @@ export default function SubnetCalculator() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 flex flex-col items-center px-2" style={{ paddingTop: '5.5rem' }}>
+    <ThemeAwareLayout showThemeToggle={false}>
+      <main className={`min-h-screen ${
+        resolvedTheme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'
+      } flex flex-col items-center px-2`} style={{ paddingTop: '5.5rem' }}>
       <div className="w-full max-w-xl">
         <h1 className="text-3xl font-bold text-center mb-2 text-gray-900">IP Subnet Calculator</h1>
         <p className="text-blue-600 text-center mb-2 text-sm">
@@ -163,5 +169,6 @@ export default function SubnetCalculator() {
         </div>
       </div>
     </main>
+    </ThemeAwareLayout>
   )
 }

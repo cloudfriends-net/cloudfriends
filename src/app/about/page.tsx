@@ -74,7 +74,7 @@ export default function About() {
                   Contributions are welcome—help us make CloudFriends even better for everyone!
                 </p>
                 <a
-                  href="https://github.com/cloudfriends-net/web-tools"
+                  href="https://github.com/cloudfriends-net/cloudfriends"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white py-2 px-4 rounded-lg mt-3 transition-colors"

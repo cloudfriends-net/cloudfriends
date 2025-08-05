@@ -3,8 +3,19 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import { MagnifyingGlassIcon, Bars3Icon, XMarkIcon, HomeIcon, InformationCircleIcon, RocketLaunchIcon } from '@heroicons/react/24/outline'
+import { 
+  MagnifyingGlassIcon, 
+  Bars3Icon, 
+  XMarkIcon, 
+  HomeIcon, 
+  InformationCircleIcon, 
+  RocketLaunchIcon,
+  SunIcon,
+  MoonIcon,
+  ComputerDesktopIcon
+} from '@heroicons/react/24/outline'
 import Image from 'next/image'
+import { useThemeContext } from './ThemeProvider'
 
 const tools = [
   { name: 'Password Generator', path: '/tools/password-generator', keywords: ['password', 'secure', 'generator'] },
@@ -21,9 +32,46 @@ const tools = [
 
 export function SidebarNav() {
   const pathname = usePathname()
+  const { theme, resolvedTheme, setTheme } = useThemeContext()
   const [search, setSearch] = useState('')
   const [open, setOpen] = useState(false)
   const [hoveredTool, setHoveredTool] = useState<string | null>(null)
+
+  const toggleTheme = () => {
+    if (theme === 'light') {
+      setTheme('dark')
+    } else if (theme === 'dark') {
+      setTheme('system')
+    } else {
+      setTheme('light')
+    }
+  }
+
+  const getThemeIcon = () => {
+    switch (theme) {
+      case 'light':
+        return <SunIcon className="h-5 w-5" />
+      case 'dark':
+        return <MoonIcon className="h-5 w-5" />
+      case 'system':
+        return <ComputerDesktopIcon className="h-5 w-5" />
+      default:
+        return <SunIcon className="h-5 w-5" />
+    }
+  }
+
+  const getThemeLabel = () => {
+    switch (theme) {
+      case 'light':
+        return 'Light Mode'
+      case 'dark':
+        return 'Dark Mode'
+      case 'system':
+        return 'System Theme'
+      default:
+        return 'Light Mode'
+    }
+  }
 
   useEffect(() => {
     const handleResize = () => {
@@ -43,10 +91,14 @@ export function SidebarNav() {
   return (
     <>
       {/* Mobile top bar with logo and menu button */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 flex items-center h-16 px-4 shadow-sm">
+      <div className={`md:hidden fixed top-0 left-0 right-0 z-50 border-b flex items-center h-16 px-4 shadow-sm transition-colors ${
+        resolvedTheme === 'dark' 
+          ? 'bg-gray-800 border-gray-700' 
+          : 'bg-white border-gray-200'
+      }`}>
         <Link href="/" className="flex items-center gap-2">
           <Image
-            src="/logo-dark.png"
+            src={resolvedTheme === 'dark' ? "/logo-white.png" : "/logo-dark.png"}
             alt="CloudFriends Logo"
             width={200}
             height={32}
@@ -66,7 +118,10 @@ export function SidebarNav() {
       {/* Sidebar */}
       <aside
         className={`
-          bg-white border-r border-gray-200 h-screen flex flex-col
+          ${resolvedTheme === 'dark' 
+            ? 'bg-gray-800 border-gray-700' 
+            : 'bg-white border-gray-200'
+          } border-r h-screen flex flex-col
           md:sticky md:top-0 md:h-screen md:overflow-y-auto md:w-72
           fixed md:static z-30 transition-all duration-300 w-64
           shadow-lg md:shadow-none
@@ -76,15 +131,23 @@ export function SidebarNav() {
         `}
       >
         {/* Background Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-50 to-transparent opacity-50 pointer-events-none"></div>
+        <div className={`absolute inset-0 ${
+          resolvedTheme === 'dark' 
+            ? 'bg-gradient-to-b from-blue-900/20 to-transparent' 
+            : 'bg-gradient-to-b from-blue-50 to-transparent'
+        } opacity-50 pointer-events-none`}></div>
         
         {/* Content container */}
         <div className="relative z-10 flex flex-col h-full">
           {/* Logo at the very top */}
-          <div className="flex items-center justify-between h-20 px-6 border-b border-gray-200 bg-white">
+          <div className={`flex items-center justify-between h-20 px-6 border-b ${
+            resolvedTheme === 'dark' 
+              ? 'border-gray-700 bg-gray-800' 
+              : 'border-gray-200 bg-white'
+          }`}>
             <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
               <Image
-                src="/logo-dark.png"
+                src={resolvedTheme === 'dark' ? "/logo-white.png" : "/logo-dark.png"}
                 alt="CloudFriends Logo"
                 width={250}
                 height={36}
@@ -93,7 +156,11 @@ export function SidebarNav() {
               />
             </Link>
             <button
-              className="md:hidden bg-white text-gray-500 rounded-md p-1"
+              className={`md:hidden ${
+                resolvedTheme === 'dark' 
+                  ? 'bg-gray-800 text-gray-400' 
+                  : 'bg-white text-gray-500'
+              } rounded-md p-1`}
               onClick={() => setOpen(false)}
               aria-label="Hide sidebar"
             >
@@ -104,18 +171,26 @@ export function SidebarNav() {
           {/* Search */}
           <div className="p-4 pb-2">
             <div className="relative group">
-              <MagnifyingGlassIcon className="h-4 w-4 text-gray-400 absolute left-3 top-3 group-focus-within:text-blue-500 transition-colors" />
+              <MagnifyingGlassIcon className={`h-4 w-4 ${
+                resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-400'
+              } absolute left-3 top-3 group-focus-within:text-blue-500 transition-colors`} />
               <input
                 type="text"
                 placeholder="Search tools..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="w-full pl-10 pr-3 py-2.5 rounded-lg bg-gray-50 text-gray-700 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
+                className={`w-full pl-10 pr-3 py-2.5 rounded-lg ${
+                  resolvedTheme === 'dark' 
+                    ? 'bg-gray-700 text-gray-200 border-gray-600 focus:ring-blue-400' 
+                    : 'bg-gray-50 text-gray-700 border-gray-200 focus:ring-blue-400'
+                } border focus:outline-none focus:ring-2 focus:border-transparent transition-all`}
               />
               {search && (
                 <button
                   onClick={() => setSearch('')}
-                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
+                  className={`absolute right-3 top-3 ${
+                    resolvedTheme === 'dark' ? 'text-gray-400 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600'
+                  } transition-colors`}
                   aria-label="Clear search"
                 >
                   <XMarkIcon className="h-4 w-4" />
@@ -128,7 +203,9 @@ export function SidebarNav() {
           <div className="px-4 py-2">
             <div className="flex items-center gap-2 px-2 mb-2">
               <RocketLaunchIcon className="h-4 w-4 text-blue-600" />
-              <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Tools</span>
+              <span className={`text-xs font-medium ${
+                resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+              } uppercase tracking-wider`}>Tools</span>
             </div>
           </div>
           
@@ -136,10 +213,16 @@ export function SidebarNav() {
           <nav className="flex-1 flex flex-col gap-1 overflow-y-auto px-4">
             {filteredTools.length === 0 && (
               <div className="flex flex-col items-center justify-center py-8 text-center px-4">
-                <div className="bg-gray-100 rounded-full w-12 h-12 flex items-center justify-center mb-3">
-                  <MagnifyingGlassIcon className="h-6 w-6 text-gray-400" />
+                <div className={`${
+                  resolvedTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-100'
+                } rounded-full w-12 h-12 flex items-center justify-center mb-3`}>
+                  <MagnifyingGlassIcon className={`h-6 w-6 ${
+                    resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-400'
+                  }`} />
                 </div>
-                <p className="text-gray-500 text-sm font-medium">No tools found for &rdquo;{search}&rdquo;</p>
+                <p className={`${
+                  resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                } text-sm font-medium`}>No tools found for &rdquo;{search}&rdquo;</p>
                 <button 
                   onClick={() => setSearch('')}
                   className="mt-2 text-blue-500 text-sm hover:text-blue-700 transition-colors"
@@ -157,7 +240,9 @@ export function SidebarNav() {
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all
                     ${pathname === tool.path
                       ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md'
-                      : 'hover:bg-blue-50 text-gray-700'
+                      : resolvedTheme === 'dark' 
+                        ? 'hover:bg-gray-700 text-gray-300' 
+                        : 'hover:bg-blue-50 text-gray-700'
                     }
                   `}
                   onClick={() => setOpen(false)}
@@ -171,7 +256,9 @@ export function SidebarNav() {
                         ? 'bg-white/20 text-white' 
                         : hoveredTool === tool.name 
                           ? 'bg-blue-100 text-blue-600' 
-                          : 'bg-gray-100 text-gray-500'
+                          : resolvedTheme === 'dark'
+                            ? 'bg-gray-700 text-gray-400'
+                            : 'bg-gray-100 text-gray-500'
                       }
                       transition-all
                     `}
@@ -189,10 +276,14 @@ export function SidebarNav() {
           </nav>
           
           {/* Divider and Main Navigation Links */}
-          <div className="mt-4 mb-4 border-t border-gray-200 pt-4 px-4">
+          <div className={`mt-4 mb-4 border-t ${
+            resolvedTheme === 'dark' ? 'border-gray-700' : 'border-gray-200'
+          } pt-4 px-4`}>
             <div className="flex items-center gap-2 px-2 mb-2">
               <InformationCircleIcon className="h-4 w-4 text-blue-600" />
-              <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Navigation</span>
+              <span className={`text-xs font-medium ${
+                resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+              } uppercase tracking-wider`}>Navigation</span>
             </div>
             
             <div className="space-y-1">
@@ -201,12 +292,20 @@ export function SidebarNav() {
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all
                   ${pathname === '/'
                     ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md'
-                    : 'hover:bg-blue-50 text-gray-700'
+                    : resolvedTheme === 'dark' 
+                      ? 'hover:bg-gray-700 text-gray-300' 
+                      : 'hover:bg-blue-50 text-gray-700'
                   }
                 `}
                 onClick={() => setOpen(false)}
               >
-                <HomeIcon className={`h-5 w-5 ${pathname === '/' ? 'text-white' : 'text-gray-500'}`} />
+                <HomeIcon className={`h-5 w-5 ${
+                  pathname === '/' 
+                    ? 'text-white' 
+                    : resolvedTheme === 'dark' 
+                      ? 'text-gray-400' 
+                      : 'text-gray-500'
+                }`} />
                 <span className="font-medium">Home</span>
               </Link>
               
@@ -215,14 +314,38 @@ export function SidebarNav() {
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all
                   ${pathname === '/about'
                     ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md'
-                    : 'hover:bg-blue-50 text-gray-700'
+                    : resolvedTheme === 'dark' 
+                      ? 'hover:bg-gray-700 text-gray-300' 
+                      : 'hover:bg-blue-50 text-gray-700'
                   }
                 `}
                 onClick={() => setOpen(false)}
               >
-                <InformationCircleIcon className={`h-5 w-5 ${pathname === '/about' ? 'text-white' : 'text-gray-500'}`} />
+                <InformationCircleIcon className={`h-5 w-5 ${
+                  pathname === '/about' 
+                    ? 'text-white' 
+                    : resolvedTheme === 'dark' 
+                      ? 'text-gray-400' 
+                      : 'text-gray-500'
+                }`} />
                 <span className="font-medium">About</span>
               </Link>
+              
+              {/* Theme Toggle */}
+              <button
+                onClick={toggleTheme}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all w-full text-left ${
+                  resolvedTheme === 'dark'
+                    ? 'hover:bg-gray-700 text-gray-300'
+                    : 'hover:bg-blue-50 text-gray-700'
+                }`}
+                title={`Current: ${getThemeLabel()}. Click to cycle themes.`}
+              >
+                <div className={`${resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                  {getThemeIcon()}
+                </div>
+                <span className="font-medium">{getThemeLabel()}</span>
+              </button>
             </div>
           </div>
           

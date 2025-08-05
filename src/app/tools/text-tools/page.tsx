@@ -8,6 +8,8 @@ import {
   ArrowDownTrayIcon,
   DocumentTextIcon
 } from '@heroicons/react/24/outline'
+import ThemeAwareLayout from '../../../components/ThemeAwareLayout'
+import { useThemeContext } from '../../../components/ThemeProvider'
 
 type Operation = 'case' | 'transform' | 'clean' | 'count'
 type CaseOption = 'upper' | 'lower' | 'title' | 'sentence'
@@ -49,6 +51,7 @@ type FrequencyMap = {
 }
 
 export default function TextTools() {
+  const { resolvedTheme } = useThemeContext()
   const [text, setText] = useState('')
   const [output, setOutput] = useState('')
   const [selectedOperation, setSelectedOperation] = useState<Operation>('case')
@@ -57,7 +60,6 @@ export default function TextTools() {
   const [selectedCleanOption, setSelectedCleanOption] = useState<CleanOption>('extraSpaces')
   const [stats, setStats] = useState({ chars: 0, words: 0, lines: 0 })
   const [copied, setCopied] = useState(false)
-  const [darkMode, setDarkMode] = useState(false)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const outputRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -224,10 +226,6 @@ export default function TextTools() {
     }
   }
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode)
-  }
-
   const getWordFrequency = (text: string): FrequencyMap[] => {
     if (!text.trim()) return [];
     
@@ -271,26 +269,29 @@ export default function TextTools() {
   };
 
   return (
-    <main className={`min-h-screen flex flex-col items-center px-2 transition-colors duration-300 ${darkMode ? 'bg-gray-900' : 'bg-gray-100'}`} style={{ paddingTop: '5.5rem' }}>
-      <div className="w-full max-w-3xl">
-        <div className={`flex justify-between items-center mb-4`}>
-          <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Text Tools</h1>
-          <button 
-            onClick={toggleDarkMode} 
-            className={`p-2 rounded-full ${darkMode ? 'bg-gray-700 text-yellow-300' : 'bg-gray-200 text-gray-700'}`}
-          >
-            {darkMode ? '☀️' : '🌙'}
-          </button>
-        </div>
-        
-        <div className={`mb-6 p-4 rounded-lg ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-blue-50 border-blue-200'} border`}>
-          <div className="flex items-center mb-2">
-            <span className={`mr-2 text-xl ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>🔒</span>
-            <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+    <ThemeAwareLayout showThemeToggle={false}>
+      <main className={`min-h-screen flex flex-col items-center px-2 transition-colors duration-300 ${
+        resolvedTheme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'
+      }`} style={{ paddingTop: '5.5rem' }}>
+        <div className="w-full max-w-3xl">
+          <div className={`flex justify-between items-center mb-4`}>
+            <h1 className={`text-3xl font-bold ${
+              resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'
+            }`}>Text Tools</h1>
+          </div>
+          
+          <div className={`mb-6 p-4 rounded-lg border ${
+            resolvedTheme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-blue-50 border-blue-200'
+          }`}>
+            <div className="flex items-center mb-2">
+              <span className={`mr-2 text-xl ${
+                resolvedTheme === 'dark' ? 'text-blue-400' : 'text-blue-600'
+              }`}>🔒</span>
+            <p className={`text-sm ${resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
               All processing happens in your browser. No data leaves your device.
             </p>
           </div>
-          <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+          <p className={`text-sm ${resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
             Paste or type your text below, then choose an operation to transform, clean, or analyze your text.
           </p>
         </div>
@@ -298,18 +299,18 @@ export default function TextTools() {
         <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 mb-6`}>
           <div className="space-y-2">
             <div className="flex justify-between items-center mb-1">
-              <label className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Input</label>
+              <label className={`font-medium ${resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Input</label>
               <div className="flex space-x-1">
                 <button
                   onClick={uploadFile}
-                  className={`p-1.5 rounded ${darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition-colors`}
+                  className={`p-1.5 rounded ${resolvedTheme === 'dark' ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition-colors`}
                   title="Upload file"
                 >
                   <DocumentTextIcon className="h-4 w-4" />
                 </button>
                 <button
                   onClick={clearText}
-                  className={`p-1.5 rounded ${darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition-colors`}
+                  className={`p-1.5 rounded ${resolvedTheme === 'dark' ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition-colors`}
                   title="Clear text"
                 >
                   <TrashIcon className="h-4 w-4" />
@@ -328,24 +329,24 @@ export default function TextTools() {
               value={text}
               onChange={(e) => setText(e.target.value)}
               className={`w-full h-48 rounded-lg p-4 border resize-none focus:outline-none focus:ring-2 ${
-                darkMode 
+                resolvedTheme === 'dark' 
                   ? 'bg-gray-800 text-gray-200 border-gray-700 focus:ring-blue-700'
                   : 'bg-white text-gray-900 border-gray-300 focus:ring-blue-500'
               }`}
               placeholder="Paste or type your text here..."
             />
-            <div className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            <div className={`text-xs ${resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
               {stats.chars} characters | {stats.words} words | {stats.lines} lines
             </div>
           </div>
 
           <div className="space-y-2">
             <div className="flex justify-between items-center mb-1">
-              <label className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Output</label>
+              <label className={`font-medium ${resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Output</label>
               <div className="flex space-x-1">
                 <button
                   onClick={swapTexts}
-                  className={`p-1.5 rounded ${darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition-colors`}
+                  className={`p-1.5 rounded ${resolvedTheme === 'dark' ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition-colors`}
                   title="Swap input/output"
                 >
                   <ArrowsRightLeftIcon className="h-4 w-4" />
@@ -354,8 +355,8 @@ export default function TextTools() {
                   onClick={copyToClipboard}
                   className={`p-1.5 rounded flex items-center ${
                     copied 
-                      ? (darkMode ? 'bg-green-700 text-green-200' : 'bg-green-200 text-green-700') 
-                      : (darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300')
+                      ? (resolvedTheme === 'dark' ? 'bg-green-700 text-green-200' : 'bg-green-200 text-green-700') 
+                      : (resolvedTheme === 'dark' ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300')
                   } transition-colors`}
                   title="Copy to clipboard"
                 >
@@ -363,7 +364,7 @@ export default function TextTools() {
                 </button>
                 <button
                   onClick={downloadOutput}
-                  className={`p-1.5 rounded ${darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition-colors`}
+                  className={`p-1.5 rounded ${resolvedTheme === 'dark' ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition-colors`}
                   title="Download output"
                 >
                   <ArrowDownTrayIcon className="h-4 w-4" />
@@ -375,7 +376,7 @@ export default function TextTools() {
               value={output}
               readOnly
               className={`w-full h-48 rounded-lg p-4 border resize-none focus:outline-none ${
-                darkMode 
+                resolvedTheme === 'dark' 
                   ? 'bg-gray-800 text-gray-200 border-gray-700'
                   : 'bg-white text-gray-900 border-gray-300'
               }`}
@@ -383,17 +384,17 @@ export default function TextTools() {
           </div>
         </div>
 
-        <div className={`p-5 rounded-lg mb-6 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border shadow-sm`}>
-          <h2 className={`font-bold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Text Operations</h2>
+        <div className={`p-5 rounded-lg mb-6 ${resolvedTheme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border shadow-sm`}>
+          <h2 className={`font-bold mb-3 ${resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Text Operations</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-              <label className={`block mb-1 text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Operation Type</label>
+              <label className={`block mb-1 text-sm font-medium ${resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Operation Type</label>
               <select
                 value={selectedOperation}
                 onChange={e => setSelectedOperation(e.target.value as Operation)}
                 className={`w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 ${
-                  darkMode 
+                  resolvedTheme === 'dark' 
                     ? 'bg-gray-700 text-gray-200 border-gray-600 focus:ring-blue-700'
                     : 'bg-gray-50 text-gray-900 border-gray-300 focus:ring-blue-500'
                 }`}
@@ -408,12 +409,12 @@ export default function TextTools() {
             <div>
               {selectedOperation === 'case' && (
                 <>
-                  <label className={`block mb-1 text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Case Options</label>
+                  <label className={`block mb-1 text-sm font-medium ${resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Case Options</label>
                   <select
                     value={selectedCaseOption}
                     onChange={e => setSelectedCaseOption(e.target.value as CaseOption)}
                     className={`w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 ${
-                      darkMode 
+                      resolvedTheme === 'dark' 
                         ? 'bg-gray-700 text-gray-200 border-gray-600 focus:ring-blue-700'
                         : 'bg-gray-50 text-gray-900 border-gray-300 focus:ring-blue-500'
                     }`}
@@ -428,12 +429,12 @@ export default function TextTools() {
 
               {selectedOperation === 'transform' && (
                 <>
-                  <label className={`block mb-1 text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Transform Options</label>
+                  <label className={`block mb-1 text-sm font-medium ${resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Transform Options</label>
                   <select
                     value={selectedTransformOption}
                     onChange={e => setSelectedTransformOption(e.target.value as TransformOption)}
                     className={`w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 ${
-                      darkMode 
+                      resolvedTheme === 'dark' 
                         ? 'bg-gray-700 text-gray-200 border-gray-600 focus:ring-blue-700'
                         : 'bg-gray-50 text-gray-900 border-gray-300 focus:ring-blue-500'
                     }`}
@@ -448,12 +449,12 @@ export default function TextTools() {
 
               {selectedOperation === 'clean' && (
                 <>
-                  <label className={`block mb-1 text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Clean Options</label>
+                  <label className={`block mb-1 text-sm font-medium ${resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Clean Options</label>
                   <select
                     value={selectedCleanOption}
                     onChange={e => setSelectedCleanOption(e.target.value as CleanOption)}
                     className={`w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 ${
-                      darkMode 
+                      resolvedTheme === 'dark' 
                         ? 'bg-gray-700 text-gray-200 border-gray-600 focus:ring-blue-700'
                         : 'bg-gray-50 text-gray-900 border-gray-300 focus:ring-blue-500'
                     }`}
@@ -468,7 +469,7 @@ export default function TextTools() {
             </div>
           </div>
           
-          <div className={`mt-3 p-3 rounded-lg ${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-50 text-gray-600'}`}>
+          <div className={`mt-3 p-3 rounded-lg ${resolvedTheme === 'dark' ? 'bg-gray-700 text-gray-300' : 'bg-gray-50 text-gray-600'}`}>
             <p className="text-sm">
               {selectedOperation === 'case' && caseDescriptions[selectedCaseOption]}
               {selectedOperation === 'transform' && transformDescriptions[selectedTransformOption]}
@@ -481,28 +482,28 @@ export default function TextTools() {
         {selectedOperation === 'count' && (
           <>
             <div className={`grid grid-cols-3 gap-4 mb-6`}>
-              <div className={`p-4 rounded-lg text-center ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border shadow-sm`}>
-                <div className={`text-2xl font-bold ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>{stats.chars}</div>
-                <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Characters</div>
+              <div className={`p-4 rounded-lg text-center ${resolvedTheme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border shadow-sm`}>
+                <div className={`text-2xl font-bold ${resolvedTheme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`}>{stats.chars}</div>
+                <div className={`text-sm ${resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Characters</div>
               </div>
-              <div className={`p-4 rounded-lg text-center ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border shadow-sm`}>
-                <div className={`text-2xl font-bold ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>{stats.words}</div>
-                <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Words</div>
+              <div className={`p-4 rounded-lg text-center ${resolvedTheme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border shadow-sm`}>
+                <div className={`text-2xl font-bold ${resolvedTheme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`}>{stats.words}</div>
+                <div className={`text-sm ${resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Words</div>
               </div>
-              <div className={`p-4 rounded-lg text-center ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border shadow-sm`}>
-                <div className={`text-2xl font-bold ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>{stats.lines}</div>
-                <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Lines</div>
+              <div className={`p-4 rounded-lg text-center ${resolvedTheme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border shadow-sm`}>
+                <div className={`text-2xl font-bold ${resolvedTheme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`}>{stats.lines}</div>
+                <div className={`text-sm ${resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Lines</div>
               </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border shadow-sm`}>
-                <h3 className={`text-lg font-medium mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Top 10 Words</h3>
+              <div className={`p-4 rounded-lg ${resolvedTheme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border shadow-sm`}>
+                <h3 className={`text-lg font-medium mb-3 ${resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Top 10 Words</h3>
                 {text ? (
-                  <div className={`max-h-60 overflow-y-auto ${darkMode ? 'scrollbar-dark' : 'scrollbar-light'}`}>
+                  <div className={`max-h-60 overflow-y-auto ${resolvedTheme === 'dark' ? 'scrollbar-dark' : 'scrollbar-light'}`}>
                     <table className="w-full">
                       <thead>
-                        <tr className={`text-left text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                        <tr className={`text-left text-sm ${resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
                           <th className="pb-2">Word</th>
                           <th className="pb-2">Count</th>
                           <th className="pb-2">%</th>
@@ -510,7 +511,7 @@ export default function TextTools() {
                       </thead>
                       <tbody>
                         {getWordFrequency(text).map((item, index) => (
-                          <tr key={index} className={`${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                          <tr key={index} className={`${resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
                             <td className="py-1">{item.item}</td>
                             <td className="py-1">{item.count}</td>
                             <td className="py-1">{item.percentage}</td>
@@ -518,7 +519,7 @@ export default function TextTools() {
                         ))}
                         {getWordFrequency(text).length === 0 && (
                           <tr>
-                            <td colSpan={3} className={`py-4 text-center ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                            <td colSpan={3} className={`py-4 text-center ${resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
                               No words to analyze
                             </td>
                           </tr>
@@ -527,19 +528,19 @@ export default function TextTools() {
                     </table>
                   </div>
                 ) : (
-                  <div className={`py-8 text-center ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  <div className={`py-8 text-center ${resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
                     Enter text to see word frequency
                   </div>
                 )}
               </div>
               
-              <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border shadow-sm`}>
-                <h3 className={`text-lg font-medium mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Top 10 Characters</h3>
+              <div className={`p-4 rounded-lg ${resolvedTheme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border shadow-sm`}>
+                <h3 className={`text-lg font-medium mb-3 ${resolvedTheme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Top 10 Characters</h3>
                 {text ? (
-                  <div className={`max-h-60 overflow-y-auto ${darkMode ? 'scrollbar-dark' : 'scrollbar-light'}`}>
+                  <div className={`max-h-60 overflow-y-auto ${resolvedTheme === 'dark' ? 'scrollbar-dark' : 'scrollbar-light'}`}>
                     <table className="w-full">
                       <thead>
-                        <tr className={`text-left text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                        <tr className={`text-left text-sm ${resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
                           <th className="pb-2">Character</th>
                           <th className="pb-2">Count</th>
                           <th className="pb-2">%</th>
@@ -547,7 +548,7 @@ export default function TextTools() {
                       </thead>
                       <tbody>
                         {getCharFrequency(text).map((item, index) => (
-                          <tr key={index} className={`${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                          <tr key={index} className={`${resolvedTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
                             <td className="py-1">{item.item === ' ' ? '(space)' : item.item}</td>
                             <td className="py-1">{item.count}</td>
                             <td className="py-1">{item.percentage}</td>
@@ -555,7 +556,7 @@ export default function TextTools() {
                         ))}
                         {getCharFrequency(text).length === 0 && (
                           <tr>
-                            <td colSpan={3} className={`py-4 text-center ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                            <td colSpan={3} className={`py-4 text-center ${resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
                               No characters to analyze
                             </td>
                           </tr>
@@ -564,7 +565,7 @@ export default function TextTools() {
                     </table>
                   </div>
                 ) : (
-                  <div className={`py-8 text-center ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  <div className={`py-8 text-center ${resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
                     Enter text to see character frequency
                   </div>
                 )}
@@ -574,5 +575,6 @@ export default function TextTools() {
         )}
       </div>
     </main>
+    </ThemeAwareLayout>
   )
 }
