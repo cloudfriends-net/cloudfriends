@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { ClipboardDocumentCheckIcon } from '@heroicons/react/24/outline'
-import LightThemeLayout from '../../components/LightThemeLayout'
+import ThemeAwareLayout from '../../../components/ThemeAwareLayout'
 
 export default function RegexTester() {
   const [text, setText] = useState('')
@@ -57,7 +57,7 @@ export default function RegexTester() {
   }
 
   return (
-    <LightThemeLayout>
+    <ThemeAwareLayout>
       <main className="min-h-screen bg-gray-100 flex flex-col items-center px-2 pb-20" style={{ paddingTop: '5.5rem' }}>
         <div className="w-full max-w-4xl">
           <h1 className="text-3xl font-bold text-center mb-2 text-gray-900">Regex Tester</h1>
@@ -164,6 +164,6 @@ export default function RegexTester() {
           </div>
         </div>
       </main>
-    </LightThemeLayout>
+    </ThemeAwareLayout>
   )
 }

@@ -6,6 +6,7 @@ import { PDFDocument } from 'pdf-lib'
 import { useDropzone } from 'react-dropzone'
 import JSZip from 'jszip'
 import dynamic from 'next/dynamic'
+import ThemeAwareLayout from '../../../components/ThemeAwareLayout'
 
 // Import PDF preview component dynamically with SSR disabled
 type PDFPreviewProps = {
@@ -1034,7 +1035,8 @@ export default function PDFTools() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 flex flex-col items-center px-4 py-8" style={{ paddingTop: '5.5rem' }}>
+    <ThemeAwareLayout>
+      <main className="min-h-screen bg-gray-100 flex flex-col items-center px-4 py-8" style={{ paddingTop: '5.5rem' }}>
       <div className="container max-w-4xl">
         <h1 className="text-4xl font-bold text-center mb-8 text-gray-900">PDF Tools</h1>
 
@@ -1188,6 +1190,7 @@ export default function PDFTools() {
         </div>
       </div>
     </main>
+    </ThemeAwareLayout>
   )
 }
 

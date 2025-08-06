@@ -4,15 +4,12 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { 
-  MagnifyingGlassIcon, 
-  Bars3Icon, 
-  XMarkIcon, 
-  HomeIcon, 
-  InformationCircleIcon, 
-  RocketLaunchIcon,
-  SunIcon,
-  MoonIcon,
-  ComputerDesktopIcon
+  MagnifyingGlassIcon,
+  Bars3Icon,
+  XMarkIcon,
+  InformationCircleIcon,
+  HomeIcon,
+  RocketLaunchIcon
 } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import { useThemeContext } from './ThemeProvider'
@@ -32,46 +29,10 @@ const tools = [
 
 export function SidebarNav() {
   const pathname = usePathname()
-  const { theme, resolvedTheme, setTheme } = useThemeContext()
+  const { resolvedTheme } = useThemeContext()
   const [search, setSearch] = useState('')
   const [open, setOpen] = useState(false)
   const [hoveredTool, setHoveredTool] = useState<string | null>(null)
-
-  const toggleTheme = () => {
-    if (theme === 'light') {
-      setTheme('dark')
-    } else if (theme === 'dark') {
-      setTheme('system')
-    } else {
-      setTheme('light')
-    }
-  }
-
-  const getThemeIcon = () => {
-    switch (theme) {
-      case 'light':
-        return <SunIcon className="h-5 w-5" />
-      case 'dark':
-        return <MoonIcon className="h-5 w-5" />
-      case 'system':
-        return <ComputerDesktopIcon className="h-5 w-5" />
-      default:
-        return <SunIcon className="h-5 w-5" />
-    }
-  }
-
-  const getThemeLabel = () => {
-    switch (theme) {
-      case 'light':
-        return 'Light Mode'
-      case 'dark':
-        return 'Dark Mode'
-      case 'system':
-        return 'System Theme'
-      default:
-        return 'Light Mode'
-    }
-  }
 
   useEffect(() => {
     const handleResize = () => {
@@ -330,22 +291,6 @@ export function SidebarNav() {
                 }`} />
                 <span className="font-medium">About</span>
               </Link>
-              
-              {/* Theme Toggle */}
-              <button
-                onClick={toggleTheme}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all w-full text-left ${
-                  resolvedTheme === 'dark'
-                    ? 'hover:bg-gray-700 text-gray-300'
-                    : 'hover:bg-blue-50 text-gray-700'
-                }`}
-                title={`Current: ${getThemeLabel()}. Click to cycle themes.`}
-              >
-                <div className={`${resolvedTheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                  {getThemeIcon()}
-                </div>
-                <span className="font-medium">{getThemeLabel()}</span>
-              </button>
             </div>
           </div>
           

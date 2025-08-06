@@ -1,6 +1,9 @@
+import ThemeAwareLayout from '../../components/ThemeAwareLayout'
+
 export default function About() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-blue-50 to-gray-100">
+    <ThemeAwareLayout>
+      <main className="min-h-screen bg-gradient-to-b from-blue-50 to-gray-100">
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           {/* Enhanced Header Section */}
@@ -111,5 +114,6 @@ export default function About() {
         </div>
       </div>
     </main>
+    </ThemeAwareLayout>
   )
 }

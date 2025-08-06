@@ -269,7 +269,7 @@ export default function TextTools() {
   };
 
   return (
-    <ThemeAwareLayout showThemeToggle={false}>
+    <ThemeAwareLayout>
       <main className={`min-h-screen flex flex-col items-center px-2 transition-colors duration-300 ${
         resolvedTheme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'
       }`} style={{ paddingTop: '5.5rem' }}>

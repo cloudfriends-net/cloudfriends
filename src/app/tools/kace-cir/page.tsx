@@ -2,7 +2,7 @@
 
 import { useState, ChangeEvent, Fragment, useEffect, useRef, useCallback, useMemo } from 'react'
 import { TrashIcon, ClipboardDocumentIcon, ClipboardDocumentCheckIcon, ExclamationTriangleIcon, Bars3BottomLeftIcon, RectangleGroupIcon, DocumentArrowDownIcon, BookmarkIcon, ArrowPathIcon, AdjustmentsHorizontalIcon, FolderIcon, DocumentDuplicateIcon, ArrowDownTrayIcon, SparklesIcon } from '@heroicons/react/24/outline'
-import LightThemeLayout from '../../components/LightThemeLayout'
+import ThemeAwareLayout from '../../../components/ThemeAwareLayout'
 
 // --- KACE Function Definitions ---
 
@@ -1263,7 +1263,7 @@ export default function QuestKaceInventoryRuleBuilder() {
 
   // Enhanced JSX with new features and improved UI
   return (
-    <LightThemeLayout>
+    <ThemeAwareLayout>
       <main className="min-h-screen bg-gray-50 flex flex-col items-center px-2 pb-20" style={{ paddingTop: '5.5rem' }}>
         <div className="w-full max-w-5xl">
           <div className="flex flex-col md:flex-row justify-between items-center mb-6">
@@ -1682,7 +1682,7 @@ export default function QuestKaceInventoryRuleBuilder() {
           </div>
         </div>
       )}
-    </LightThemeLayout>
+    </ThemeAwareLayout>
   )
 }
 

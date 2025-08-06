@@ -93,7 +93,7 @@ export default function SubnetCalculator() {
   }
 
   return (
-    <ThemeAwareLayout showThemeToggle={false}>
+    <ThemeAwareLayout>
       <main className={`min-h-screen ${
         resolvedTheme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'
       } flex flex-col items-center px-2`} style={{ paddingTop: '5.5rem' }}>

@@ -1,12 +1,14 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
+import ThemeAwareLayout from '../../components/ThemeAwareLayout'
 
 export default function Licenses() {
   return (
-    <main
-      className="min-h-screen bg-gray-100"
-      style={{ paddingTop: '5.5rem' }}
-    >
+    <ThemeAwareLayout>
+      <main
+        className="min-h-screen bg-gray-100"
+        style={{ paddingTop: '5.5rem' }}
+      >
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <Link 
@@ -93,5 +95,6 @@ export default function Licenses() {
         </div>
       </div>
     </main>
+    </ThemeAwareLayout>
   )
 }

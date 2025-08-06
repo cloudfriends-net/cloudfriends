@@ -187,7 +187,7 @@ export default function ImageConverter() {
   }
   
   return (
-    <ThemeAwareLayout showThemeToggle={false}>
+    <ThemeAwareLayout>
       <div className={`min-h-screen ${
         resolvedTheme === 'dark' ? 'bg-gray-900 text-gray-100' : 'bg-gray-100 text-gray-900'
       }`} style={{ paddingTop: '5.5rem' }}>

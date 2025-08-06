@@ -82,7 +82,7 @@ export default function PasswordGenerator() {
     : checkPassphraseStrength(passphrase)
 
   return (
-    <ThemeAwareLayout showThemeToggle={false}>
+    <ThemeAwareLayout>
       <div
         className={`min-h-screen ${
           resolvedTheme === 'dark' ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'
