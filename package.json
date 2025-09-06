@@ -12,7 +12,7 @@
     "@heroicons/react": "^2.2.0",
     "framer-motion": "^12.23.12",
     "jszip": "^3.10.1",
-    "next": "15.3.3",
+    "next": "15.4.7",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^5.3.93",
     "qrcode.react": "^4.2.0",
