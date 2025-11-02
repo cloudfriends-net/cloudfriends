@@ -24,19 +24,52 @@ export default function ImageConverter() {
   const [conversionProgress, setConversionProgress] = useState(0)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  // Decode HEIC/HEIF to PNG with lazy heic2any import on the main thread
+  const decodeHeicToPng = async (file: File): Promise<Blob> => {
+    const heic2any = (await import('heic2any')).default as any
+    const result = await heic2any({ blob: file, toType: 'image/png', quality: 0.92 })
+    return Array.isArray(result) ? result[0] : result
+  }
+
+  // No worker lifecycle needed
+
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
     if (!files.length) return
-    
-    const newImageFiles = files
-      .filter(file => file.type.startsWith('image/'))
-      .map(file => ({
-        file,
-        previewUrl: URL.createObjectURL(file),
-        status: 'pending' as const
-      }))
-    
-    setImageFiles(prev => [...prev, ...newImageFiles])
+
+    // Helper to detect HEIC/HEIF by mime or extension
+    const isHeicFile = (f: File) =>
+      /heic|heif/i.test(f.type) || /\.(heic|heif)$/i.test(f.name)
+
+    // Build ImageFile entries, decoding HEIC/HEIF to a browser-friendly blob for preview
+    const newImageFiles: ImageFile[] = []
+
+    for (const file of files) {
+      // Accept typical images or HEIC/HEIF by extension
+      const looksLikeImage = file.type.startsWith('image/') || isHeicFile(file)
+      if (!looksLikeImage) continue
+
+      if (isHeicFile(file)) {
+        try {
+          const blob = await decodeHeicToPng(file)
+          const previewUrl = URL.createObjectURL(blob)
+          newImageFiles.push({ file, previewUrl, status: 'pending' })
+        } catch (err) {
+          console.error(`Failed to decode HEIC file ${file.name}:`, err)
+          continue
+        }
+      } else {
+        newImageFiles.push({
+          file,
+          previewUrl: URL.createObjectURL(file),
+          status: 'pending'
+        })
+      }
+    }
+
+    if (newImageFiles.length) {
+      setImageFiles(prev => [...prev, ...newImageFiles])
+    }
   }
   
   const removeFile = (index: number) => {
@@ -73,15 +106,59 @@ export default function ImageConverter() {
       const img = new window.Image()
       img.src = imageFile.previewUrl
 
-      const blob = await new Promise<Blob | null>((resolve) => {
-        img.onload = () => {
-          const canvas = canvasRef.current!
-          canvas.width = img.width
-          canvas.height = img.height
-          const ctx = canvas.getContext('2d')
-          ctx?.drawImage(img, 0, 0)
+      const blob = await new Promise<Blob | null>(async (resolve) => {
+        img.onload = async () => {
+          try {
+            const canvas = canvasRef.current!
+            const ctx = canvas.getContext('2d')!
 
-          canvas.toBlob((blob) => resolve(blob), targetFormat, 0.9)
+            // Try to respect EXIF orientation where possible
+            // Note: For generated PNG from HEIC, orientation should be already applied, but this is safe.
+            let orientation = 1
+            try {
+              const mod = await import('exifr')
+              const exifOrientation = await (mod as any).orientation(imageFile.file).catch(() => undefined)
+              if (typeof exifOrientation === 'number') orientation = exifOrientation
+            } catch {
+              // ignore
+            }
+
+            // Set canvas size and transform based on EXIF orientation
+            const w = img.width
+            const h = img.height
+            if (orientation >= 5 && orientation <= 8) {
+              canvas.width = h
+              canvas.height = w
+            } else {
+              canvas.width = w
+              canvas.height = h
+            }
+
+            switch (orientation) {
+              case 2: // Mirror X
+                ctx.translate(w, 0); ctx.scale(-1, 1); break
+              case 3: // Rotate 180
+                ctx.translate(w, h); ctx.rotate(Math.PI); break
+              case 4: // Mirror Y
+                ctx.translate(0, h); ctx.scale(1, -1); break
+              case 5: // Mirror X + Rotate 90 CW
+                ctx.rotate(0.5 * Math.PI); ctx.scale(1, -1); ctx.translate(0, -h); break
+              case 6: // Rotate 90 CW
+                ctx.rotate(0.5 * Math.PI); ctx.translate(0, -h); break
+              case 7: // Mirror X + Rotate 90 CCW
+                ctx.rotate(0.5 * Math.PI); ctx.scale(-1, 1); ctx.translate(-w, -h); break
+              case 8: // Rotate 90 CCW
+                ctx.rotate(-0.5 * Math.PI); ctx.translate(-w, 0); break
+              default:
+                // No transform
+                break
+            }
+
+            ctx.drawImage(img, 0, 0)
+            canvas.toBlob((b) => resolve(b), targetFormat, 0.9)
+          } catch {
+            resolve(null)
+          }
         }
         img.onerror = () => resolve(null)
       })
@@ -130,6 +207,9 @@ export default function ImageConverter() {
     return results.filter(Boolean) as Blob[]
   }
 
+  // Create a clean base file name without its last extension
+  const baseName = (filename: string) => filename.replace(/\.[^/.]+$/, '')
+
   const downloadSingleFile = (index: number) => {
     const imageFile = imageFiles[index]
     if (!imageFile.convertedUrl) return
@@ -137,7 +217,7 @@ export default function ImageConverter() {
     const a = document.createElement('a')
     a.href = imageFile.convertedUrl
     const extension = targetFormat.split('/')[1]
-    a.download = `${imageFile.file.name.split('.')[0]}.${extension}`
+    a.download = `${baseName(imageFile.file.name)}.${extension}`
     a.click()
   }
 
@@ -160,7 +240,7 @@ export default function ImageConverter() {
         // Convert data URL to blob
         const response = await fetch(imageFile.convertedUrl!);
         const blob = await response.blob();
-        const fileName = `${imageFile.file.name.split('.')[0]}.${extension}`;
+        const fileName = `${baseName(imageFile.file.name)}.${extension}`;
         
         // Add to zip
         zip.file(fileName, blob);
@@ -218,6 +298,7 @@ export default function ImageConverter() {
                   resolvedTheme === 'dark' ? 'text-blue-400' : 'text-blue-600'
                 }`}>Convert All</span> to process all images.</li>
                 <li>Download individual images or all images as a ZIP file.</li>
+                <li>HEIC/HEIF photos are supported and converted in your browser.</li>
               </ul>
             </div>
 
@@ -238,7 +319,7 @@ export default function ImageConverter() {
               <input
                 type="file"
                 onChange={handleFileChange}
-                accept="image/*"
+                accept="image/*,.heic,.heif"
                 className="hidden"
                 id="imageInput"
                 multiple
