@@ -14,7 +14,7 @@
     "framer-motion": "^12.23.12",
     "heic2any": "^0.0.4",
     "jszip": "^3.10.1",
-    "next": "15.4.7",
+    "next": "15.4.8",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^5.3.93",
     "qrcode.react": "^4.2.0",
